@@ -1,4 +1,6 @@
-# Prompt Market — مارکت پرامپت حرفه‌ای (FA / EN / AR)
+# رسا پرامپت — Rasa Prompt (FA / EN / AR)
+
+دامنه: **rasa-prompt.ir**
 
 پروژه‌ی سایت ارائه و فروش پرامپت‌های حرفه‌ای، سه‌زبانه، ساخته‌شده با [FarsiUI](https://github.com/MiladJoodi/FarsiUI).
 
