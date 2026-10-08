@@ -11,14 +11,15 @@
     "dev:bot:bale": "PLATFORM=bale tsx watch apps/bot/src/main.ts",
     "dev:worker": "tsx watch apps/worker/src/main.ts",
     "build": "pnpm -r --filter ./apps/* build",
-    "typecheck": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json && tsc -p apps/web/tsconfig.json",
     "lint": "biome check .",
     "format": "biome check --write .",
     "test": "vitest run",
     "db:generate": "pnpm --filter @rasa/db generate",
     "db:migrate": "pnpm --filter @rasa/db migrate",
     "db:seed": "pnpm --filter @rasa/db seed",
-    "check": "pnpm lint && pnpm typecheck && pnpm test"
+    "check": "pnpm lint && pnpm typecheck && pnpm test",
+    "dev:web": "pnpm --filter @rasa/web dev"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.15",

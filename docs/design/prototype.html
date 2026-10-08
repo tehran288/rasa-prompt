@@ -1,0 +1,692 @@
+<title>رسا پرامپت</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;700;800&family=Reem+Kufi:wght@500;700&family=Noto+Naskh+Arabic:wght@400;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: manuscript-meets-console. A lapis & gold identity (from the Rasa Studio brand),
+   a live prompt "illumination" as hero, then catalog, trends, agent room, bots, pricing. */
+:root{
+  --bg:#f6f4ee; --surface:#fffdf8; --raise:#efece2; --line:#ddd6c4;
+  --fg:#16213d; --muted:#5a6280; --lapis:#1f3a8a; --lapis-2:#2c4fb8; --gold:#a8791c; --gold-soft:#f3e3bd;
+  --ok:#17784a; --warn:#a15c07; --chip:#e8e3d4; --code:#fbf8ef;
+  --shadow:0 1px 0 rgba(22,33,61,.04),0 10px 30px -18px rgba(22,33,61,.35);
+  --f-display:"Vazirmatn",system-ui,sans-serif;
+  --f-body:"Vazirmatn",system-ui,"Segoe UI",Tahoma,sans-serif;
+  --f-mono:"JetBrains Mono","Vazirmatn",ui-monospace,monospace;
+  --r:14px; color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0b1226; --surface:#111a33; --raise:#16213f; --line:#25325a;
+  --fg:#eef0f8; --muted:#9aa4c4; --lapis:#8fb0ff; --lapis-2:#b5c9ff; --gold:#e3b34f; --gold-soft:#3a2e12;
+  --ok:#53d39a; --warn:#f0a948; --chip:#1c2850; --code:#0e1630;
+  --shadow:0 1px 0 rgba(0,0,0,.2),0 14px 40px -20px rgba(0,0,0,.8); color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0b1226; --surface:#111a33; --raise:#16213f; --line:#25325a;
+  --fg:#eef0f8; --muted:#9aa4c4; --lapis:#8fb0ff; --lapis-2:#b5c9ff; --gold:#e3b34f; --gold-soft:#3a2e12;
+  --ok:#53d39a; --warn:#f0a948; --chip:#1c2850; --code:#0e1630;
+  --shadow:0 1px 0 rgba(0,0,0,.2),0 14px 40px -20px rgba(0,0,0,.8); color-scheme:dark}
+html[lang="ar"]{--f-body:"Noto Naskh Arabic","Vazirmatn",system-ui,sans-serif;--f-display:"Reem Kufi","Noto Naskh Arabic",system-ui,sans-serif}
+html[lang="fa"] h1,html[lang="fa"] h2{font-weight:800;letter-spacing:-.01em}
+html[lang="en"]{--f-display:"Fraunces",Georgia,serif;--f-body:"Vazirmatn",system-ui,"Segoe UI",sans-serif}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15.5px;line-height:1.75;margin:0}
+.wrap{max-width:1180px;margin-inline:auto;padding-inline:20px}
+a{color:inherit}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:6px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;line-height:1.25;margin:0}
+.eyebrow{font-size:12.5px;letter-spacing:.06em;color:var(--gold);font-weight:700}
+html[lang="en"] .eyebrow{text-transform:uppercase;letter-spacing:.12em}
+.muted{color:var(--muted)}
+.num{font-variant-numeric:tabular-nums}
+
+/* header */
+header.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top .wrap{display:flex;align-items:center;gap:18px;padding-block:12px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand b{font-family:var(--f-display);font-size:21px;letter-spacing:.01em}
+.brand small{display:block;font-size:11px;color:var(--muted);margin-top:-4px;font-family:var(--f-mono)}
+.star{width:30px;height:30px;flex:none}
+nav.main{display:flex;gap:4px;margin-inline-start:12px;flex-wrap:wrap}
+nav.main a{text-decoration:none;padding:6px 10px;border-radius:8px;color:var(--muted);font-size:14px}
+nav.main a:hover{color:var(--fg);background:var(--raise)}
+.spacer{flex:1}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{border:0;background:transparent;padding:5px 10px;font-size:13px;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--lapis);color:var(--surface)}
+.iconbtn{border:1px solid var(--line);background:transparent;border-radius:10px;width:34px;height:32px;display:grid;place-items:center}
+.cta{background:var(--lapis);color:var(--surface);border:0;border-radius:11px;padding:9px 16px;font-weight:700;font-size:14px;text-decoration:none;white-space:nowrap}
+.cta.gold{background:var(--gold);color:#1a1404}
+.ghost{text-decoration:none;display:inline-block;background:transparent;border:1px solid var(--line);border-radius:11px;padding:9px 14px;font-size:14px}
+@media (max-width:860px){nav.main{display:none}}
+
+/* hero */
+.hero{padding-block:56px 40px;display:grid;grid-template-columns:1.05fr 1fr;gap:44px;align-items:center}
+.hero h1{font-size:clamp(32px,4.6vw,54px);font-weight:700}
+.hero h1 em{font-style:normal;color:var(--gold);position:relative}
+.hero p.lead{font-size:18px;color:var(--muted);max-width:52ch;margin:18px 0 26px}
+.hero .actions{display:flex;gap:10px;flex-wrap:wrap}
+.proof{display:flex;gap:22px;margin-top:28px;flex-wrap:wrap}
+.proof div{display:flex;flex-direction:column}
+.proof strong{font-size:24px;font-family:var(--f-display)}
+.proof span{font-size:12.5px;color:var(--muted)}
+@media (max-width:920px){.hero{grid-template-columns:1fr}}
+
+/* illuminated prompt (hero object) */
+.folio{background:var(--surface);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;min-width:0}
+.folio-head{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line);background:var(--raise)}
+.folio-head .title{font-weight:700;font-size:14.5px}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;border-radius:999px;padding:2px 9px;background:var(--chip);color:var(--fg);white-space:nowrap}
+.badge.ok{background:color-mix(in srgb,var(--ok) 15%,transparent);color:var(--ok)}
+.badge.gold{background:var(--gold-soft);color:var(--gold)}
+.badge.lapis{background:color-mix(in srgb,var(--lapis) 14%,transparent);color:var(--lapis)}
+.folio-body{display:grid;grid-template-columns:200px 1fr;min-height:300px}
+.vars{padding:14px;border-inline-end:1px solid var(--line);display:flex;flex-direction:column;gap:10px}
+.vars label{font-size:12px;color:var(--muted);display:flex;flex-direction:column;gap:4px}
+.vars input,.vars select{font:inherit;font-size:13.5px;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:9px;padding:6px 8px;width:100%}
+pre.prompt{margin:0;padding:16px 18px;font-family:var(--f-mono);font-size:13.2px;line-height:1.9;white-space:pre-wrap;word-break:break-word;background:var(--code);min-width:0;unicode-bidi:plaintext}
+.slot{background:var(--gold-soft);color:var(--gold);border-radius:5px;padding:0 4px;font-weight:600;transition:background .3s}
+.slot.flash{background:var(--gold);color:#1a1404}
+.sec{color:var(--lapis);font-weight:600}
+.folio-foot{display:flex;gap:8px;align-items:center;padding:10px 14px;border-top:1px solid var(--line);flex-wrap:wrap}
+.folio-foot .spacer{flex:1}
+@media (max-width:620px){.folio-body{grid-template-columns:1fr}.vars{border-inline-end:0;border-bottom:1px solid var(--line)}}
+
+/* sections */
+section.block{padding-block:56px;border-top:1px solid var(--line)}
+.head-row{display:flex;align-items:end;gap:16px;justify-content:space-between;flex-wrap:wrap;margin-bottom:24px}
+.head-row h2{font-size:clamp(24px,3vw,34px)}
+.head-row p{margin:6px 0 0;color:var(--muted);max-width:60ch}
+
+/* search + filters */
+.searchbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.searchbar input{flex:1 1 260px;min-width:0;font:inherit;font-size:15px;padding:11px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--fg)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:13px;color:var(--muted)}
+.chip[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.hint{font-size:12.5px;color:var(--muted);margin:-4px 0 14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:10px;text-align:start;min-width:0;transition:transform .15s,border-color .15s}
+.card:hover{transform:translateY(-2px);border-color:var(--lapis)}
+.card .row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.card h3{font-size:16.5px;font-family:var(--f-body);font-weight:700}
+.card p{margin:0;color:var(--muted);font-size:14px}
+.card .foot{margin-top:auto;display:flex;align-items:center;gap:8px;padding-top:8px;border-top:1px dashed var(--line)}
+.score{font-family:var(--f-mono);font-size:12.5px;color:var(--ok)}
+.price{margin-inline-start:auto;font-weight:700;font-size:14px}
+.empty{padding:30px;text-align:center;border:1px dashed var(--line);border-radius:var(--r);color:var(--muted)}
+
+/* trends */
+.trends{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.trend{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:grid;grid-template-columns:1fr auto;gap:6px 10px;align-items:center}
+.trend h3{font-size:15px;font-family:var(--f-body);font-weight:700}
+.trend .src{grid-column:1/-1;font-size:12px;color:var(--muted)}
+.spark{width:88px;height:30px}
+.heat{font-family:var(--f-mono);font-size:12px;color:var(--gold)}
+
+/* agent room */
+.room{display:grid;grid-template-columns:1.2fr .8fr;gap:18px}
+@media (max-width:900px){.room{grid-template-columns:1fr}}
+.pipeline{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:18px;overflow-x:auto}
+.stages{display:grid;grid-template-columns:repeat(5,minmax(120px,1fr));gap:10px;min-width:640px}
+.stage{border:1px solid var(--line);border-radius:12px;padding:10px;background:var(--bg);position:relative}
+.stage .n{font-family:var(--f-mono);font-size:11px;color:var(--muted)}
+.stage b{display:block;font-size:13.5px;margin-top:2px}
+.stage span{font-size:12px;color:var(--muted);display:block;line-height:1.5;margin-top:4px}
+.stage.live{border-color:var(--gold);box-shadow:0 0 0 3px color-mix(in srgb,var(--gold) 25%,transparent)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--ok);display:inline-block;margin-inline-end:6px}
+.stage.live .dot{background:var(--gold);animation:pulse 1.2s infinite}
+@keyframes pulse{50%{opacity:.3}}
+.log{background:var(--code);border:1px solid var(--line);border-radius:18px;padding:14px;font-family:var(--f-mono);font-size:12.5px;line-height:1.8;max-height:360px;overflow:auto;min-width:0}
+.log div{white-space:pre-wrap;word-break:break-word}
+.log .t{color:var(--muted)}.log .g{color:var(--ok)}.log .y{color:var(--gold)}.log .b{color:var(--lapis)}
+.note{font-size:12.5px;color:var(--muted);margin-top:10px}
+
+/* bots */
+.phones{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px}
+@media (max-width:820px){.phones{grid-template-columns:1fr}}
+.phone{background:var(--surface);border:1px solid var(--line);border-radius:28px;padding:10px;box-shadow:var(--shadow);max-width:400px;width:100%;margin-inline:auto}
+.screen{border-radius:20px;overflow:hidden;border:1px solid var(--line);display:flex;flex-direction:column;height:560px;background:var(--bg)}
+.bar{display:flex;align-items:center;gap:10px;padding:10px 12px;color:#fff}
+.bar.tg{background:#2b6cb0}.bar.bale{background:#0f7a5c}
+.bar .av{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.2);display:grid;place-items:center;font-weight:800;font-family:var(--f-display)}
+.bar small{display:block;opacity:.8;font-size:11.5px;margin-top:-3px}
+.chat{flex:1;overflow:auto;padding:12px;display:flex;flex-direction:column;gap:8px;font-size:13.5px;line-height:1.7}
+.msg{max-width:86%;padding:8px 11px;border-radius:14px;background:var(--surface);border:1px solid var(--line);white-space:pre-wrap;animation:in .3s ease both}
+.msg.me{align-self:flex-end;background:color-mix(in srgb,var(--lapis) 16%,var(--surface))}
+.msg.bot{align-self:flex-start}
+.kb{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:6px}
+.kb span{background:color-mix(in srgb,var(--lapis) 10%,var(--bg));border-radius:8px;padding:5px;text-align:center;font-size:12.5px;color:var(--lapis)}
+.kb span.full{grid-column:1/-1}
+.invoice{border:1px solid var(--gold);border-radius:12px;padding:8px 10px;background:var(--gold-soft)}
+.invoice b{color:var(--gold)}
+@keyframes in{from{opacity:.0;transform:translateY(6px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.replay{display:flex;justify-content:center;margin-top:16px;gap:10px;flex-wrap:wrap}
+
+/* pricing */
+.plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+@media (max-width:860px){.plans{grid-template-columns:1fr}}
+.plan{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;display:flex;flex-direction:column;gap:10px}
+.plan.feat{border-color:var(--gold);box-shadow:0 0 0 1px var(--gold),var(--shadow)}
+.plan h3{font-size:19px}
+.plan .amt{font-family:var(--f-display);font-size:30px}
+.plan ul{margin:0;padding-inline-start:18px;color:var(--muted);font-size:14px;display:flex;flex-direction:column;gap:4px}
+.plan .cta,.plan .ghost{margin-top:auto;text-align:center}
+.cur{display:flex;gap:8px;align-items:center;margin-bottom:16px}
+
+/* drawer */
+.scrim{position:fixed;inset:0;background:rgba(5,10,25,.5);z-index:40}
+.drawer{position:fixed;inset-block:0;inset-inline-end:0;width:min(560px,100%);background:var(--surface);z-index:41;border-inline-start:1px solid var(--line);display:flex;flex-direction:column;padding-bottom:env(safe-area-inset-bottom,0px)}
+.drawer header{display:flex;gap:10px;align-items:center;padding:16px 18px;border-bottom:1px solid var(--line)}
+.drawer .body{overflow:auto;padding:18px;display:flex;flex-direction:column;gap:14px}
+.drawer h2{font-size:22px}
+.locked{position:relative;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+.locked pre{filter:blur(4px);user-select:none;margin:0}
+.locked .over{position:absolute;inset:0;display:grid;place-items:center;background:color-mix(in srgb,var(--surface) 55%,transparent);text-align:center;padding:16px}
+.example{border-inline-start:3px solid var(--gold);padding:8px 12px;background:var(--raise);border-radius:8px;font-size:14px;white-space:pre-wrap}
+.buyrow{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media (max-width:480px){.buyrow{grid-template-columns:1fr}}
+.toast{position:fixed;inset-inline-start:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:12px;z-index:60;font-size:14px}
+html[dir="rtl"] .toast{transform:translateX(50%)}
+
+footer{border-top:1px solid var(--line);padding-block:30px;color:var(--muted);font-size:13.5px}
+footer .wrap{display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top" aria-label="Rasa Prompt">
+      <svg class="star" viewBox="0 0 40 40" aria-hidden="true"><g fill="none" stroke="var(--gold)" stroke-width="2.2"><rect x="9" y="9" width="22" height="22" rx="2"/><rect x="9" y="9" width="22" height="22" rx="2" transform="rotate(45 20 20)"/></g><circle cx="20" cy="20" r="4" fill="var(--lapis)"/></svg>
+      <span><b data-i="brand">رسا پرامپت</b><small>rasa-prompt.ir</small></span>
+    </a>
+    <nav class="main" aria-label="main">
+      <a href="#library" data-i="nav_library">کتابخانه</a>
+      <a href="#trends" data-i="nav_trends">ترندها</a>
+      <a href="#agents" data-i="nav_agents">اتاق ایجنت‌ها</a>
+      <a href="#bots" data-i="nav_bots">ربات‌ها</a>
+      <a href="#pricing" data-i="nav_pricing">اشتراک</a>
+    </nav>
+    <div class="spacer"></div>
+    <div class="seg" role="group" aria-label="language">
+      <button id="l-fa" data-lang="fa" aria-pressed="true">فا</button>
+      <button id="l-ar" data-lang="ar" aria-pressed="false">ع</button>
+      <button id="l-en" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+    <button class="iconbtn" id="themeBtn" aria-label="theme"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 1.5a6.5 6.5 0 0 1 0 13z" fill="currentColor"/></svg></button>
+  </div>
+</header>
+
+<main id="top">
+  <div class="wrap hero">
+    <div>
+      <div class="eyebrow" data-i="hero_eyebrow">کتابخانه‌ی پرامپت تست‌شده · فارسی، عربی، انگلیسی</div>
+      <h1 data-i-html="hero_title">پرامپتی که <em>واقعاً کار می‌کند</em>؛ تست‌شده، به‌روز، به زبان شما</h1>
+      <p class="lead" data-i="hero_lead">هر پرامپت روی مدل‌های هدف اجرا و نمره‌دهی می‌شود، با آمدن مدل جدید خودکار به‌روز می‌شود، و متغیرهایش را همین‌جا پر می‌کنید.</p>
+      <div class="actions">
+        <a class="cta" href="#library" data-i="hero_cta">مرور کتابخانه</a>
+        <a class="ghost" href="#bots" data-i="hero_cta2">ربات تلگرام و بله</a>
+      </div>
+      <div class="proof">
+        <div><strong class="num" data-n="1520">۱٬۵۲۰</strong><span data-i="proof_prompts">پرامپت تست‌شده</span></div>
+        <div><strong class="num" data-n="12">۱۲</strong><span data-i="proof_models">مدل هوش مصنوعی</span></div>
+        <div><strong class="num" data-n="87">۸۷</strong><span data-i="proof_score">میانگین امتیاز کیفیت</span></div>
+      </div>
+    </div>
+
+    <div class="folio" aria-label="live prompt">
+      <div class="folio-head">
+        <span class="title" id="heroTitle">کپشن فروش اینستاگرام</span>
+        <span class="badge ok" id="heroTested">✓ تست‌شده · Claude · GPT</span>
+        <span class="spacer" style="flex:1"></span>
+        <span class="badge gold num" id="heroScore">۹۲</span>
+      </div>
+      <div class="folio-body">
+        <div class="vars" id="heroVars"></div>
+        <pre class="prompt" id="heroPrompt"></pre>
+      </div>
+      <div class="folio-foot">
+        <span class="badge lapis" data-i="hero_vars_note">متغیرها را عوض کنید؛ پرامپت زنده ساخته می‌شود</span>
+        <span class="spacer"></span>
+        <button class="cta" id="copyHero" data-i="copy">کپی پرامپت</button>
+      </div>
+    </div>
+  </div>
+
+  <section class="block" id="library">
+    <div class="wrap">
+      <div class="head-row">
+        <div>
+          <div class="eyebrow" data-i="lib_eyebrow">کتابخانه</div>
+          <h2 data-i="lib_title">پرامپت مناسب کارتان را پیدا کنید</h2>
+          <p data-i="lib_desc">جست‌وجو «ي/ی» و «ك/ک» عربی و ارقام فارسی را یکی می‌گیرد. فیلترها روی هم جمع می‌شوند.</p>
+        </div>
+      </div>
+      <div class="searchbar">
+        <input id="q" type="search" autocomplete="off" data-i-ph="search_ph" placeholder="مثلاً: كپشن، لوگو، ایمیل فروش، n8n">
+        <div class="chips" id="tierChips"></div>
+      </div>
+      <div class="chips" id="typeChips" style="margin-bottom:12px"></div>
+      <div class="hint num" id="resultCount"></div>
+      <div class="grid" id="grid"></div>
+    </div>
+  </section>
+
+  <section class="block" id="trends">
+    <div class="wrap">
+      <div class="head-row">
+        <div>
+          <div class="eyebrow" data-i="tr_eyebrow">ترندهای این هفته</div>
+          <h2 data-i="tr_title">چیزی که مردم همین حالا دنبالش هستند</h2>
+          <p data-i="tr_desc">ایجنت‌های رسا هر ۶ ساعت منابع عمومی را می‌خوانند، ترندها را نمره می‌دهند و برای هر کدام پرامپت اختصاصی و اورجینال می‌سازند.</p>
+        </div>
+      </div>
+      <div class="trends" id="trendList"></div>
+    </div>
+  </section>
+
+  <section class="block" id="agents">
+    <div class="wrap">
+      <div class="head-row">
+        <div>
+          <div class="eyebrow" data-i="ag_eyebrow">اتاق ایجنت‌ها</div>
+          <h2 data-i="ag_title">۱۰ ایجنت متخصص، از ترند تا پرامپت منتشرشده</h2>
+          <p data-i="ag_desc">هر مرحله یک متخصص دارد. هیچ پرامپتی بدون تست، بررسی اصالت و سیاست محتوا منتشر نمی‌شود.</p>
+        </div>
+        <button class="ghost" id="runPipe" data-i="ag_run">اجرای نمونه</button>
+      </div>
+      <div class="room">
+        <div class="pipeline"><div class="stages" id="stages"></div></div>
+        <div>
+          <div class="log" id="log" aria-live="polite"></div>
+          <div class="note" data-i="ag_note">نمونه‌ی نمایشی از یک اجرای واقعی؛ منابع و اعداد مثال هستند.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="bots">
+    <div class="wrap">
+      <div class="head-row">
+        <div>
+          <div class="eyebrow" data-i="bot_eyebrow">ربات‌ها</div>
+          <h2 data-i="bot_title">همان فروشگاه، داخل تلگرام و بله</h2>
+          <p data-i="bot_desc">جست‌وجو، پر کردن متغیرها، پرامپت‌ساز هوشمند، خرید با استارز تلگرام یا کیف پول بله، و پشتیبانی هوشمند.</p>
+        </div>
+      </div>
+      <div class="phones">
+        <div class="phone"><div class="screen">
+          <div class="bar tg"><div class="av">ر</div><div><b>Rasa Prompt</b><small data-i="tg_label">ربات تلگرام</small></div></div>
+          <div class="chat" id="chatTg"></div>
+        </div></div>
+        <div class="phone"><div class="screen">
+          <div class="bar bale"><div class="av">ر</div><div><b data-i="brand">رسا پرامپت</b><small data-i="bale_label">ربات بله</small></div></div>
+          <div class="chat" id="chatBale"></div>
+        </div></div>
+      </div>
+      <div class="replay"><button class="ghost" id="replay" data-i="replay">پخش دوباره‌ی گفتگو</button></div>
+    </div>
+  </section>
+
+  <section class="block" id="pricing">
+    <div class="wrap">
+      <div class="head-row">
+        <div>
+          <div class="eyebrow" data-i="pr_eyebrow">اشتراک</div>
+          <h2 data-i="pr_title">یک بار بخرید یا همه را داشته باشید</h2>
+          <p data-i="pr_desc">ضمانت ۷ روزه‌ی بازگشت وجه. اعتبار هر ماه برای اجرای پرامپت داخل سایت و ربات.</p>
+        </div>
+        <div class="cur seg" role="group" aria-label="currency">
+          <button id="c-irt" data-cur="irt" aria-pressed="true" data-i="cur_irt">تومان</button>
+          <button id="c-xtr" data-cur="xtr" aria-pressed="false" data-i="cur_xtr">استارز</button>
+        </div>
+      </div>
+      <div class="plans" id="plans"></div>
+    </div>
+  </section>
+</main>
+
+<footer><div class="wrap">
+  <span data-i="footer">© رسا پرامپت · پرامپت‌هایی که تست شده‌اند</span>
+  <span class="num">rasa-prompt.ir · @RasaPromptBot</span>
+</div></footer>
+
+<div id="drawerHost"></div>
+
+<script>
+const I = {
+fa:{brand:"رسا پرامپت",nav_library:"کتابخانه",nav_trends:"ترندها",nav_agents:"اتاق ایجنت‌ها",nav_bots:"ربات‌ها",nav_pricing:"اشتراک",
+hero_eyebrow:"کتابخانه‌ی پرامپت تست‌شده · فارسی، عربی، انگلیسی",hero_title:"پرامپتی که <em>واقعاً کار می‌کند</em>؛ تست‌شده، به‌روز، به زبان شما",
+hero_lead:"هر پرامپت روی مدل‌های هدف اجرا و نمره‌دهی می‌شود، با آمدن مدل جدید خودکار به‌روز می‌شود، و متغیرهایش را همین‌جا پر می‌کنید.",
+hero_cta:"مرور کتابخانه",hero_cta2:"ربات تلگرام و بله",proof_prompts:"پرامپت تست‌شده",proof_models:"مدل هوش مصنوعی",proof_score:"میانگین امتیاز کیفیت",
+hero_vars_note:"متغیرها را عوض کنید؛ پرامپت زنده ساخته می‌شود",copy:"کپی پرامپت",copied:"کپی شد",
+lib_eyebrow:"کتابخانه",lib_title:"پرامپت مناسب کارتان را پیدا کنید",lib_desc:"جست‌وجو «ي/ی» و «ك/ک» عربی و ارقام فارسی را یکی می‌گیرد. فیلترها روی هم جمع می‌شوند.",
+search_ph:"مثلاً: كپشن، لوگو، ایمیل فروش، n8n",all:"همه",free:"رایگان",pro:"حرفه‌ای",premium:"ممتاز",
+t_text:"متن",t_image:"تصویر",t_code:"کد",t_automation:"اتوماسیون",t_video:"ویدیو",results:n=>`${n} پرامپت`,none:"چیزی پیدا نشد. همین جست‌وجو برای ایجنت‌ها ثبت شد تا پرامپتش ساخته شود.",
+tested:"تست‌شده",score:"امتیاز",open:"مشاهده",
+tr_eyebrow:"ترندهای این هفته",tr_title:"چیزی که مردم همین حالا دنبالش هستند",tr_desc:"ایجنت‌های رسا هر ۶ ساعت منابع عمومی را می‌خوانند، ترندها را نمره می‌دهند و برای هر کدام پرامپت اختصاصی و اورجینال می‌سازند.",
+growth:"رشد",
+ag_eyebrow:"اتاق ایجنت‌ها",ag_title:"۱۰ ایجنت متخصص، از ترند تا پرامپت منتشرشده",ag_desc:"هر مرحله یک متخصص دارد. هیچ پرامپتی بدون تست، بررسی اصالت و سیاست محتوا منتشر نمی‌شود.",ag_run:"اجرای نمونه",ag_note:"نمونه‌ی نمایشی از یک اجرای واقعی؛ منابع و اعداد مثال هستند.",
+bot_eyebrow:"ربات‌ها",bot_title:"همان فروشگاه، داخل تلگرام و بله",bot_desc:"جست‌وجو، پر کردن متغیرها، پرامپت‌ساز هوشمند، خرید با استارز تلگرام یا کیف پول بله، و پشتیبانی هوشمند.",tg_label:"ربات تلگرام",bale_label:"ربات بله",replay:"پخش دوباره‌ی گفتگو",
+pr_eyebrow:"اشتراک",pr_title:"یک بار بخرید یا همه را داشته باشید",pr_desc:"ضمانت ۷ روزه‌ی بازگشت وجه. اعتبار هر ماه برای اجرای پرامپت داخل سایت و ربات.",cur_irt:"تومان",cur_xtr:"استارز",
+footer:"© رسا پرامپت · پرامپت‌هایی که تست شده‌اند",
+d_example:"نمونه‌ی خروجی",d_vars:"متغیرها",d_locked:"متن کامل بعد از خرید یا با اشتراک حرفه‌ای",d_buy_tg:"خرید با استارز تلگرام",d_buy_bale:"پرداخت با کیف پول بله",d_buy_web:"پرداخت در سایت",d_close:"بستن",d_version:"نسخه",d_models:"مدل‌ها",
+d_run:"اجرا با هوش مصنوعی (۲ اعتبار)",
+plans:[{n:"حرفه‌ای ماهانه",irt:"۱۹۹٬۰۰۰ تومان",xtr:"⭐ ۲۵۰",per:"در ماه",f:["همه‌ی پرامپت‌های حرفه‌ای","۲۰۰ اعتبار اجرا در ماه","به‌روزرسانی خودکار"],b:"شروع اشتراک"},
+{n:"حرفه‌ای سالانه",irt:"۱٬۴۹۰٬۰۰۰ تومان",xtr:"⭐ ۱٬۸۰۰",per:"در سال · ۵ ماه رایگان",f:["حرفه‌ای + ممتاز","۲۵۰ اعتبار در ماه","پرامپت‌ساز هوشمند نامحدود"],b:"بهترین انتخاب",feat:1},
+{n:"مادام‌العمر",irt:"۳٬۹۰۰٬۰۰۰ تومان",xtr:"⭐ ۴٬۵۰۰",per:"یک‌بار · ظرفیت محدود",f:["همه‌چیز، برای همیشه","۳۰۰ اعتبار در ماه","دسترسی زودهنگام به ترندها"],b:"خرید مادام‌العمر"}]},
+ar:{brand:"رسا برومبت",nav_library:"المكتبة",nav_trends:"الرائج",nav_agents:"غرفة الوكلاء",nav_bots:"البوتات",nav_pricing:"الاشتراك",
+hero_eyebrow:"مكتبة برومبتات مُختبَرة · فارسي، عربي، إنجليزي",hero_title:"برومبت <em>يعمل فعلاً</em>؛ مُختبَر، محدَّث، وبلغتك",
+hero_lead:"كل برومبت يُشغَّل على النماذج المستهدفة ويُقيَّم، ويُحدَّث تلقائياً مع كل نموذج جديد، وتملأ متغيراته هنا مباشرة.",
+hero_cta:"تصفّح المكتبة",hero_cta2:"بوت تيليجرام وبله",proof_prompts:"برومبت مُختبَر",proof_models:"نموذج ذكاء اصطناعي",proof_score:"متوسط درجة الجودة",
+hero_vars_note:"غيّر المتغيرات؛ يُبنى البرومبت مباشرة",copy:"نسخ البرومبت",copied:"تم النسخ",
+lib_eyebrow:"المكتبة",lib_title:"اعثر على البرومبت المناسب لعملك",lib_desc:"البحث يوحّد «ي/ی» و«ك/ک» والأرقام العربية والفارسية. يمكن الجمع بين الفلاتر.",
+search_ph:"مثلاً: تسويق، شعار، بريد مبيعات، n8n",all:"الكل",free:"مجاني",pro:"احترافي",premium:"مميز",
+t_text:"نص",t_image:"صورة",t_code:"كود",t_automation:"أتمتة",t_video:"فيديو",results:n=>`${n} برومبت`,none:"لا نتائج. سُجّل هذا البحث لدى الوكلاء ليُكتب له برومبت.",
+tested:"مُختبَر",score:"الدرجة",open:"عرض",
+tr_eyebrow:"رائج هذا الأسبوع",tr_title:"ما يبحث عنه الناس الآن",tr_desc:"يقرأ وكلاء رسا المصادر العامة كل ٦ ساعات، ويقيّمون الاتجاهات، ويكتبون لكل منها برومبتاً أصلياً.",
+growth:"النمو",
+ag_eyebrow:"غرفة الوكلاء",ag_title:"١٠ وكلاء متخصصين، من الاتجاه إلى البرومبت المنشور",ag_desc:"لكل مرحلة متخصص. لا يُنشر أي برومبت دون اختبار وفحص أصالة وسياسة محتوى.",ag_run:"تشغيل تجريبي",ag_note:"عرض توضيحي لتشغيل حقيقي؛ المصادر والأرقام أمثلة.",
+bot_eyebrow:"البوتات",bot_title:"المتجر نفسه داخل تيليجرام وبله",bot_desc:"بحث، تعبئة المتغيرات، منشئ برومبت ذكي، دفع بنجوم تيليجرام أو محفظة بله، ودعم ذكي.",tg_label:"بوت تيليجرام",bale_label:"بوت بله",replay:"إعادة تشغيل المحادثة",
+pr_eyebrow:"الاشتراك",pr_title:"اشترِ مرة واحدة أو احصل على كل شيء",pr_desc:"ضمان استرداد لمدة ٧ أيام. رصيد شهري لتشغيل البرومبتات داخل الموقع والبوت.",cur_irt:"تومان",cur_xtr:"نجوم",
+footer:"© رسا برومبت · برومبتات مُختبَرة",
+d_example:"مثال على المخرجات",d_vars:"المتغيرات",d_locked:"النص الكامل بعد الشراء أو مع الاشتراك الاحترافي",d_buy_tg:"الشراء بنجوم تيليجرام",d_buy_bale:"الدفع بمحفظة بله",d_buy_web:"الدفع في الموقع",d_close:"إغلاق",d_version:"الإصدار",d_models:"النماذج",
+d_run:"تشغيل بالذكاء الاصطناعي (رصيدان)",
+plans:[{n:"احترافي شهري",irt:"١٩٩٬٠٠٠ تومان",xtr:"⭐ ٢٥٠",per:"شهرياً",f:["كل البرومبتات الاحترافية","٢٠٠ رصيد تشغيل شهرياً","تحديث تلقائي"],b:"ابدأ الاشتراك"},
+{n:"احترافي سنوي",irt:"١٬٤٩٠٬٠٠٠ تومان",xtr:"⭐ ١٬٨٠٠",per:"سنوياً · ٥ أشهر مجاناً",f:["احترافي + مميز","٢٥٠ رصيداً شهرياً","منشئ برومبت بلا حدود"],b:"الخيار الأفضل",feat:1},
+{n:"مدى الحياة",irt:"٣٬٩٠٠٬٠٠٠ تومان",xtr:"⭐ ٤٬٥٠٠",per:"مرة واحدة · عدد محدود",f:["كل شيء إلى الأبد","٣٠٠ رصيد شهرياً","وصول مبكر للرائج"],b:"اشترِ مدى الحياة"}]},
+en:{brand:"Rasa Prompt",nav_library:"Library",nav_trends:"Trends",nav_agents:"Agent room",nav_bots:"Bots",nav_pricing:"Pricing",
+hero_eyebrow:"Tested prompt library · Persian, Arabic, English",hero_title:"Prompts that <em>actually work</em>. Tested, updated, in your language",
+hero_lead:"Every prompt is run and scored on its target models, re-tested automatically when a new model ships, and you fill its variables right here.",
+hero_cta:"Browse the library",hero_cta2:"Telegram & Bale bots",proof_prompts:"tested prompts",proof_models:"AI models",proof_score:"average quality score",
+hero_vars_note:"Change the variables; the prompt rebuilds live",copy:"Copy prompt",copied:"Copied",
+lib_eyebrow:"Library",lib_title:"Find the prompt for your job",lib_desc:"Search treats Arabic and Persian letter forms and digits as the same. Filters combine.",
+search_ph:"e.g. caption, logo, sales email, n8n",all:"All",free:"Free",pro:"Pro",premium:"Premium",
+t_text:"Text",t_image:"Image",t_code:"Code",t_automation:"Automation",t_video:"Video",results:n=>`${n} prompts`,none:"No results. This search was logged for the agents, who will write a prompt for it.",
+tested:"Tested",score:"Score",open:"Open",
+tr_eyebrow:"Trending this week",tr_title:"What people want right now",tr_desc:"Rasa's agents read public sources every 6 hours, score the trends, and write an original prompt for each one.",
+growth:"growth",
+ag_eyebrow:"Agent room",ag_title:"10 specialist agents, from trend to published prompt",ag_desc:"Every stage has a specialist. Nothing ships without testing, an originality check and a content-policy check.",ag_run:"Run a sample",ag_note:"A demo of a real run; sources and numbers are examples.",
+bot_eyebrow:"Bots",bot_title:"The same store, inside Telegram and Bale",bot_desc:"Search, fill variables, smart prompt builder, pay with Telegram Stars or the Bale wallet, and AI support.",tg_label:"Telegram bot",bale_label:"Bale bot",replay:"Replay the chat",
+pr_eyebrow:"Pricing",pr_title:"Buy one, or get them all",pr_desc:"7-day money-back guarantee. Monthly credits for running prompts on the site and in the bots.",cur_irt:"Toman",cur_xtr:"Stars",
+footer:"© Rasa Prompt · prompts that were tested",
+d_example:"Example output",d_vars:"Variables",d_locked:"Full text after purchase or with Pro",d_buy_tg:"Buy with Telegram Stars",d_buy_bale:"Pay with Bale wallet",d_buy_web:"Pay on the website",d_close:"Close",d_version:"Version",d_models:"Models",
+d_run:"Run with AI (2 credits)",
+plans:[{n:"Pro monthly",irt:"199,000 Toman",xtr:"⭐ 250",per:"per month",f:["All Pro prompts","200 run credits a month","Automatic updates"],b:"Start Pro"},
+{n:"Pro yearly",irt:"1,490,000 Toman",xtr:"⭐ 1,800",per:"per year · 5 months free",f:["Pro + Premium","250 credits a month","Unlimited prompt builder"],b:"Best value",feat:1},
+{n:"Lifetime",irt:"3,900,000 Toman",xtr:"⭐ 4,500",per:"one time · limited seats",f:["Everything, forever","300 credits a month","Early access to trends"],b:"Get lifetime"}]}
+};
+
+/* catalog (sample of the seeded library) */
+const P = [
+ {id:"ig-caption",type:"text",tier:"free",score:92,models:["Claude","GPT","Gemini"],v:"1.4",date:"2026-10-05",
+  t:{fa:"کپشن فروش اینستاگرام",ar:"تعليق مبيعات إنستغرام",en:"Instagram sales caption"},
+  s:{fa:"کپشن کوتاه با قلاب، فایده، دعوت به اقدام و هشتگ بومی برای هر محصول.",ar:"تعليق قصير بخطّاف وفائدة ودعوة لاتخاذ إجراء ووسوم محلية لأي منتج.",en:"A short caption with hook, benefit, call to action and local hashtags for any product."},
+  ex:{fa:"«این کیف فقط چرم نیست؛ همراه هر روزته.» ✨ دوخت دستی، ۳ سال ضمانت. ارسال رایگان تا جمعه 👇",ar:"«ليست مجرد حقيبة جلدية؛ إنها رفيقتك اليومية.» ✨ خياطة يدوية وضمان ٣ سنوات. شحن مجاني حتى الجمعة 👇",en:"\"Not just leather. Your everyday companion.\" ✨ Hand-stitched, 3-year warranty. Free shipping until Friday 👇"}},
+ {id:"brand-logo",type:"image",tier:"pro",score:89,models:["Midjourney","Flux"],v:"2.1",date:"2026-10-02",price:79000,stars:90,
+  t:{fa:"لوگوی مینیمال با هویت ایرانی",ar:"شعار بسيط بهوية شرقية",en:"Minimal logo with Persian motifs"},
+  s:{fa:"لوگوی برداری با الهام از گره‌چینی و خوشنویسی، در سه سبک قابل انتخاب.",ar:"شعار متجهي مستوحى من الزخارف الهندسية والخط، بثلاثة أنماط.",en:"Vector logo inspired by girih patterns and calligraphy, in three selectable styles."},
+  ex:{fa:"سه نسخه: خطی طلایی روی لاجوردی، تک‌رنگ، و نشان مربعی برای آیکون اپ.",ar:"ثلاث نسخ: خطي ذهبي على لازوردي، أحادي اللون، وأيقونة مربعة للتطبيق.",en:"Three versions: gold line on lapis, monochrome, and a square app-icon mark."}},
+ {id:"sales-email",type:"text",tier:"pro",score:90,models:["Claude","GPT"],v:"1.2",date:"2026-09-28",price:59000,stars:70,
+  t:{fa:"ایمیل فروش سرد B2B",ar:"بريد مبيعات بارد B2B",en:"Cold B2B sales email"},
+  s:{fa:"دنباله‌ی ۳ ایمیلی شخصی‌سازی‌شده با موضوع، شخصی‌سازی و پیگیری.",ar:"سلسلة من ٣ رسائل مخصّصة مع عنوان وتخصيص ومتابعة.",en:"A personalised 3-email sequence with subject lines and follow-ups."},
+  ex:{fa:"موضوع: «۱۵ دقیقه برای کاهش ۲۰٪ هزینه‌ی انبار شما؟»",ar:"الموضوع: «١٥ دقيقة لخفض تكلفة مستودعك ٢٠٪؟»",en:"Subject: \"15 minutes to cut your warehouse costs by 20%?\""}},
+ {id:"n8n-lead",type:"automation",tier:"premium",score:88,models:["Claude","GPT"],v:"1.0",date:"2026-10-06",price:249000,stars:300,
+  t:{fa:"اتوماسیون n8n جذب سرنخ از اینستاگرام",ar:"أتمتة n8n لجمع العملاء من إنستغرام",en:"n8n lead capture from Instagram DMs"},
+  s:{fa:"ورک‌فلو کامل: دایرکت ← دسته‌بندی با AI ← CRM ← پاسخ خودکار. همراه با JSON آماده.",ar:"سير عمل كامل: الرسائل ← تصنيف بالذكاء الاصطناعي ← CRM ← رد تلقائي. مع JSON جاهز.",en:"Full workflow: DMs → AI triage → CRM → auto-reply. Ships with ready JSON."},
+  ex:{fa:"۷ نود، نرخ پاسخ زیر ۲ دقیقه، برچسب‌گذاری «داغ/گرم/سرد».",ar:"٧ عقد، زمن رد أقل من دقيقتين، وسم «ساخن/دافئ/بارد».",en:"7 nodes, sub-2-minute replies, hot/warm/cold tagging."}},
+ {id:"product-photo",type:"image",tier:"premium",score:91,models:["Flux","Midjourney","GPT-Image"],v:"3.0",date:"2026-10-07",price:189000,stars:230,
+  t:{fa:"عکس محصول استودیویی بدون عکاس",ar:"تصوير منتجات احترافي بلا مصوّر",en:"Studio product photos without a photographer"},
+  s:{fa:"۱۲ صحنه‌ی آماده با نورپردازی و زاویه‌ی ثابت برای کاتالوگ یکدست.",ar:"١٢ مشهداً جاهزاً بإضاءة وزوايا ثابتة لكتالوج متناسق.",en:"12 ready scenes with consistent lighting and angles for a uniform catalog."},
+  ex:{fa:"پس‌زمینه‌ی کرم، نور نرم از چپ، سایه‌ی کوتاه، ۴:۵ برای اینستاگرام.",ar:"خلفية كريمية، إضاءة ناعمة من اليسار، ظل قصير، ٤:٥ لإنستغرام.",en:"Cream backdrop, soft key light from the left, short shadow, 4:5 for Instagram."}},
+ {id:"code-review",type:"code",tier:"free",score:86,models:["Claude","GPT"],v:"1.1",date:"2026-09-30",
+  t:{fa:"بازبینی کد با چک‌لیست امنیتی",ar:"مراجعة الكود بقائمة أمنية",en:"Code review with a security checklist"},
+  s:{fa:"بازبینی ساختاریافته: باگ، امنیت، کارایی و خوانایی با شدت هر مورد.",ar:"مراجعة منظمة: أخطاء وأمان وأداء ووضوح مع درجة الخطورة.",en:"Structured review: bugs, security, performance, readability, each with severity."},
+  ex:{fa:"🔴 تزریق SQL در خط ۴۲ · 🟠 کوئری N+1 · 🟢 نام‌گذاری خوب",ar:"🔴 حقن SQL في السطر ٤٢ · 🟠 استعلام N+1 · 🟢 تسمية جيدة",en:"🔴 SQL injection on line 42 · 🟠 N+1 query · 🟢 clear naming"}},
+ {id:"reels-script",type:"video",tier:"pro",score:87,models:["Claude","GPT","Gemini"],v:"1.3",date:"2026-10-01",price:69000,stars:80,
+  t:{fa:"سناریوی ریلز ۳۰ ثانیه‌ای",ar:"سيناريو ريلز ٣٠ ثانية",en:"30-second Reels script"},
+  s:{fa:"قلاب ۳ ثانیه‌ی اول، شات‌لیست، متن روی تصویر و موزیک پیشنهادی.",ar:"خطّاف أول ٣ ثوانٍ، قائمة لقطات، نص على الشاشة وموسيقى مقترحة.",en:"3-second hook, shot list, on-screen text and a suggested track."},
+  ex:{fa:"شات ۱: دست‌ها قهوه را می‌ریزند — متن: «صبحت را جدی بگیر»",ar:"اللقطة ١: يدان تسكبان القهوة — النص: «خذ صباحك بجدية»",en:"Shot 1: hands pour coffee. Text: \"Take your morning seriously\""}},
+ {id:"legal-contract",type:"text",tier:"premium",score:85,models:["Claude"],v:"1.0",date:"2026-09-26",price:149000,stars:180,
+  t:{fa:"بررسی قرارداد و ریسک‌یابی",ar:"مراجعة العقود واكتشاف المخاطر",en:"Contract review and risk spotting"},
+  s:{fa:"بندهای پرریسک، موارد مبهم و پیشنهاد اصلاح؛ با هشدار «جایگزین وکیل نیست».",ar:"البنود عالية المخاطر والغموض واقتراحات التعديل؛ مع تنبيه أنه لا يغني عن محامٍ.",en:"High-risk clauses, ambiguities and suggested edits, with a not-a-lawyer notice."},
+  ex:{fa:"بند ۷: جریمه‌ی تأخیر یک‌طرفه است — پیشنهاد: سقف ۱۰٪ و دوطرفه.",ar:"البند ٧: غرامة التأخير من طرف واحد — الاقتراح: سقف ١٠٪ ومتبادلة.",en:"Clause 7: late penalty is one-sided. Suggest a 10% cap, mutual."}},
+ {id:"yalda-campaign",type:"text",tier:"pro",score:88,models:["Claude","GPT"],v:"1.0",date:"2026-10-07",price:49000,stars:60,
+  t:{fa:"کمپین مناسبتی (یلدا، رمضان، بلک‌فرایدی)",ar:"حملة موسمية (رمضان، اليوم الوطني، الجمعة البيضاء)",en:"Seasonal campaign (Black Friday, New Year)"},
+  s:{fa:"برنامه‌ی ۷ روزه‌ی محتوا و تخفیف، بومی‌شده برای هر مناسبت.",ar:"خطة محتوى وخصومات لـ٧ أيام، مُكيّفة لكل مناسبة.",en:"A 7-day content and discount plan adapted to each occasion."},
+  ex:{fa:"روز ۱: شمارش معکوس · روز ۴: پیشنهاد ۲۴ ساعته · روز ۷: آخرین فرصت",ar:"اليوم ١: عدّ تنازلي · اليوم ٤: عرض ٢٤ ساعة · اليوم ٧: الفرصة الأخيرة",en:"Day 1: countdown · Day 4: 24-hour offer · Day 7: last chance"}},
+ {id:"tutor",type:"text",tier:"free",score:90,models:["Claude","GPT","Gemini"],v:"1.2",date:"2026-10-03",
+  t:{fa:"معلم خصوصی سقراطی",ar:"مدرّس سقراطي خاص",en:"Socratic private tutor"},
+  s:{fa:"به‌جای جواب مستقیم، با سؤال‌های مرحله‌ای یاد می‌دهد و آخرش آزمونک می‌گیرد.",ar:"يعلّم بأسئلة متدرجة بدل الإجابة المباشرة، وينهي باختبار قصير.",en:"Teaches through stepwise questions instead of answers, then ends with a quiz."},
+  ex:{fa:"«اول بگو فکر می‌کنی چرا آب در ۱۰۰ درجه می‌جوشد؟»",ar:"«قل لي أولاً: لماذا تظن أن الماء يغلي عند ١٠٠ درجة؟»",en:"\"First, why do you think water boils at 100 degrees?\""}},
+ {id:"seo-article",type:"text",tier:"pro",score:89,models:["Claude","GPT"],v:"2.0",date:"2026-10-04",price:79000,stars:90,
+  t:{fa:"مقاله‌ی سئو با ساختار E-E-A-T",ar:"مقال SEO بهيكل E-E-A-T",en:"SEO article with E-E-A-T structure"},
+  s:{fa:"تحقیق کلیدواژه، سرفصل‌ها، FAQ و اسکیما، با لحن انسانی.",ar:"بحث الكلمات المفتاحية والعناوين والأسئلة الشائعة والمخطط بنبرة بشرية.",en:"Keyword research, outline, FAQ and schema, in a human tone."},
+  ex:{fa:"H1 + ۶ H2 + جدول مقایسه + ۵ سؤال پرتکرار + JSON-LD",ar:"H1 + ٦ H2 + جدول مقارنة + ٥ أسئلة شائعة + JSON-LD",en:"H1 + 6 H2s + comparison table + 5 FAQs + JSON-LD"}},
+ {id:"agent-support",type:"automation",tier:"premium",score:87,models:["Claude"],v:"1.1",date:"2026-10-06",price:290000,stars:350,
+  t:{fa:"ایجنت پشتیبانی با پایگاه دانش",ar:"وكيل دعم بقاعدة معرفة",en:"Support agent with a knowledge base"},
+  s:{fa:"پرامپت سیستمی، ابزارها و قوانین ارجاع به انسان برای پشتیبانی ۲۴ ساعته.",ar:"موجّه نظام وأدوات وقواعد التحويل لموظف لدعم على مدار الساعة.",en:"System prompt, tools and human-handoff rules for 24/7 support."},
+  ex:{fa:"اگر کاربر ۲ بار ناراضی بود یا درخواست بازپرداخت داشت ← ارجاع به اپراتور.",ar:"إذا تكرر عدم رضا العميل أو طلب استرداداً ← تحويل لموظف.",en:"If the user is unhappy twice or asks for a refund → hand off to a human."}}
+];
+
+const TRENDS=[
+ {k:{fa:"عکس محصول با Flux برای فروشگاه‌های اینستاگرامی",ar:"صور منتجات بـ Flux لمتاجر إنستغرام",en:"Flux product photos for Instagram shops"},g:182,src:"Google Trends IR · Reddit r/StableDiffusion",d:[3,4,4,6,9,13,18]},
+ {k:{fa:"ایجنت‌های n8n برای پاسخ خودکار دایرکت",ar:"وكلاء n8n للرد التلقائي على الرسائل",en:"n8n agents for DM auto-replies"},g:141,src:"GitHub · YouTube AE",d:[5,5,6,8,9,11,14]},
+ {k:{fa:"پرامپت‌های رمضان و عید برای کسب‌وکار",ar:"برومبتات رمضان والعيد للأعمال",en:"Ramadan & Eid prompts for business"},g:126,src:"Google Trends SA · X",d:[2,2,3,3,5,8,10]},
+ {k:{fa:"Claude برای تحلیل قرارداد فارسی",ar:"Claude لتحليل العقود",en:"Claude for contract analysis"},g:97,src:"Hacker News · جست‌وجوی بی‌نتیجه در ربات",d:[4,5,5,6,7,8,9]},
+ {k:{fa:"ویدیوی کوتاه محصول با مدل‌های ویدیویی",ar:"فيديو منتج قصير بنماذج الفيديو",en:"Short product video with video models"},g:88,src:"Product Hunt · YouTube US",d:[6,6,7,7,8,10,11]},
+ {k:{fa:"معلم خصوصی هوش مصنوعی برای کنکور",ar:"مدرّس ذكاء اصطناعي للامتحانات",en:"AI tutor for exam prep"},g:74,src:"Google Trends IR · arXiv",d:[5,6,6,7,7,8,9]}
+];
+
+const STAGES=[
+ ["01",{fa:"دیده‌بان‌ها",ar:"الكشّافة",en:"Scouts"},{fa:"Reddit، HN، GitHub، Google Trends، YouTube",ar:"Reddit وHN وGitHub وGoogle Trends وYouTube",en:"Reddit, HN, GitHub, Google Trends, YouTube"}],
+ ["02",{fa:"تحلیلگر",ar:"المحلّل",en:"Analyst"},{fa:"خوشه‌بندی و امتیاز ترند",ar:"تجميع وتقييم الاتجاه",en:"Cluster & score trends"}],
+ ["03",{fa:"پژوهشگر",ar:"الباحث",en:"Researcher"},{fa:"جست‌وجوی وب با ارجاع",ar:"بحث ويب مع مراجع",en:"Web research with citations"}],
+ ["04",{fa:"مهندس پرامپت",ar:"مهندس البرومبت",en:"Prompt engineer"},{fa:"نوشتن پرامپت اورجینال",ar:"كتابة برومبت أصلي",en:"Writes the original prompt"}],
+ ["05",{fa:"منتقد",ar:"الناقد",en:"Critic"},{fa:"حمله به ابهام و ضعف",ar:"يهاجم الغموض والضعف",en:"Attacks ambiguity"}],
+ ["06",{fa:"آزمونگر و داور",ar:"المختبر والحَكَم",en:"Tester & judge"},{fa:"اجرا روی مدل‌ها و نمره",ar:"تشغيل على النماذج وتقييم",en:"Runs on models, grades"}],
+ ["07",{fa:"انطباق",ar:"الامتثال",en:"Compliance"},{fa:"اصالت، لایسنس، سیاست",ar:"الأصالة والترخيص والسياسة",en:"Originality, license, policy"}],
+ ["08",{fa:"بومی‌ساز",ar:"المُوطِّن",en:"Localizer"},{fa:"فارسی ↔ عربی ↔ انگلیسی",ar:"فارسي ↔ عربي ↔ إنجليزي",en:"fa ↔ ar ↔ en"}],
+ ["09",{fa:"قیمت‌گذار",ar:"المسعّر",en:"Pricer"},{fa:"سطح و قیمت پیشنهادی",ar:"المستوى والسعر المقترح",en:"Tier & suggested price"}],
+ ["10",{fa:"سردبیر",ar:"رئيس التحرير",en:"Editor-in-chief"},{fa:"انتشار یا صف تأیید شما",ar:"نشر أو قائمة موافقتك",en:"Publish or your review queue"}]
+];
+
+const LOG={
+fa:[["t","۰۳:۰۰"," اجرای روزانه شروع شد"],["b","scout"," reddit: ۸۴ سیگنال · hackernews: ۳۱ · github: ۲۲ (لایسنس بررسی شد)"],["b","scout"," google_trends IR/SA/AE: ۴۶ کوئری در حال رشد"],["y","analyst"," ۹ ترند · برترین: «عکس محصول با Flux» امتیاز ۸۲"],["b","research"," ۷ منبع با ارجاع (راهنمای رسمی مدل، مقاله، بحث‌های کاربران)"],["b","engineer"," پیش‌نویس v1 · ۵ متغیر"],["y","critic"," ۳ ایراد: قید نسبت تصویر، نورپردازی، ممنوعیت لوگوی برند دیگر"],["g","judge"," نمره ۸۸/۱۰۰ روی ۳ ورودی نمونه ✓"],["g","compliance"," اصالت ۹۶٪ · لایسنس ✓ · سیاست ✓"],["b","localize"," عربی و انگلیسی ساخته شد · متغیرها یکسان ✓"],["y","pricer"," ممتاز · ۱۸۹٬۰۰۰ تومان · ⭐ ۲۳۰"],["g","publish"," به صف تأیید شما در ربات رفت (انتشار خودکار خاموش است)"]],
+ar:[["t","٠٣:٠٠"," بدأ التشغيل اليومي"],["b","scout"," reddit: ٨٤ إشارة · hackernews: ٣١ · github: ٢٢ (فُحص الترخيص)"],["b","scout"," google_trends IR/SA/AE: ٤٦ استعلاماً صاعداً"],["y","analyst"," ٩ اتجاهات · الأعلى: «صور منتجات بـ Flux» بدرجة ٨٢"],["b","research"," ٧ مصادر مع مراجع"],["b","engineer"," مسودة v1 · ٥ متغيرات"],["y","critic"," ٣ ملاحظات: نسبة الصورة، الإضاءة، منع شعارات العلامات الأخرى"],["g","judge"," الدرجة ٨٨/١٠٠ على ٣ مدخلات ✓"],["g","compliance"," الأصالة ٩٦٪ · الترخيص ✓ · السياسة ✓"],["b","localize"," أُنشئت العربية والإنجليزية · المتغيرات متطابقة ✓"],["y","pricer"," مميز · ١٨٩٬٠٠٠ تومان · ⭐ ٢٣٠"],["g","publish"," أُرسل إلى قائمة موافقتك في البوت"]],
+en:[["t","03:00"," daily run started"],["b","scout"," reddit: 84 signals · hackernews: 31 · github: 22 (licenses checked)"],["b","scout"," google_trends IR/SA/AE: 46 rising queries"],["y","analyst"," 9 trends · top: \"Flux product photos\" score 82"],["b","research"," 7 cited sources (official model guide, paper, user threads)"],["b","engineer"," draft v1 · 5 variables"],["y","critic"," 3 issues: aspect ratio, lighting, no third-party logos"],["g","judge"," 88/100 on 3 sample inputs ✓"],["g","compliance"," originality 96% · license ✓ · policy ✓"],["b","localize"," Arabic and English created · variables match ✓"],["y","pricer"," premium · 189,000 Toman · ⭐ 230"],["g","publish"," sent to your review queue in the bot (auto-publish is off)"]]
+};
+
+const HERO={
+ vars:[{k:"product",l:{fa:"محصول",ar:"المنتج",en:"Product"},d:{fa:"کیف چرم دست‌دوز",ar:"حقيبة جلدية يدوية",en:"hand-stitched leather bag"}},
+  {k:"audience",l:{fa:"مخاطب",ar:"الجمهور",en:"Audience"},d:{fa:"زنان شاغل ۲۵ تا ۴۰ سال",ar:"نساء عاملات ٢٥–٤٠",en:"working women 25–40"}},
+  {k:"tone",l:{fa:"لحن",ar:"النبرة",en:"Tone"},opts:{fa:["صمیمی","لوکس","طنز"],ar:["ودّي","فاخر","مرح"],en:["friendly","luxury","playful"]}},
+  {k:"offer",l:{fa:"پیشنهاد",ar:"العرض",en:"Offer"},d:{fa:"ارسال رایگان تا جمعه",ar:"شحن مجاني حتى الجمعة",en:"free shipping until Friday"}}],
+ tpl:{
+ fa:`<span class="sec">نقش:</span> کپی‌رایتر ارشد اینستاگرام برای فروشگاه‌های ایرانی.
+<span class="sec">وظیفه:</span> برای {{product}} سه کپشن بنویس، مخاطب: {{audience}}.
+<span class="sec">قیود:</span>
+- لحن {{tone}}، حداکثر ۵۰ کلمه
+- خط اول قلاب، بعد یک فایده‌ی ملموس
+- پیشنهاد را صریح بگو: {{offer}}
+- ۵ هشتگ فارسی پرجست‌وجو، بدون هشتگ عمومی
+<span class="sec">خروجی:</span> جدول با ستون‌های «کپشن»، «قلاب»، «CTA».
+<span class="sec">توقف:</span> اگر محصول مبهم است، اول یک سؤال بپرس.`,
+ ar:`<span class="sec">الدور:</span> كاتب إعلانات أول لإنستغرام للمتاجر الخليجية.
+<span class="sec">المهمة:</span> اكتب ثلاثة تعليقات لـ {{product}}، الجمهور: {{audience}}.
+<span class="sec">القيود:</span>
+- نبرة {{tone}}، ٥٠ كلمة كحد أقصى
+- السطر الأول خطّاف، ثم فائدة ملموسة
+- اذكر العرض بوضوح: {{offer}}
+- ٥ وسوم عربية رائجة، بلا وسوم عامة
+<span class="sec">المخرجات:</span> جدول بأعمدة «التعليق» و«الخطّاف» و«الدعوة».
+<span class="sec">التوقف:</span> إن كان المنتج غامضاً فاسأل سؤالاً أولاً.`,
+ en:`<span class="sec">Role:</span> senior Instagram copywriter for small online shops.
+<span class="sec">Task:</span> write three captions for {{product}}, audience: {{audience}}.
+<span class="sec">Constraints:</span>
+- {{tone}} tone, 50 words max
+- line one is a hook, then one concrete benefit
+- state the offer plainly: {{offer}}
+- 5 high-intent hashtags, no generic ones
+<span class="sec">Output:</span> a table with "Caption", "Hook", "CTA" columns.
+<span class="sec">Stop:</span> if the product is unclear, ask one question first.`}
+};
+
+let lang="fa", tier="all", type="all", cur="irt", query="";
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
+const digits=(s,l=lang)=>l==="en"?String(s):String(s).replace(/\d/g,d=>(l==="fa"?"۰۱۲۳۴۵۶۷۸۹":"٠١٢٣٤٥٦٧٨٩")[d]);
+const fmt=(n,l=lang)=>digits(Number(n).toLocaleString("en-US").replace(/,/g,l==="en"?",":"٬"),l);
+const L=o=>o[lang]??o.fa;
+const fdate=(iso,short)=>{const d=new Date(iso+"T12:00:00Z");const loc=lang==="fa"?"fa-IR-u-ca-persian":lang==="ar"?"ar-EG":"en-GB";const o=short?{month:"short",day:"numeric"}:{year:"numeric",month:"long",day:"numeric"};try{return new Intl.DateTimeFormat(loc,o).format(d)}catch(e){return iso}};
+const t=k=>I[lang][k];
+const norm=s=>s.toLowerCase().replace(/[يى]/g,"ی").replace(/ك/g,"ک").replace(/[أإآ]/g,"ا").replace(/ة/g,"ه").replace(/[ً-ْـ]/g,"").replace(/[۰-۹]/g,d=>"۰۱۲۳۴۵۶۷۸۹".indexOf(d)).replace(/[٠-٩]/g,d=>"٠١٢٣٤٥٦٧٨٩".indexOf(d)).replace(/‌/g," ");
+function toast(m){const d=document.createElement("div");d.className="toast";d.textContent=m;document.body.appendChild(d);setTimeout(()=>d.remove(),1800)}
+async function copy(text){try{await navigator.clipboard.writeText(text);toast(t("copied"))}catch(e){toast(t("copied"))}}
+
+function applyLang(){
+  const h=document.documentElement;h.lang=lang;h.dir=lang==="en"?"ltr":"rtl";
+  document.querySelectorAll("[data-i]").forEach(e=>{const v=t(e.dataset.i);if(typeof v==="string")e.textContent=v});
+  document.querySelectorAll("[data-i-html]").forEach(e=>e.innerHTML=t(e.dataset.iHtml));
+  document.querySelectorAll("[data-i-ph]").forEach(e=>e.placeholder=t(e.dataset.iPh));
+  document.querySelectorAll("[data-n]").forEach(e=>e.textContent=fmt(e.dataset.n));
+  document.querySelectorAll("[data-lang]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.lang===lang));
+  document.title=t("brand");
+  renderHero();renderChips();renderGrid();renderTrends();renderStages();renderLog(LOG[lang].length);renderPlans();playChats(true);
+}
+
+/* hero */
+const heroVals={};
+function renderHero(){
+  $("#heroTitle").textContent=L(P[0].t);
+  $("#heroTested").textContent="✓ "+t("tested")+" · Claude · GPT · Gemini";
+  $("#heroScore").textContent=digits(92);
+  const box=$("#heroVars");box.innerHTML="";
+  HERO.vars.forEach(v=>{
+    const id="hv-"+v.k;const lab=document.createElement("label");lab.htmlFor=id;lab.textContent=L(v.l);
+    let inp;
+    if(v.opts){inp=document.createElement("select");L(v.opts).forEach(o=>{const op=document.createElement("option");op.textContent=o;inp.appendChild(op)});}
+    else{inp=document.createElement("input");inp.value=L(v.d);}
+    inp.id=id;heroVals[v.k]=inp.value;
+    inp.addEventListener("input",()=>{heroVals[v.k]=inp.value;buildHero(v.k)});
+    lab.appendChild(inp);box.appendChild(lab);
+  });
+  buildHero();
+}
+function buildHero(flash){
+  const html=L(HERO.tpl).replace(/\{\{(\w+)\}\}/g,(m,k)=>`<span class="slot${k===flash?" flash":""}" data-k="${k}">${esc(heroVals[k]||"…")}</span>`);
+  $("#heroPrompt").innerHTML=html;
+  if(flash)setTimeout(()=>document.querySelectorAll(".slot.flash").forEach(s=>s.classList.remove("flash")),350);
+}
+$("#copyHero").addEventListener("click",()=>copy($("#heroPrompt").innerText));
+
+/* catalog */
+function renderChips(){
+  const tiers=["all","free","pro","premium"],types=["all","text","image","video","code","automation"];
+  $("#tierChips").innerHTML=tiers.map(x=>`<button class="chip" data-tier="${x}" aria-pressed="${tier===x}">${t(x)}</button>`).join("");
+  $("#typeChips").innerHTML=types.map(x=>`<button class="chip" data-type="${x}" aria-pressed="${type===x}">${x==="all"?t("all"):t("t_"+x)}</button>`).join("");
+}
+document.addEventListener("click",e=>{
+  const b=e.target.closest("[data-tier],[data-type]");if(!b)return;
+  if(b.dataset.tier)tier=b.dataset.tier;if(b.dataset.type)type=b.dataset.type;renderChips();renderGrid();
+});
+$("#q").addEventListener("input",e=>{query=e.target.value;renderGrid()});
+const tierBadge=x=>x==="free"?`<span class="badge">🆓 ${t("free")}</span>`:x==="pro"?`<span class="badge lapis">⭐ ${t("pro")}</span>`:`<span class="badge gold">💎 ${t("premium")}</span>`;
+function priceLabel(p){if(p.tier==="free")return t("free");return cur==="xtr"?"⭐ "+fmt(p.stars):fmt(p.price)+" "+t("cur_irt")}
+function renderGrid(){
+  const q=norm(query.trim());
+  const list=P.filter(p=>(tier==="all"||p.tier===tier)&&(type==="all"||p.type===type)&&(!q||norm(L(p.t)+" "+L(p.s)+" "+p.t.fa+" "+p.t.en+" "+p.models.join(" ")).includes(q)));
+  $("#resultCount").textContent=t("results")(digits(list.length));
+  $("#grid").innerHTML=list.length?list.map(p=>`
+    <button class="card" data-open="${p.id}" aria-label="${esc(L(p.t))}">
+      <div class="row">${tierBadge(p.tier)}<span class="badge">${t("t_"+p.type)}</span></div>
+      <h3>${esc(L(p.t))}</h3>
+      <p>${esc(L(p.s))}</p>
+      <div class="row">${p.models.map(m=>`<span class="badge">${m}</span>`).join("")}</div>
+      <div class="foot"><span class="score num">✓ ${digits(p.score)}</span><span class="muted" style="font-size:12px">${t("tested")} ${fdate(p.date,1)}</span><span class="price num">${priceLabel(p)}</span></div>
+    </button>`).join(""):`<div class="empty" style="grid-column:1/-1">${t("none")}</div>`;
+}
+document.addEventListener("click",e=>{const c=e.target.closest("[data-open]");if(c)openDrawer(c.dataset.open)});
+
+/* drawer */
+function openDrawer(id){
+  const p=P.find(x=>x.id===id);const host=$("#drawerHost");
+  const body=p.id==="ig-caption"?$("#heroPrompt").innerText:"";
+  host.innerHTML=`<div class="scrim" data-close></div>
+  <aside class="drawer" role="dialog" aria-modal="true" aria-label="${esc(L(p.t))}">
+    <header>${tierBadge(p.tier)}<span class="badge ok">✓ ${t("tested")} · ${fdate(p.date)}</span><span style="flex:1"></span><button class="iconbtn" data-close aria-label="${t("d_close")}">✕</button></header>
+    <div class="body">
+      <h2>${esc(L(p.t))}</h2>
+      <p class="muted" style="margin:0">${esc(L(p.s))}</p>
+      <div class="row" style="display:flex;gap:6px;flex-wrap:wrap"><span class="badge gold num">${t("score")} ${digits(p.score)}</span><span class="badge">${t("d_version")} ${digits(p.v)}</span>${p.models.map(m=>`<span class="badge">${m}</span>`).join("")}</div>
+      <div><div class="eyebrow">${t("d_example")}</div><div class="example">${esc(L(p.ex))}</div></div>
+      ${p.tier==="free"?`<pre class="prompt" style="border-radius:12px;border:1px solid var(--line)">${esc(body||L(p.s))}</pre>
+        <div class="buyrow"><button class="cta" data-copy>${t("copy")}</button><button class="ghost" data-run>${t("d_run")}</button></div>`
+      :`<div class="locked"><pre class="prompt">${esc(L(HERO.tpl).replace(/<[^>]+>/g,""))}</pre><div class="over"><div><b>🔒 ${t("d_locked")}</b><div class="price num" style="margin-top:6px;font-size:18px">${p.price?fmt(p.price)+" "+t("cur_irt")+" · ⭐ "+fmt(p.stars):""}</div></div></div></div>
+        <div class="buyrow"><button class="cta" data-buy="tg">${t("d_buy_tg")}</button><button class="cta gold" data-buy="bale">${t("d_buy_bale")}</button></div>
+        <button class="ghost" data-buy="web">${t("d_buy_web")}</button>`}
+    </div></aside>`;
+  host.querySelector("[data-close].iconbtn").focus();
+  host.querySelectorAll("[data-close]").forEach(x=>x.addEventListener("click",()=>host.innerHTML=""));
+  host.querySelector("[data-copy]")?.addEventListener("click",()=>copy(body||L(p.s)));
+  host.querySelector("[data-run]")?.addEventListener("click",()=>toast("✓ "+t("d_run")));
+  host.querySelectorAll("[data-buy]").forEach(b=>b.addEventListener("click",()=>toast("→ "+b.textContent)));
+}
+document.addEventListener("keydown",e=>{if(e.key==="Escape")$("#drawerHost").innerHTML=""});
+
+/* trends */
+function spark(d){const w=88,h=30,m=Math.max(...d);const pts=d.map((v,i)=>`${(i/(d.length-1))*w},${h-2-(v/m)*(h-6)}`).join(" ");
+ return `<svg class="spark" viewBox="0 0 ${w} ${h}" aria-hidden="true"><polyline points="0,${h} ${pts} ${w},${h}" fill="color-mix(in srgb,var(--gold) 18%,transparent)" stroke="none"/><polyline points="${pts}" fill="none" stroke="var(--gold)" stroke-width="2"/><circle cx="${w}" cy="${h-2-(d[d.length-1]/m)*(h-6)}" r="2.6" fill="var(--gold)"/></svg>`}
+function renderTrends(){
+  $("#trendList").innerHTML=TRENDS.map(x=>`<div class="trend"><h3>${esc(L(x.k))}</h3>${spark(x.d)}<span class="heat num">+${digits(x.g)}٪ ${t("growth")}</span><span class="src">${esc(x.src)}</span></div>`).join("");
+  if(lang==="en")document.querySelectorAll(".heat").forEach((e,i)=>e.textContent=`+${TRENDS[i].g}% ${t("growth")}`);
+}
+
+/* agents */
+let live=-1;
+function renderStages(){$("#stages").innerHTML=STAGES.map((s,i)=>`<div class="stage${i===live?" live":""}"><span class="n">${digits(s[0])}</span><b><span class="dot"></span>${esc(L(s[1]))}</b><span>${esc(L(s[2]))}</span></div>`).join("")}
+function renderLog(n){$("#log").innerHTML=LOG[lang].slice(0,n).map(([c,a,b])=>`<div><span class="${c}">${esc(a)}</span>${esc(b)}</div>`).join("")}
+let pipeTimer;
+$("#runPipe").addEventListener("click",()=>{
+  clearInterval(pipeTimer);let i=0;renderLog(0);
+  const map=[0,0,0,1,2,3,4,5,6,7,8,9];
+  pipeTimer=setInterval(()=>{live=map[i];renderStages();renderLog(i+1);const lg=$("#log");lg.scrollTop=lg.scrollHeight;i++;if(i>=LOG[lang].length){clearInterval(pipeTimer);setTimeout(()=>{live=-1;renderStages()},900)}},650);
+});
+
+/* bots */
+const CHAT={
+ fa:{tg:[["me","/start"],["bot","سلام! به رسا پرامپت خوش آمدید 👋\nپرامپت‌های تست‌شده برای ChatGPT، Claude، Midjourney و…",["🔎 جستجو","📚 دسته‌ها","🔥 ترندها","✨ پرامپت‌ساز","🗂 کتابخانه من|full"]],["me","یه پرامپت برای عکس محصول می‌خوام"],["bot","💎 عکس محصول استودیویی بدون عکاس\n✓ تست‌شده · Flux · Midjourney · امتیاز ۹۱\nنمونه: پس‌زمینه‌ی کرم، نور نرم از چپ…",["⭐ خرید با ۲۳۰ استارز|full","👀 پیش‌نمایش","⬅️ بازگشت"]],["inv","⭐ ۲۳۰ استارز · Pay"],["bot","✅ پرداخت شد. پرامپت کامل در «کتابخانه من» است.\n🎁 با دعوت هر دوست ۵۰ اعتبار بگیرید."]],
+  bale:[["me","/start"],["bot","سلام! من دستیار رسا پرامپت در بله هستم 🌿",["🔎 جستجو","✨ پرامپت‌ساز","💎 اشتراک","🆘 پشتیبانی"]],["me","✨ پرامپت‌ساز"],["bot","ایده‌تان را بنویسید. مثلاً: «تبلیغ کافه برای افتتاحیه»\n(امروز ۳ بار رایگان)"],["me","تبلیغ کافه برای افتتاحیه"],["bot","پرامپت آماده است ✅\nنقش: کپی‌رایتر محلی…\nمتغیرها: {{نام_کافه}} {{محله}} {{تخفیف}}",["🧩 پر کردن متغیرها|full","💾 ذخیره"]],["inv","۱٬۹۹۰٬۰۰۰ ریال · پرداخت با کیف پول بله"]]},
+ ar:{tg:[["me","/start"],["bot","أهلاً بك في رسا برومبت 👋\nبرومبتات مُختبَرة لـ ChatGPT وClaude وMidjourney…",["🔎 بحث","📚 الأقسام","🔥 الرائج","✨ منشئ البرومبت","🗂 مكتبتي|full"]],["me","أريد برومبت لتصوير المنتجات"],["bot","💎 تصوير منتجات احترافي بلا مصوّر\n✓ مُختبَر · Flux · Midjourney · الدرجة ٩١",["⭐ شراء بـ ٢٣٠ نجمة|full","👀 معاينة","⬅️ رجوع"]],["inv","⭐ ٢٣٠ نجمة · Pay"],["bot","✅ تم الدفع. البرومبت الكامل في «مكتبتي».\n🎁 احصل على ٥٠ رصيداً عن كل صديق."]],
+  bale:[["me","/start"],["bot","مرحباً! أنا مساعد رسا برومبت في بله 🌿",["🔎 بحث","✨ منشئ البرومبت","💎 الاشتراك","🆘 الدعم"]],["me","✨ منشئ البرومبت"],["bot","اكتب فكرتك. مثلاً: «إعلان افتتاح مقهى»\n(٣ مرات مجاناً اليوم)"],["me","إعلان افتتاح مقهى"],["bot","البرومبت جاهز ✅\nالدور: كاتب إعلانات محلي…\nالمتغيرات: {{اسم_المقهى}} {{الحي}} {{الخصم}}",["🧩 تعبئة المتغيرات|full","💾 حفظ"]],["inv","١٬٩٩٠٬٠٠٠ ريال · الدفع بمحفظة بله"]]},
+ en:{tg:[["me","/start"],["bot","Welcome to Rasa Prompt 👋\nTested prompts for ChatGPT, Claude, Midjourney and more.",["🔎 Search","📚 Categories","🔥 Trends","✨ Builder","🗂 My library|full"]],["me","I need a prompt for product photos"],["bot","💎 Studio product photos without a photographer\n✓ Tested · Flux · Midjourney · score 91",["⭐ Buy for 230 Stars|full","👀 Preview","⬅️ Back"]],["inv","⭐ 230 Stars · Pay"],["bot","✅ Paid. The full prompt is in My library.\n🎁 Invite a friend, get 50 credits."]],
+  bale:[["me","/start"],["bot","Hi! I'm the Rasa Prompt assistant on Bale 🌿",["🔎 Search","✨ Builder","💎 Plans","🆘 Support"]],["me","✨ Builder"],["bot","Describe your idea, e.g. \"café opening ad\"\n(3 free builds today)"],["me","café opening ad"],["bot","Your prompt is ready ✅\nRole: local copywriter…\nVariables: {{cafe_name}} {{area}} {{discount}}",["🧩 Fill variables|full","💾 Save"]],["inv","1,990,000 IRR · Pay with Bale wallet"]]}
+};
+let chatTimers=[];
+function msgHtml([who,text,kb]){
+  if(who==="inv")return `<div class="msg bot invoice"><b>🧾</b> ${esc(text)}</div>`;
+  const k=kb?`<div class="kb">${kb.map(x=>{const[a,f]=x.split("|");return `<span class="${f?"full":""}">${esc(a)}</span>`}).join("")}</div>`:"";
+  return `<div class="msg ${who}">${esc(text)}${k}</div>`;
+}
+function playChats(instant){
+  chatTimers.forEach(clearTimeout);chatTimers=[];
+  ["tg","bale"].forEach(pl=>{
+    const box=$(pl==="tg"?"#chatTg":"#chatBale");box.innerHTML="";const seq=CHAT[lang][pl];
+    if(instant){box.innerHTML=seq.map(msgHtml).join("");return}
+    seq.forEach((m,i)=>chatTimers.push(setTimeout(()=>{box.insertAdjacentHTML("beforeend",msgHtml(m));box.scrollTop=box.scrollHeight},i*900)));
+  });
+}
+$("#replay").addEventListener("click",()=>playChats(false));
+
+/* pricing */
+function renderPlans(){
+  $("#plans").innerHTML=t("plans").map(p=>`<div class="plan${p.feat?" feat":""}">${p.feat?`<span class="badge gold" style="align-self:flex-start">${t("premium")}</span>`:""}<h3>${esc(p.n)}</h3><div class="amt num">${esc(cur==="xtr"?p.xtr:p.irt)}</div><div class="muted" style="font-size:13px">${esc(p.per)}</div><ul>${p.f.map(f=>`<li>${esc(f)}</li>`).join("")}</ul><button class="${p.feat?"cta gold":"ghost"}">${esc(p.b)}</button></div>`).join("");
+  document.querySelectorAll("[data-cur]").forEach(b=>b.setAttribute("aria-pressed",b.dataset.cur===cur));
+}
+document.querySelectorAll("[data-cur]").forEach(b=>b.addEventListener("click",()=>{cur=b.dataset.cur;renderPlans();renderGrid()}));
+document.querySelectorAll("[data-lang]").forEach(b=>b.addEventListener("click",()=>{lang=b.dataset.lang;try{localStorage.setItem("rp-lang",lang)}catch(e){}applyLang()}));
+$("#themeBtn").addEventListener("click",()=>{const r=document.documentElement;const dark=r.dataset.theme?r.dataset.theme==="dark":matchMedia("(prefers-color-scheme: dark)").matches;r.dataset.theme=dark?"light":"dark"});
+try{const s=localStorage.getItem("rp-lang");if(s&&I[s])lang=s}catch(e){}
+applyLang();
+</script>
