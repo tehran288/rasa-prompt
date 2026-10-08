@@ -141,6 +141,10 @@ export interface OrderService {
     items: OrderItem[];
   }): Promise<Order>;
   get(id: string): Promise<Order | null>;
+  /** Most recent first. Used by the support agent (scoped to the given user). */
+  listForUser(userId: string, limit: number): Promise<Order[]>;
+  /** paid → fulfilled after entitlements/credits were granted; lets a failed fulfillment be resumed. */
+  markFulfilled(orderId: string): Promise<Order>;
   /** Idempotent: second call with the same chargeId returns the same order without re-granting. */
   markPaid(
     orderId: string,

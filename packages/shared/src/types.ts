@@ -151,6 +151,7 @@ export type AnalyticsEvent =
   | "checkout_started"
   | "payment_succeeded"
   | "payment_failed"
+  | "payment_refunded"
   | "ai_build_prompt"
   | "ai_run_prompt"
   | "support_opened"
