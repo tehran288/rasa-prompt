@@ -16,7 +16,9 @@
     "@rasa/db": "workspace:*",
     "@rasa/payments": "workspace:*",
     "@rasa/shared": "workspace:*",
+    "@rasa/worker": "workspace:*",
     "grammy": "1.46.0",
-    "hono": "4.13.13"
+    "hono": "4.13.13",
+    "pg-boss": "12.37.0"
   }
 }
