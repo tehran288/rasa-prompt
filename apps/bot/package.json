@@ -1,0 +1,22 @@
+{
+  "name": "@rasa/bot",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsup src/main.ts --format esm --target node22 --out-dir dist --clean --noExternal @rasa/shared,@rasa/db,@rasa/ai,@rasa/payments",
+    "start": "node dist/main.js"
+  },
+  "dependencies": {
+    "@grammyjs/auto-retry": "2.0.2",
+    "@grammyjs/ratelimiter": "1.2.1",
+    "@grammyjs/transformer-throttler": "1.2.1",
+    "@hono/node-server": "2.1.4",
+    "@rasa/ai": "workspace:*",
+    "@rasa/db": "workspace:*",
+    "@rasa/payments": "workspace:*",
+    "@rasa/shared": "workspace:*",
+    "grammy": "1.46.0",
+    "hono": "4.13.13"
+  }
+}

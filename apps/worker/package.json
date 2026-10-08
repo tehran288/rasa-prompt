@@ -1,0 +1,19 @@
+{
+  "name": "@rasa/worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsup src/main.ts --format esm --target node22 --out-dir dist --clean --noExternal @rasa/shared,@rasa/db,@rasa/ai,@rasa/payments,@rasa/intel",
+    "start": "node dist/main.js"
+  },
+  "dependencies": {
+    "@rasa/ai": "workspace:*",
+    "@rasa/db": "workspace:*",
+    "@rasa/intel": "workspace:*",
+    "@rasa/payments": "workspace:*",
+    "@rasa/shared": "workspace:*",
+    "grammy": "1.46.0",
+    "pg-boss": "12.37.0"
+  }
+}
