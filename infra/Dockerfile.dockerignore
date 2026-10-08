@@ -1,0 +1,13 @@
+# BuildKit picks up <Dockerfile>.dockerignore next to infra/Dockerfile.
+**/node_modules
+**/dist
+**/coverage
+.git
+.github
+.env
+.env.*
+!.env.example
+docs/pdf
+docs/word
+*.log
+.pglite

@@ -3,8 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "exports": {
+    "./public": "./src/public.ts"
+  },
   "scripts": {
-    "build": "tsup src/main.ts --format esm --target node22 --out-dir dist --clean --noExternal @rasa/shared,@rasa/db,@rasa/ai,@rasa/payments,@rasa/intel",
+    "build": "tsup",
     "start": "node dist/main.js"
   },
   "dependencies": {

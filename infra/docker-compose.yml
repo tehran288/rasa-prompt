@@ -1,0 +1,171 @@
+# Production stack (single server outside Iran). See infra/deploy.md for the two-region option.
+#
+#   cp infra/env.example infra/.env   # compose-level vars (DB password, image tag, backups)
+#   cp .env.example .env              # application settings (tokens, admin ids, AI keys)
+#   docker compose -f infra/docker-compose.yml up -d
+#
+# The worker runs DB migrations on boot; bots wait for it to be healthy.
+
+name: rasa
+
+x-app: &app
+  env_file:
+    - ../.env
+  restart: unless-stopped
+  logging:
+    driver: json-file
+    options: { max-size: "20m", max-file: "5" }
+  environment: &app-env
+    NODE_ENV: production
+    DATABASE_URL: postgres://${POSTGRES_USER:-rasa}:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in infra/.env}@postgres:5432/${POSTGRES_DB:-rasa}
+
+services:
+  postgres:
+    image: postgres:16-bookworm
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-rasa}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in infra/.env}
+      POSTGRES_DB: ${POSTGRES_DB:-rasa}
+    command: >
+      postgres
+        -c shared_preload_libraries=pg_stat_statements
+        -c max_connections=100
+        -c shared_buffers=512MB
+        -c log_min_duration_statement=500
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./postgres/init.sql:/docker-entrypoint-initdb.d/10-extensions.sql:ro
+    ports:
+      # Loopback only by default. For a Bale bot in Iran over WireGuard set POSTGRES_BIND to the
+      # wg interface address (see deploy.md). Never expose Postgres on a public interface.
+      - "${POSTGRES_BIND:-127.0.0.1}:5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    shm_size: 256mb
+
+  worker:
+    <<: *app
+    image: ghcr.io/${GHCR_OWNER:-rasa}/rasa-worker:${IMAGE_TAG:-latest}
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile
+      target: worker
+    environment:
+      <<: *app-env
+      PORT: "8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8080/healthz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      start_period: 60s
+      retries: 3
+    stop_grace_period: 45s
+
+  bot-telegram:
+    <<: *app
+    image: ghcr.io/${GHCR_OWNER:-rasa}/rasa-bot:${IMAGE_TAG:-latest}
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile
+      target: bot
+    environment:
+      <<: *app-env
+      PLATFORM: telegram
+      PORT: "8081"
+      BOT_MODE: webhook
+      WEBHOOK_PUBLIC_URL: https://${TELEGRAM_WEBHOOK_HOST:-tg.bots.rasa-prompt.ir}
+    ports:
+      - "127.0.0.1:8081:8081" # Caddy on the host, or use the caddy service below
+    depends_on:
+      postgres:
+        condition: service_healthy
+      worker:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8081/healthz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      start_period: 40s
+      retries: 3
+
+  bot-bale:
+    <<: *app
+    image: ghcr.io/${GHCR_OWNER:-rasa}/rasa-bot:${IMAGE_TAG:-latest}
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile
+      target: bot
+    environment:
+      <<: *app-env
+      PLATFORM: bale
+      PORT: "8082"
+      BOT_MODE: webhook
+      WEBHOOK_PUBLIC_URL: https://${BALE_WEBHOOK_HOST:-bale.bots.rasa-prompt.ir}
+    ports:
+      - "127.0.0.1:8082:8082"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      worker:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://127.0.0.1:8082/healthz').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"]
+      interval: 30s
+      timeout: 5s
+      start_period: 40s
+      retries: 3
+
+  # TLS reverse proxy for webhooks. Enable with: --profile proxy (skip when Coolify/Traefik
+  # already terminates TLS).
+  caddy:
+    image: caddy:2.10-alpine
+    profiles: ["proxy"]
+    restart: unless-stopped
+    environment:
+      TELEGRAM_WEBHOOK_HOST: ${TELEGRAM_WEBHOOK_HOST:-tg.bots.rasa-prompt.ir}
+      BALE_WEBHOOK_HOST: ${BALE_WEBHOOK_HOST:-bale.bots.rasa-prompt.ir}
+      ACME_EMAIL: ${ACME_EMAIL:-ops@rasa-prompt.ir}
+      TELEGRAM_UPSTREAM: bot-telegram:8081
+      BALE_UPSTREAM: bot-bale:8082
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+  # Nightly encrypted pg_dump → S3-compatible bucket. Enable with: --profile backup
+  backup:
+    image: eeshugerman/postgres-backup-s3:16
+    profiles: ["backup"]
+    restart: unless-stopped
+    environment:
+      SCHEDULE: ${BACKUP_SCHEDULE:-@daily}
+      BACKUP_KEEP_DAYS: ${BACKUP_KEEP_DAYS:-30}
+      PASSPHRASE: ${BACKUP_PASSPHRASE:?set BACKUP_PASSPHRASE}
+      S3_ENDPOINT: ${S3_ENDPOINT:-}
+      S3_REGION: ${S3_REGION:-auto}
+      S3_BUCKET: ${S3_BUCKET:-rasa-backups}
+      S3_PREFIX: ${S3_PREFIX:-postgres}
+      S3_ACCESS_KEY_ID: ${S3_ACCESS_KEY_ID:-}
+      S3_SECRET_ACCESS_KEY: ${S3_SECRET_ACCESS_KEY:-}
+      POSTGRES_HOST: postgres
+      POSTGRES_DATABASE: ${POSTGRES_DB:-rasa}
+      POSTGRES_USER: ${POSTGRES_USER:-rasa}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pgdata:
+  caddy_data:
+  caddy_config:

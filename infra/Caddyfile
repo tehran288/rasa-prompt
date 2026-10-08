@@ -1,0 +1,39 @@
+# Caddy reverse proxy for bot webhooks with automatic TLS (Let's Encrypt).
+# One hostname per platform, so it works regardless of the webhook path the bot registers.
+# Env (set by the caddy service in docker-compose.yml, or export when running Caddy on the host):
+#   TELEGRAM_WEBHOOK_HOST, BALE_WEBHOOK_HOST, ACME_EMAIL,
+#   TELEGRAM_UPSTREAM (default 127.0.0.1:8081), BALE_UPSTREAM (default 127.0.0.1:8082)
+#
+# Telegram only delivers webhooks to ports 443, 80, 88, 8443 with a valid certificate.
+# The bot verifies X-Telegram-Bot-Api-Secret-Token (WEBHOOK_SECRET) itself.
+
+{
+	email {$ACME_EMAIL}
+}
+
+(common) {
+	encode zstd gzip
+	header -Server
+	request_body {
+		max_size 2MB
+	}
+	log {
+		output stdout
+		format json
+	}
+}
+
+{$TELEGRAM_WEBHOOK_HOST} {
+	import common
+	# Health endpoint is internal only.
+	@health path /healthz
+	respond @health 404
+	reverse_proxy {$TELEGRAM_UPSTREAM:127.0.0.1:8081}
+}
+
+{$BALE_WEBHOOK_HOST} {
+	import common
+	@health path /healthz
+	respond @health 404
+	reverse_proxy {$BALE_UPSTREAM:127.0.0.1:8082}
+}
