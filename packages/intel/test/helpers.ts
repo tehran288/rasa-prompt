@@ -80,8 +80,14 @@ export function fakeAi(handlers: Partial<Record<AiTask, AiHandler>>) {
     async complete(req) {
       const out = await run(req);
       const isText = typeof out === "object" && out !== null && "text" in out;
-      const t = isText ? (out as { text: string }).text : typeof out === "string" ? out : JSON.stringify(out);
-      const citations = isText ? (out as { citations?: { url: string; title: string }[] }).citations : undefined;
+      const t = isText
+        ? (out as { text: string }).text
+        : typeof out === "string"
+          ? out
+          : JSON.stringify(out);
+      const citations = isText
+        ? (out as { citations?: { url: string; title: string }[] }).citations
+        : undefined;
       return {
         text: t,
         provider: "fake",
@@ -114,7 +120,8 @@ export class MemoryIntelStore implements IntelStore {
   async saveSignals(signals: TrendSignal[]): Promise<number> {
     let n = 0;
     for (const s of signals) {
-      if (this.signals.some((x) => x.source === s.source && x.externalId === s.externalId)) continue;
+      if (this.signals.some((x) => x.source === s.source && x.externalId === s.externalId))
+        continue;
       this.signals.push({ ...s, id: `s${++this.seq}` });
       n++;
     }
@@ -135,7 +142,12 @@ export class MemoryIntelStore implements IntelStore {
       this.topics[idx] = next;
       return next;
     }
-    const created: TrendTopic = { ...topic, id: `t${++this.seq}`, firstSeenAt: now, updatedAt: now };
+    const created: TrendTopic = {
+      ...topic,
+      id: `t${++this.seq}`,
+      firstSeenAt: now,
+      updatedAt: now,
+    };
     this.topics.push(created);
     return created;
   }
@@ -149,9 +161,19 @@ export class MemoryIntelStore implements IntelStore {
     const t = this.topics.find((x) => x.id === id);
     if (t) t.status = status;
   }
-  async saveDraft(draft: PromptDraft, state: "review" | "published" | "rejected", promptId?: string) {
+  async saveDraft(
+    draft: PromptDraft,
+    state: "review" | "published" | "rejected",
+    promptId?: string,
+  ) {
     const id = `d${++this.seq}`;
-    this.drafts.push({ id, draft, state, ...(promptId ? { promptId } : {}), createdAt: new Date() });
+    this.drafts.push({
+      id,
+      draft,
+      state,
+      ...(promptId ? { promptId } : {}),
+      createdAt: new Date(),
+    });
     return id;
   }
   async reviewQueue(limit: number) {

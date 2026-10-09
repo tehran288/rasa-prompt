@@ -74,7 +74,8 @@ describe("licenses", () => {
 });
 
 describe("reddit scout", () => {
-  const listing = (posts: object[]) => json({ data: { children: posts.map((d) => ({ kind: "t3", data: d })) } });
+  const listing = (posts: object[]) =>
+    json({ data: { children: posts.map((d) => ({ kind: "t3", data: d })) } });
   const post = {
     id: "abc",
     name: "t3_abc",
@@ -95,13 +96,23 @@ describe("reddit scout", () => {
   it("authenticates, parses, filters NSFW/stickied and dedupes top+hot", async () => {
     const { ctx, calls } = ctxFor(
       [
-        { match: has("reddit.com/api/v1/access_token"), reply: () => json({ access_token: "tok" }) },
+        {
+          match: has("reddit.com/api/v1/access_token"),
+          reply: () => json({ access_token: "tok" }),
+        },
         {
           match: has("oauth.reddit.com/r/ChatGPT/top"),
           reply: () =>
-            listing([post, { ...post, id: "nsfw", name: "t3_nsfw", over_18: true }, { ...post, id: "s", name: "t3_s", stickied: true }]),
+            listing([
+              post,
+              { ...post, id: "nsfw", name: "t3_nsfw", over_18: true },
+              { ...post, id: "s", name: "t3_s", stickied: true },
+            ]),
         },
-        { match: has("oauth.reddit.com/r/ChatGPT/hot"), reply: () => listing([{ ...post, score: 990 }]) },
+        {
+          match: has("oauth.reddit.com/r/ChatGPT/hot"),
+          reply: () => listing([{ ...post, score: 990 }]),
+        },
       ],
       { REDDIT_CLIENT_ID: "id", REDDIT_CLIENT_SECRET: "secret" },
       { subreddits: ["ChatGPT"] },
@@ -134,13 +145,23 @@ describe("hackernews scout", () => {
   it("parses Algolia hits and dedupes across queries", async () => {
     const hits = {
       hits: [
-        { objectID: "41", title: "Show HN: Prompt testing harness", url: "https://x.dev", points: 210, created_at_i: 1 },
+        {
+          objectID: "41",
+          title: "Show HN: Prompt testing harness",
+          url: "https://x.dev",
+          points: 210,
+          created_at_i: 1,
+        },
         { objectID: "42", title: null, points: 5 },
       ],
     };
-    const { ctx, calls } = ctxFor([{ match: has("hn.algolia.com"), reply: () => json(hits) }], {}, {
-      hnQueries: ["prompt", "LLM"],
-    });
+    const { ctx, calls } = ctxFor(
+      [{ match: has("hn.algolia.com"), reply: () => json(hits) }],
+      {},
+      {
+        hnQueries: ["prompt", "LLM"],
+      },
+    );
     const out = await createHackerNewsScout(ctx).collect();
     expect(out).toHaveLength(1);
     expect(out[0]).toMatchObject({
@@ -188,14 +209,21 @@ describe("github scout", () => {
           match: has("api.github.com/repos/acme/prompt-kit/license"),
           reply: () => json({ license: { spdx_id: "Apache-2.0" } }),
         },
-        { match: has("api.github.com/repos/acme/no-license/license"), reply: () => json({ message: "Not Found" }, 404) },
+        {
+          match: has("api.github.com/repos/acme/no-license/license"),
+          reply: () => json({ message: "Not Found" }, 404),
+        },
       ],
       { GITHUB_TOKEN: "ghp_x" },
       { githubTopics: ["prompts"] },
     );
     const out = await createGithubScout(ctx).collect();
     const byId = Object.fromEntries(out.map((s) => [s.externalId, s]));
-    expect(Object.keys(byId).sort()).toEqual(["acme/no-license", "acme/prompt-kit", "f/awesome-chatgpt-prompts"]);
+    expect(Object.keys(byId).sort()).toEqual([
+      "acme/no-license",
+      "acme/prompt-kit",
+      "f/awesome-chatgpt-prompts",
+    ]);
     expect(byId["f/awesome-chatgpt-prompts"]?.license).toBe("CC0-1.0");
     expect(byId["acme/prompt-kit"]?.license).toBe("Apache-2.0");
     expect(byId["acme/no-license"]?.license).toBe("unknown");
@@ -208,12 +236,19 @@ describe("github scout", () => {
 describe("huggingface scout", () => {
   it("reads cardData.license and tag fallback", async () => {
     const list = [
-      { id: "fka/awesome-chatgpt-prompts", likes: 9000, cardData: { license: "cc0-1.0" }, tags: [] },
+      {
+        id: "fka/awesome-chatgpt-prompts",
+        likes: 9000,
+        cardData: { license: "cc0-1.0" },
+        tags: [],
+      },
       { id: "x/nc-prompts", likes: 10, cardData: { license: "cc-by-nc-4.0" } },
       { id: "y/tagged", likes: 3, tags: ["license:mit", "language:fa"] },
       { id: "z/private", private: true },
     ];
-    const { ctx } = ctxFor([{ match: has("huggingface.co/api/datasets"), reply: () => json(list) }]);
+    const { ctx } = ctxFor([
+      { match: has("huggingface.co/api/datasets"), reply: () => json(list) },
+    ]);
     const out = await createHuggingFaceScout(ctx).collect();
     const lic = Object.fromEntries(out.map((s) => [s.externalId, s.license]));
     expect(lic).toEqual({
@@ -264,9 +299,22 @@ describe("youtube scout", () => {
         {
           match: has("youtube/v3/search"),
           reply: () =>
-            json({ items: [{ id: { videoId: "v1" }, snippet: { title: "آموزش ساخت عکس محصول با هوش مصنوعی", channelTitle: "AI فارسی" } }] }),
+            json({
+              items: [
+                {
+                  id: { videoId: "v1" },
+                  snippet: {
+                    title: "آموزش ساخت عکس محصول با هوش مصنوعی",
+                    channelTitle: "AI فارسی",
+                  },
+                },
+              ],
+            }),
         },
-        { match: has("youtube/v3/videos"), reply: () => json({ items: [{ id: "v1", statistics: { viewCount: "52000" } }] }) },
+        {
+          match: has("youtube/v3/videos"),
+          reply: () => json({ items: [{ id: "v1", statistics: { viewCount: "52000" } }] }),
+        },
       ],
       { YOUTUBE_API_KEY: "yt" },
       { youtubeQueries: [{ q: "آموزش هوش مصنوعی", regionCode: "IR", relevanceLanguage: "fa" }] },
@@ -331,13 +379,20 @@ describe("arxiv + official docs", () => {
   it("official docs: title/description only, versioned id, robots respected", async () => {
     const { ctx, calls } = ctxFor(
       [
-        { match: has("docs.example.com/robots.txt"), reply: () => text("User-agent: *\nDisallow: /private") },
+        {
+          match: has("docs.example.com/robots.txt"),
+          reply: () => text("User-agent: *\nDisallow: /private"),
+        },
         {
           match: has("docs.example.com/guide"),
           reply: () =>
-            text(`<html><head><title>Prompting guide</title><meta name="description" content="Be clear and direct"></head><body>long text</body></html>`, 200, {
-              etag: '"v7"',
-            }),
+            text(
+              `<html><head><title>Prompting guide</title><meta name="description" content="Be clear and direct"></head><body>long text</body></html>`,
+              200,
+              {
+                etag: '"v7"',
+              },
+            ),
         },
       ],
       {},
@@ -381,8 +436,13 @@ describe("rss scout", () => {
       },
     );
     const out = await createRssScout(ctx).collect();
-    expect(out.map((s) => s.title).sort()).toEqual(["Agents are eating SaaS", "Prompt caching tips"]);
-    expect(out.find((s) => s.title === "Prompt caching tips")?.url).toBe("https://atom.example.com/p");
+    expect(out.map((s) => s.title).sort()).toEqual([
+      "Agents are eating SaaS",
+      "Prompt caching tips",
+    ]);
+    expect(out.find((s) => s.title === "Prompt caching tips")?.url).toBe(
+      "https://atom.example.com/p",
+    );
   });
 });
 
@@ -408,9 +468,30 @@ describe("web_search researcher-scout", () => {
   it("keeps only trends whose URL was actually cited, never marketplaces", async () => {
     const answer = {
       trends: [
-        { title: "AI resume builder", summary: "Job seekers", keywords: ["رزومه"], useCases: ["CV"], momentum: 70, sourceUrls: ["https://news.example.com/cv?utm_source=x"] },
-        { title: "Hallucinated", summary: "", keywords: [], useCases: [], momentum: 90, sourceUrls: ["https://made-up.example.com/"] },
-        { title: "Marketplace", summary: "", keywords: [], useCases: [], momentum: 90, sourceUrls: ["https://promptbase.com/x"] },
+        {
+          title: "AI resume builder",
+          summary: "Job seekers",
+          keywords: ["رزومه"],
+          useCases: ["CV"],
+          momentum: 70,
+          sourceUrls: ["https://news.example.com/cv?utm_source=x"],
+        },
+        {
+          title: "Hallucinated",
+          summary: "",
+          keywords: [],
+          useCases: [],
+          momentum: 90,
+          sourceUrls: ["https://made-up.example.com/"],
+        },
+        {
+          title: "Marketplace",
+          summary: "",
+          keywords: [],
+          useCases: [],
+          momentum: 90,
+          sourceUrls: ["https://promptbase.com/x"],
+        },
       ],
     };
     const handler: AiHandler = (req) => {
@@ -424,12 +505,22 @@ describe("web_search researcher-scout", () => {
         ],
       };
     };
-    const { ctx } = ctxFor([], {}, { webResearchTargets: [{ locale: "fa", regions: ["IR"], label: "Iran" }] }, {
-      intel_research: handler,
-    });
+    const { ctx } = ctxFor(
+      [],
+      {},
+      { webResearchTargets: [{ locale: "fa", regions: ["IR"], label: "Iran" }] },
+      {
+        intel_research: handler,
+      },
+    );
     const out = await createWebSearchScout(ctx).collect();
     expect(out).toHaveLength(1);
-    expect(out[0]).toMatchObject({ title: "AI resume builder", locale: "fa", region: "IR", metric: 70 });
+    expect(out[0]).toMatchObject({
+      title: "AI resume builder",
+      locale: "fa",
+      region: "IR",
+      metric: 70,
+    });
   });
 });
 

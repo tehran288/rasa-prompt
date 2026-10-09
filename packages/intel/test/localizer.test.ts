@@ -1,8 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { toDraft } from "../src/engineer";
+import { EngineeredPromptSchema, toDraft } from "../src/engineer";
 import { createLocalizer, validateLocalized } from "../src/localizer";
 import { extractVariables } from "../src/text";
-import { EngineeredPromptSchema } from "../src/engineer";
 import { engineeredFixture, FA_BODY, fakeAi, silentLogger, topicFixture } from "./helpers";
 
 const ep = EngineeredPromptSchema.parse(engineeredFixture());
@@ -19,7 +18,7 @@ const labels = [
   { name: "audience", label: "Audience" },
   { name: "style", label: "Style" },
 ];
-const loc = (body: string, title = "T") => ({
+const loc = (body: string, title = "Title") => ({
   title,
   summary: "A summary sentence.",
   description: "A longer description of the prompt.",
@@ -30,10 +29,24 @@ const loc = (body: string, title = "T") => ({
 
 describe("localizer", () => {
   it("validateLocalized detects missing/renamed placeholders", () => {
-    expect(validateLocalized(loc(AR_BODY_OK), FA_BODY, labels.map((l) => l.name))).toBeNull();
+    expect(
+      validateLocalized(
+        loc(AR_BODY_OK),
+        FA_BODY,
+        labels.map((l) => l.name),
+      ),
+    ).toBeNull();
     const renamed = AR_BODY_OK.replace("{{shop_name}}", "{{اسم_المتجر}}");
-    expect(validateLocalized(loc(renamed), FA_BODY, labels.map((l) => l.name))).toMatch(/Missing: \[shop_name\]/);
-    expect(validateLocalized({ ...loc(AR_BODY_OK), variableLabels: [] }, FA_BODY, ["shop_name"])).toMatch(/variableLabels/);
+    expect(
+      validateLocalized(
+        loc(renamed),
+        FA_BODY,
+        labels.map((l) => l.name),
+      ),
+    ).toMatch(/Missing: \[shop_name\]/);
+    expect(
+      validateLocalized({ ...loc(AR_BODY_OK), variableLabels: [] }, FA_BODY, ["shop_name"]),
+    ).toMatch(/variableLabels/);
   });
 
   it("fills ar/en, preserves the exact variable set, retries on mismatch", async () => {
@@ -44,13 +57,17 @@ describe("localizer", () => {
         if (u.includes("Target language: ar")) {
           arAttempts++;
           // first attempt drops a placeholder; feedback round must fix it
-          if (req.messages.length === 1) return loc(AR_BODY_OK.replace("{{style}}", "أنيق"), "عنوان");
+          if (req.messages.length === 1)
+            return loc(AR_BODY_OK.replace("{{style}}", "أنيق"), "عنوان");
           return loc(AR_BODY_OK, "عنوان");
         }
         return loc(EN_BODY_OK, "Title");
       },
     });
-    const { draft: out, failed } = await createLocalizer({ ai, logger: silentLogger() }).localizeDraft(draft);
+    const { draft: out, failed } = await createLocalizer({
+      ai,
+      logger: silentLogger(),
+    }).localizeDraft(draft);
     expect(failed).toEqual([]);
     expect(arAttempts).toBe(2);
     expect(calls.every((c) => c.task === "intel_localize")).toBe(true);
@@ -70,7 +87,9 @@ describe("localizer", () => {
     const { ai } = fakeAi({
       intel_localize: (req) => {
         const u = String(req.messages[0]?.content);
-        return u.includes("Target language: en") ? loc("No variables at all here, sorry, this is wrong.") : loc(AR_BODY_OK);
+        return u.includes("Target language: en")
+          ? loc("No variables at all here, sorry, this is wrong.")
+          : loc(AR_BODY_OK);
       },
     });
     const l = createLocalizer({ ai, logger: silentLogger() });
@@ -79,10 +98,17 @@ describe("localizer", () => {
     expect(out.body.en).toBeUndefined();
     expect(out.body.ar).toBe(AR_BODY_OK);
 
-    const arDraft = toDraft(topicFixture({ regions: ["SA"] }), "ar", { ...ep, body: AR_BODY_OK }, []);
-    const { ai: bad } = fakeAi({ intel_localize: () => loc("broken body without placeholders at all") });
-    await expect(createLocalizer({ ai: bad, logger: silentLogger() }).localizeDraft(arDraft)).rejects.toThrow(
-      /intel_localize/,
+    const arDraft = toDraft(
+      topicFixture({ regions: ["SA"] }),
+      "ar",
+      { ...ep, body: AR_BODY_OK },
+      [],
     );
+    const { ai: bad } = fakeAi({
+      intel_localize: () => loc("broken body without placeholders at all"),
+    });
+    await expect(
+      createLocalizer({ ai: bad, logger: silentLogger() }).localizeDraft(arDraft),
+    ).rejects.toThrow(/intel_localize/);
   });
 });

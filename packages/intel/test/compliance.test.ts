@@ -15,14 +15,20 @@ const SOURCE =
 describe("originality (word 5-gram overlap)", () => {
   it("copied text scores low", () => {
     const copied = `${SOURCE}`;
-    const r = originalityScore([copied], [{ text: SOURCE, license: "proprietary", url: "https://src" }]);
+    const r = originalityScore(
+      [copied],
+      [{ text: SOURCE, license: "proprietary", url: "https://src" }],
+    );
     expect(r.originality).toBe(0);
     expect(r.worst?.url).toBe("https://src");
   });
 
   it("a short source pasted into a long body is still caught (containment)", () => {
     const long = `${"Our brand voice is warm and helpful for small shops in Tehran. ".repeat(20)} ${SOURCE}`;
-    const r = originalityScore([long], [{ text: SOURCE, license: "proprietary", url: "https://src" }]);
+    const r = originalityScore(
+      [long],
+      [{ text: SOURCE, license: "proprietary", url: "https://src" }],
+    );
     expect(r.originality).toBeLessThan(20);
   });
 
@@ -38,7 +44,12 @@ describe("originality (word 5-gram overlap)", () => {
 
   it("is robust to case, punctuation, Arabic/Persian letter variants and variables", () => {
     expect(overlap("هذا نص كبير جدا للاختبار هنا", "هذا نص کبیر جدا للاختبار هنا")).toBe(1);
-    expect(overlap("Write {{a}} THREE image prompts, for the product now", "write three image prompts for the product now")).toBe(1);
+    expect(
+      overlap(
+        "Write {{a}} THREE image prompts, for the product now",
+        "write three image prompts for the product now",
+      ),
+    ).toBe(1);
   });
 });
 

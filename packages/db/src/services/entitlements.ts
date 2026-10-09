@@ -1,10 +1,9 @@
 import { DomainError, type EntitlementService, type Order } from "@rasa/shared";
-import { and, desc, eq, gt, inArray, isNull, like, or, type SQL, sql } from "drizzle-orm";
+import { and, desc, eq, gt, isNull, or, type SQL, sql } from "drizzle-orm";
 import type { Db } from "../db";
-import { bundlePrompts, creditLedger, entitlements, orders, plans, prompts } from "../schema";
+import { bundlePrompts, entitlements, orders, plans, prompts } from "../schema";
 import { clampPage, isUuid, toSummary } from "../util";
-import { balanceOf, grantTx, lockCredits } from "./credits";
-import { findPack, findPlan, toPlan } from "./products";
+import { findPlan, toPlan } from "./products";
 
 const DAY_MS = 86_400_000;
 
@@ -95,7 +94,7 @@ export function createEntitlementService(db: Db): EntitlementService {
           throw new DomainError("invalid_state", `order is ${o.status}`);
         }
         const base = { userId: o.userId, orderId: o.id, source: "order" } as const;
-        for (const [i, item] of o.items.entries()) {
+        for (const item of o.items) {
           switch (item.kind) {
             case "prompt":
             case "bundle":
@@ -135,65 +134,22 @@ export function createEntitlementService(db: Db): EntitlementService {
                   .values({ ...ent, kind: "all_premium" })
                   .onConflictDoNothing();
               }
-              if (plan.monthlyCredits > 0) {
-                await grantTx(tx, o.userId, plan.monthlyCredits, "subscription_grant", `${o.id}:${i}`);
-              }
               break;
             }
-            case "credit_pack": {
-              const pack = await findPack(tx, item.refId);
-              if (!pack) throw new DomainError("not_found", "credit_pack");
-              await grantTx(tx, o.userId, pack.credits, "purchase", `${o.id}:${i}`);
+            case "credit_pack":
+              // Credits are granted by the payments package (CreditService.grant), not here.
               break;
-            }
           }
         }
       });
     },
 
+    /** Revokes access granted by the order. Credits are clawed back by the payments package. */
     async revokeForOrder(order: Order) {
-      await db.transaction(async (tx) => {
-        await tx
-          .update(entitlements)
-          .set({ revokedAt: new Date() })
-          .where(and(eq(entitlements.orderId, order.id), isNull(entitlements.revokedAt)));
-        // Claw back credits granted by this order (only what is still unspent; never negative).
-        await lockCredits(tx, order.userId);
-        const [already] = await tx
-          .select({ id: creditLedger.id })
-          .from(creditLedger)
-          .where(
-            and(
-              eq(creditLedger.userId, order.userId),
-              eq(creditLedger.reason, "refund"),
-              eq(creditLedger.refId, order.id),
-            ),
-          )
-          .limit(1);
-        if (already) return;
-        const [g] = await tx
-          .select({ n: sql<number>`coalesce(sum(${creditLedger.delta}), 0)::int` })
-          .from(creditLedger)
-          .where(
-            and(
-              eq(creditLedger.userId, order.userId),
-              inArray(creditLedger.reason, ["purchase", "subscription_grant"]),
-              like(creditLedger.refId, `${order.id}:%`),
-            ),
-          );
-        const granted = g?.n ?? 0;
-        if (granted <= 0) return;
-        const balance = await balanceOf(tx, order.userId);
-        const take = Math.min(granted, balance);
-        if (take <= 0) return;
-        await tx.insert(creditLedger).values({
-          userId: order.userId,
-          delta: -take,
-          reason: "refund",
-          refId: order.id,
-          balanceAfter: balance - take,
-        });
-      });
+      await db
+        .update(entitlements)
+        .set({ revokedAt: new Date() })
+        .where(and(eq(entitlements.orderId, order.id), isNull(entitlements.revokedAt)));
     },
   };
 }

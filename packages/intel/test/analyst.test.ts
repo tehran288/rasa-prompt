@@ -38,8 +38,12 @@ describe("analyst math", () => {
     const scores = { velocity: 80, volume: 60, commercialIntent: 90, gap: 50, fit: 70 };
     // 0.3*80 + 0.15*60 + 0.25*90 + 0.2*50 + 0.1*70 = 24 + 9 + 22.5 + 10 + 7 = 72.5
     expect(computeTrendScore(scores)).toBe(72.5);
-    expect(computeTrendScore({ velocity: 100, volume: 100, commercialIntent: 100, gap: 100, fit: 100 })).toBe(100);
-    expect(computeTrendScore({ velocity: 0, volume: 0, commercialIntent: 0, gap: 0, fit: 0 })).toBe(0);
+    expect(
+      computeTrendScore({ velocity: 100, volume: 100, commercialIntent: 100, gap: 100, fit: 100 }),
+    ).toBe(100);
+    expect(computeTrendScore({ velocity: 0, volume: 0, commercialIntent: 0, gap: 0, fit: 0 })).toBe(
+      0,
+    );
     // custom weights are normalised
     expect(
       computeTrendScore(scores, { velocity: 1, volume: 0, commercialIntent: 0, gap: 0, fit: 0 }),
@@ -61,7 +65,9 @@ describe("analyst math", () => {
     const one = [sig({ metric: 1 })];
     const p1 = sourcePercentiles(one);
     expect(computeVolume(one, p1)).toBe(Math.round(100 * (1 - Math.exp(-1 / 3))));
-    const six = Array.from({ length: 6 }, (_, i) => sig({ source: "github", metric: 7, externalId: `g${i}` }));
+    const six = Array.from({ length: 6 }, (_, i) =>
+      sig({ source: "github", metric: 7, externalId: `g${i}` }),
+    );
     expect(computeVolume(six, sourcePercentiles(six))).toBe(Math.round(100 * (1 - Math.exp(-2))));
   });
 
@@ -71,7 +77,10 @@ describe("analyst math", () => {
     const stale = [sig({ metric: 5, observedAt: old }), sig({ metric: 5, observedAt: old })];
     expect(computeVelocity(fresh, sourcePercentiles(fresh), NOW)).toBe(100);
     expect(computeVelocity(stale, sourcePercentiles(stale), NOW)).toBe(0);
-    const mixed = [sig({ metric: 5, observedAt: old }), sig({ source: "google_trends", metric: 5000 })];
+    const mixed = [
+      sig({ metric: 5, observedAt: old }),
+      sig({ source: "google_trends", metric: 5000 }),
+    ];
     // recentShare = 0.5 (both percentile 1), growth = 1 → 0.6*0.5 + 0.4*1 = 0.7
     expect(computeVelocity(mixed, sourcePercentiles(mixed), NOW)).toBe(70);
   });
@@ -94,7 +103,9 @@ describe("pre-clustering", () => {
     expect(find("n8n customer")).toBe(find("Building an n8n"));
     expect(find("Instagram")).not.toBe(find("n8n customer"));
     expect(find("Resume")).not.toBe(find("Instagram"));
-    expect(find("Instagram")?.keywords).toEqual(expect.arrayContaining(["flux", "product", "photography"]));
+    expect(find("Instagram")?.keywords).toEqual(
+      expect.arrayContaining(["flux", "product", "photography"]),
+    );
     // strongest first, ids renumbered
     expect(clusters[0]?.id).toBe("c1");
   });
@@ -105,8 +116,18 @@ describe("analyze()", () => {
     const store = new MemoryIntelStore();
     await store.saveSignals([
       { ...sig({ title: "Instagram product photography prompts Flux", metric: 900 }) },
-      { ...sig({ title: "Flux product photography Instagram", source: "hackernews", metric: 300 }) },
-      { ...sig({ title: "پرامپت عکس محصول", source: "google_trends", metric: 5000, region: "IR", locale: "fa" }) },
+      {
+        ...sig({ title: "Flux product photography Instagram", source: "hackernews", metric: 300 }),
+      },
+      {
+        ...sig({
+          title: "پرامپت عکس محصول",
+          source: "google_trends",
+          metric: 5000,
+          region: "IR",
+          locale: "fa",
+        }),
+      },
     ]);
     await store.upsertTopic({
       key: "other-topic",
@@ -204,7 +225,13 @@ describe("analyze()", () => {
       ],
     });
     const { ai } = fakeAi({ intel_analyze: () => (n++ === 0 ? topic(["c99"]) : topic(["c1"])) });
-    const analyst = createAnalyst({ ai, store, catalog: fakeCatalog().catalog, logger: silentLogger(), now: () => NOW });
+    const analyst = createAnalyst({
+      ai,
+      store,
+      catalog: fakeCatalog().catalog,
+      logger: silentLogger(),
+      now: () => NOW,
+    });
     const topics = await analyst.analyze();
     expect(n).toBe(2);
     expect(topics).toHaveLength(1);

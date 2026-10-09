@@ -132,6 +132,9 @@ export async function webResearchJson<S extends z.ZodType>(
     system: req.system,
     messages: [{ role: "user", content: req.user }],
     maxTokens: req.maxTokens ?? 4000,
+    // @rasa/ai moves the schema into the system prompt when web tools are on; we still
+    // parse leniently below so any provider works.
+    jsonSchema: jsonSchemaOf(req.schema),
     webResearch: {
       maxSearches: req.maxSearches,
       ...(req.blockedDomains?.length ? { blockedDomains: req.blockedDomains } : {}),

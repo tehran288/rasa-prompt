@@ -1,5 +1,5 @@
 import { DomainError, type Order, type OrderService } from "@rasa/shared";
-import { and, asc, eq, lt, sql } from "drizzle-orm";
+import { and, asc, desc, eq, lt, sql } from "drizzle-orm";
 import type { Db } from "../db";
 import { orders } from "../schema";
 import { isUniqueViolation, isUuid } from "../util";
@@ -45,6 +45,35 @@ export function createOrderService(db: Db): OrderService {
       if (!isUuid(id)) return null;
       const [r] = await db.select().from(orders).where(eq(orders.id, id));
       return r ? toOrder(r) : null;
+    },
+
+    async listForUser(userId, limit) {
+      if (!isUuid(userId)) return [];
+      const rows = await db
+        .select()
+        .from(orders)
+        .where(eq(orders.userId, userId))
+        .orderBy(desc(orders.createdAt), desc(orders.id))
+        .limit(Math.max(1, Math.min(100, Math.floor(limit))));
+      return rows.map(toOrder);
+    },
+
+    async markFulfilled(orderId) {
+      if (!isUuid(orderId)) throw new DomainError("not_found", "order");
+      return db.transaction(async (tx) => {
+        const [o] = await tx.select().from(orders).where(eq(orders.id, orderId)).for("update");
+        if (!o) throw new DomainError("not_found", "order");
+        if (o.status === "fulfilled") return toOrder(o);
+        if (o.status !== "paid") {
+          throw new DomainError("invalid_state", `cannot fulfill a ${o.status} order`);
+        }
+        const [u] = await tx
+          .update(orders)
+          .set({ status: "fulfilled" })
+          .where(eq(orders.id, orderId))
+          .returning();
+        return toOrder(u as OrderRow);
+      });
     },
 
     async markPaid(orderId, providerChargeId, paidAmount) {

@@ -9,7 +9,12 @@ async function setup(autoPublish: boolean, opts: { failCreate?: boolean } = {}) 
   const store = new MemoryIntelStore();
   const topic = await store.upsertTopic({ ...topicFixture(), id: undefined } as never);
   const cat = fakeCatalog(opts);
-  const publisher = createPublisher({ catalog: cat.catalog, store, logger: silentLogger(), autoPublish });
+  const publisher = createPublisher({
+    catalog: cat.catalog,
+    store,
+    logger: silentLogger(),
+    autoPublish,
+  });
   return { store, topic, cat, publisher };
 }
 
@@ -20,16 +25,28 @@ describe("publisher gates", () => {
   it("reports each failing gate", () => {
     const d = draftFixture({
       judge: { score: PUBLISH_GATES.minJudgeScore - 1, passed: false, notes: "" },
-      compliance: { originality: PUBLISH_GATES.minOriginality - 1, licenseOk: false, policyOk: false, notes: "" },
+      compliance: {
+        originality: PUBLISH_GATES.minOriginality - 1,
+        licenseOk: false,
+        policyOk: false,
+        notes: "",
+      },
       body: { fa: "" },
     });
     expect(evaluateGates(d, { trendScore: PUBLISH_GATES.minTrendScore - 1 }).sort()).toEqual(
-      ["fa_missing", "judge_failed", "judge_score", "license", "originality", "policy", "trend_score"].sort(),
+      [
+        "fa_missing",
+        "judge_failed",
+        "judge_score",
+        "license",
+        "originality",
+        "policy",
+        "trend_score",
+      ].sort(),
     );
-    expect(evaluateGates(draftFixture({ judge: null, compliance: null }), { trendScore: 90 })).toEqual([
-      "judge_missing",
-      "compliance_missing",
-    ]);
+    expect(
+      evaluateGates(draftFixture({ judge: null, compliance: null }), { trendScore: 90 }),
+    ).toEqual(["judge_missing", "compliance_missing"]);
   });
 });
 
@@ -56,7 +73,9 @@ describe("publisher", () => {
   it("compliance failure (originality/license) blocks auto-publish → review", async () => {
     const { store, topic, cat, publisher } = await setup(true);
     const out = await publisher.publish(
-      draftFixture({ compliance: { originality: 40, licenseOk: false, policyOk: true, notes: "" } }),
+      draftFixture({
+        compliance: { originality: 40, licenseOk: false, policyOk: true, notes: "" },
+      }),
       topic,
     );
     expect(out.state).toBe("review");
@@ -68,7 +87,9 @@ describe("publisher", () => {
   it("policy failure → rejected, never published", async () => {
     const { store, topic, cat, publisher } = await setup(true);
     const out = await publisher.publish(
-      draftFixture({ compliance: { originality: 99, licenseOk: true, policyOk: false, notes: "" } }),
+      draftFixture({
+        compliance: { originality: 99, licenseOk: true, policyOk: false, notes: "" },
+      }),
       topic,
     );
     expect(out.state).toBe("rejected");
@@ -79,9 +100,16 @@ describe("publisher", () => {
 
   it("low trend score or judge score → review", async () => {
     const { topic, publisher } = await setup(true);
-    expect((await publisher.publish(draftFixture(), { ...topic, trendScore: 30 })).state).toBe("review");
+    expect((await publisher.publish(draftFixture(), { ...topic, trendScore: 30 })).state).toBe(
+      "review",
+    );
     expect(
-      (await publisher.publish(draftFixture({ judge: { score: 70, passed: false, notes: "" } }), topic)).state,
+      (
+        await publisher.publish(
+          draftFixture({ judge: { score: 70, passed: false, notes: "" } }),
+          topic,
+        )
+      ).state,
     ).toBe("review");
   });
 

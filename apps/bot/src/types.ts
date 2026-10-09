@@ -42,17 +42,21 @@ export interface BotServices {
 
 export type BroadcastSegment = "all" | "buyers" | "non_buyers" | "subscribers";
 
-/** Handed to the worker's broadcast queue. The bot never fans out messages itself. */
+/**
+ * Handed to the worker's broadcast queue — structurally identical to
+ * `BroadcastPayload` from "@rasa/worker/public". The bot never fans out messages itself.
+ */
 export interface BroadcastPayload {
-  platform: Platform;
   segment: BroadcastSegment;
-  /** null = every locale */
-  locale: Locale | null;
-  /** Message body; `format` says how to send it. */
+  /** undefined = every locale */
+  locale?: Locale;
+  platform?: Platform;
   text: string;
-  format: "html" | "plain";
-  createdByUserId: string;
-  createdAt: string; // ISO
+  /** Telegram HTML parse mode (Bale receives plain text). */
+  html?: boolean;
+  buttons?: { text: string; url: string }[][];
+  /** Admin user id who requested it. */
+  requestedBy?: string;
 }
 
 /** One step of a multi-step flow. `idle` = free text goes to the concierge. */

@@ -2,7 +2,7 @@ import { LOCALES, type Locale } from "@rasa/shared";
 import { Composer, InlineKeyboard } from "grammy";
 import { cb } from "../callbacks";
 import { resetStep, track } from "../flow";
-import { escapeHtml, formatDate, formatStars, formatToman, isLocale, raw } from "../i18n";
+import { escapeHtml, formatDate, formatNumber, formatStars, formatToman, isLocale, raw } from "../i18n";
 import type { AppDeps, BotContext, BroadcastPayload, BroadcastSegment } from "../types";
 import { joinList, navRow, send, show, truncate } from "../ui";
 import { closeTicket, relayAdminReply, TICKET_TAG_RE, ticketTag } from "./support";
@@ -69,11 +69,11 @@ async function showStats(ctx: BotContext, app: AppDeps): Promise<void> {
   const fmtQ = (q: { query: string; count: number }[]) =>
     q
       .slice(0, 5)
-      .map((x) => `• ${escapeHtml(truncate(x.query, 40))} (${ctx.t("page.indicator", { page: x.count, pages: x.count }).split(" / ")[0]})`)
+      .map((x) => `• ${escapeHtml(truncate(x.query, 40))} (${formatNumber(L, x.count)})`)
       .join("\n");
   if (s.topQueries.length) lines.push("", ctx.t("admin.topQueries"), fmtQ(s.topQueries));
   if (s.zeroResultQueries.length) lines.push("", ctx.t("admin.zeroQueries"), fmtQ(s.zeroResultQueries));
-  await show(ctx, app, lines.join("\n"), navRow(new InlineKeyboard(), ctx.locale, cb.admin("st") === "a:st" ? "m:home" : undefined));
+  await show(ctx, app, lines.join("\n"), new InlineKeyboard().text(ctx.tp("btn.back"), "a:panel").text(ctx.tp("btn.home"), cb.menu("home")));
 }
 
 // ───────────────────────── review queue ─────────────────────────
@@ -203,18 +203,17 @@ async function confirmBroadcast(ctx: BotContext, app: AppDeps): Promise<void> {
     return;
   }
   const payload: BroadcastPayload = {
-    platform: app.platform,
     segment: step.segment ?? "all",
-    locale: step.locale ?? null,
+    ...(step.locale ? { locale: step.locale } : {}),
+    platform: app.platform,
     text: step.text,
-    format: app.caps.html ? "html" : "plain",
-    createdByUserId: ctx.user.id,
-    createdAt: app.now().toISOString(),
+    html: app.caps.html,
+    requestedBy: ctx.user.id,
   };
   const jobId = await enqueue(payload);
   track(app, "broadcast_sent", ctx.user.id, {
     segment: payload.segment,
-    locale: payload.locale,
+    locale: payload.locale ?? null,
     jobId: jobId ?? null,
   });
   await show(ctx, app, ctx.t("admin.bc.queued", { id: jobId ? `(${jobId})` : "" }));
@@ -266,6 +265,7 @@ export function adminComposer(app: AppDeps): Composer<BotContext> {
     }),
   );
 
+  c.callbackQuery("a:panel", guard((ctx) => showPanel(ctx, app)));
   c.callbackQuery("a:st", guard((ctx) => showStats(ctx, app)));
   c.callbackQuery("a:bc", guard((ctx) => startBroadcast(ctx, app)));
   c.callbackQuery("a:rv", guard((ctx) => showReview(ctx, app)));
@@ -331,4 +331,3 @@ export function adminComposer(app: AppDeps): Composer<BotContext> {
   return c;
 }
 
-export { adminOnly };
