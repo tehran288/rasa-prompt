@@ -33,18 +33,20 @@ export function createAnalyticsService(db: Db): AnalyticsService {
         .from(users)
         .where(inDay(users.createdAt));
 
+      const startIso = start.toISOString();
+      const endIso = end.toISOString();
       const [active] = await db.execute<{ n: number }>(sql`
         select count(*)::int as n from (
           select ${analyticsEvents.userId} as u from ${analyticsEvents}
-            where ${analyticsEvents.createdAt} >= ${start} and ${analyticsEvents.createdAt} < ${end}
+            where ${analyticsEvents.createdAt} >= ${startIso}::timestamptz and ${analyticsEvents.createdAt} < ${endIso}::timestamptz
               and ${analyticsEvents.userId} is not null
           union
           select ${searchLogs.userId} from ${searchLogs}
-            where ${searchLogs.createdAt} >= ${start} and ${searchLogs.createdAt} < ${end}
+            where ${searchLogs.createdAt} >= ${startIso}::timestamptz and ${searchLogs.createdAt} < ${endIso}::timestamptz
               and ${searchLogs.userId} is not null
           union
           select ${users.id} from ${users}
-            where ${users.lastSeenAt} >= ${start} and ${users.lastSeenAt} < ${end}
+            where ${users.lastSeenAt} >= ${startIso}::timestamptz and ${users.lastSeenAt} < ${endIso}::timestamptz
         ) a`);
 
       const [s] = await db
