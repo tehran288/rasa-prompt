@@ -41,12 +41,14 @@ function SheetContent({
   children,
   side = "right",
   showCloseButton = true,
+  closeLabel = "Close",
   container,
-  dir = "rtl",
+  dir,
   ...props
 }: SheetPrimitive.Popup.Props & {
   side?: "top" | "right" | "bottom" | "left"
   showCloseButton?: boolean
+  closeLabel?: string
   container?: SheetPrimitive.Portal.Props["container"]
 }) {
   const contained = container != null
@@ -84,7 +86,7 @@ function SheetContent({
              
              
             />
-            <span className="sr-only">بستن</span>
+            <span className="sr-only">{closeLabel}</span>
           </SheetPrimitive.Close>
         )}
       </SheetPrimitive.Popup>

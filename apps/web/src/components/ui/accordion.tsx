@@ -5,7 +5,7 @@ import { ChevronDownIcon, ChevronUpIcon } from "lucide-react"
 
 function Accordion({
   className,
-  dir = "rtl",
+  dir,
   ...props
 }: AccordionPrimitive.Root.Props) {
   return (

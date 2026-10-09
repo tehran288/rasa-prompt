@@ -43,7 +43,7 @@ function DialogContent({
   className,
   children,
   showCloseButton = true,
-  dir = "rtl",
+  dir,
   ...props
 }: DialogPrimitive.Popup.Props & {
   showCloseButton?: boolean
@@ -79,7 +79,7 @@ function DialogContent({
              
              
             />
-            <span className="sr-only">بستن</span>
+            <span className="sr-only">Close</span>
           </DialogPrimitive.Close>
         )}
       </DialogPrimitive.Popup>
@@ -117,7 +117,7 @@ function DialogFooter({
       {children}
       {showCloseButton && (
         <DialogPrimitive.Close render={<Button variant="outline" />}>
-          بستن
+          Close
         </DialogPrimitive.Close>
       )}
     </div>

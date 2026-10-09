@@ -31,7 +31,7 @@ function TooltipContent({
   align = "center",
   alignOffset = 0,
   children,
-  dir = "rtl",
+  dir,
   ...props
 }: TooltipPrimitive.Popup.Props &
   Pick<
