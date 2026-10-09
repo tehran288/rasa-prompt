@@ -282,11 +282,16 @@ export function createPaymentService(config: PaymentConfig, deps: PaymentDeps): 
         throw new DomainError("amount_mismatch");
       }
 
-      const { order, firstTime } = await orders.markPaid(existing.id, chargeId, totalAmount);
-      if (!firstTime) {
+      const paid = await orders.markPaid(existing.id, chargeId, totalAmount);
+      const order = paid.order;
+      // A retry of an order left in "paid" (grant failed last time) resumes fulfillment;
+      // anything already fulfilled is a true duplicate.
+      if (!paid.firstTime && order.status !== "paid") {
         logger.info({ orderId: order.id, chargeId }, "duplicate successful_payment ignored");
-        return { order, firstTime };
+        return { order, firstTime: false };
       }
+      if (!paid.firstTime) logger.warn({ orderId: order.id }, "resuming interrupted fulfillment");
+      const firstTime = true;
 
       await entitlements.grantForOrder(order);
       const locale = await localeOf(order.userId);
@@ -307,8 +312,9 @@ export function createPaymentService(config: PaymentConfig, deps: PaymentDeps): 
           credits: credit,
         })
         .catch((err) => logger.warn({ err }, "analytics payment_succeeded failed"));
+      const fulfilled = await orders.markFulfilled(order.id);
       logger.info({ orderId: order.id, provider: order.provider }, "order fulfilled");
-      return { order, firstTime };
+      return { order: fulfilled, firstTime };
     },
 
     async refund(orderId) {

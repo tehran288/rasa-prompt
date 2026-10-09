@@ -138,6 +138,20 @@ export function createFakes(clock: { now: Date }) {
       o.paidAt = new Date(clock.now);
       return { order: { ...o }, firstTime: true };
     },
+    async listForUser(userId, limit) {
+      return [...ordersById.values()]
+        .filter((o) => o.userId === userId)
+        .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+        .slice(0, limit)
+        .map((o) => ({ ...o }));
+    },
+    async markFulfilled(orderId) {
+      const o = ordersById.get(orderId);
+      if (!o) throw new DomainError("not_found");
+      if (o.status !== "paid" && o.status !== "fulfilled") throw new DomainError("invalid_state");
+      o.status = "fulfilled";
+      return { ...o };
+    },
     async markRefunded(orderId) {
       const o = ordersById.get(orderId);
       if (!o) throw new DomainError("not_found");

@@ -61,7 +61,7 @@ describe("PaymentService — Telegram Stars", () => {
       totalAmount: 299,
     });
     expect(res.firstTime).toBe(true);
-    expect(res.order.status).toBe("paid");
+    expect(res.order.status).toBe("fulfilled");
     expect(ctx.state.grants).toEqual([order.id]);
     expect(ctx.state.referralCalls).toEqual([user.id]);
     expect(ctx.state.events.map((e) => e.event)).toContain("payment_succeeded");
@@ -254,7 +254,7 @@ describe("PaymentService — Telegram Stars", () => {
       totalAmount: 99,
     });
     await expect(noRefund.payments.refund(o2.id)).rejects.toBeInstanceOf(DomainError);
-    expect(noRefund.state.ordersById.get(o2.id)?.status).toBe("paid");
+    expect(noRefund.state.ordersById.get(o2.id)?.status).toBe("fulfilled");
   });
 });
 
