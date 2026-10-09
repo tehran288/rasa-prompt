@@ -3,17 +3,17 @@
  * Mirrors @rasa/db normalizeForSearch: Arabic/Persian letter forms, digits, diacritics, ZWNJ.
  */
 const MAP: Record<string, string> = {
-  "ي": "ی",
-  "ى": "ی",
-  "ئ": "ی",
-  "ك": "ک",
-  "أ": "ا",
-  "إ": "ا",
-  "آ": "ا",
-  "ٱ": "ا",
-  "ة": "ه",
-  "ۀ": "ه",
-  "ؤ": "و",
+  ي: "ی",
+  ى: "ی",
+  ئ: "ی",
+  ك: "ک",
+  أ: "ا",
+  إ: "ا",
+  آ: "ا",
+  ٱ: "ا",
+  ة: "ه",
+  ۀ: "ه",
+  ؤ: "و",
 };
 
 export function normalizeSearch(input: string): string {

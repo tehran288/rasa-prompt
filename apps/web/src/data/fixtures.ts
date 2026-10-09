@@ -154,7 +154,11 @@ export const FIXTURE_PROMPTS: FixturePrompt[] = [
     priceStars: null,
     popularity: 98,
     tags: ["instagram", "caption", "کپشن", "تعليق", "hashtag"],
-    title: { fa: "کپشن فروش اینستاگرام", ar: "تعليق مبيعات إنستغرام", en: "Instagram sales caption" },
+    title: {
+      fa: "کپشن فروش اینستاگرام",
+      ar: "تعليق مبيعات إنستغرام",
+      en: "Instagram sales caption",
+    },
     summary: {
       fa: "کپشن کوتاه با قلاب، فایده، دعوت به اقدام و هشتگ بومی برای هر محصول.",
       ar: "تعليق قصير بخطّاف وفائدة ودعوة لاتخاذ إجراء ووسوم محلية لأي منتج.",
@@ -189,7 +193,11 @@ export const FIXTURE_PROMPTS: FixturePrompt[] = [
         type: "text",
         required: true,
         label: { fa: "مخاطب", ar: "الجمهور", en: "Audience" },
-        default: { fa: "زنان شاغل ۲۵ تا ۴۰ سال", ar: "نساء عاملات ٢٥–٤٠", en: "working women 25–40" },
+        default: {
+          fa: "زنان شاغل ۲۵ تا ۴۰ سال",
+          ar: "نساء عاملات ٢٥–٤٠",
+          en: "working women 25–40",
+        },
       },
       {
         name: "tone",
@@ -207,7 +215,11 @@ export const FIXTURE_PROMPTS: FixturePrompt[] = [
         type: "text",
         required: false,
         label: { fa: "پیشنهاد", ar: "العرض", en: "Offer" },
-        default: { fa: "ارسال رایگان تا جمعه", ar: "شحن مجاني حتى الجمعة", en: "free shipping until Friday" },
+        default: {
+          fa: "ارسال رایگان تا جمعه",
+          ar: "شحن مجاني حتى الجمعة",
+          en: "free shipping until Friday",
+        },
       },
     ],
   },
@@ -283,7 +295,11 @@ Language: plain, friendly English.`,
         type: "text",
         required: true,
         label: { fa: "موضوع", ar: "الموضوع", en: "Subject" },
-        default: { fa: "فیزیک: نقطه‌ی جوش", ar: "الفيزياء: نقطة الغليان", en: "physics: boiling point" },
+        default: {
+          fa: "فیزیک: نقطه‌ی جوش",
+          ar: "الفيزياء: نقطة الغليان",
+          en: "physics: boiling point",
+        },
       },
       {
         name: "level",
@@ -405,7 +421,11 @@ Code:
         type: "text",
         required: true,
         label: { fa: "کد", ar: "الكود", en: "Code" },
-        default: { fa: "(کد را اینجا بچسبانید)", ar: "(الصق الكود هنا)", en: "(paste your code here)" },
+        default: {
+          fa: "(کد را اینجا بچسبانید)",
+          ar: "(الصق الكود هنا)",
+          en: "(paste your code here)",
+        },
       },
     ],
   },
@@ -488,7 +508,11 @@ Transcript:
         type: "text",
         required: true,
         label: { fa: "نام جلسه", ar: "اسم الاجتماع", en: "Meeting" },
-        default: { fa: "جلسه‌ی هفتگی محصول", ar: "اجتماع المنتج الأسبوعي", en: "weekly product sync" },
+        default: {
+          fa: "جلسه‌ی هفتگی محصول",
+          ar: "اجتماع المنتج الأسبوعي",
+          en: "weekly product sync",
+        },
       },
       {
         name: "tone",
@@ -506,7 +530,11 @@ Transcript:
         type: "text",
         required: true,
         label: { fa: "متن جلسه", ar: "نص الاجتماع", en: "Transcript" },
-        default: { fa: "(متن را اینجا بچسبانید)", ar: "(الصق النص هنا)", en: "(paste the transcript here)" },
+        default: {
+          fa: "(متن را اینجا بچسبانید)",
+          ar: "(الصق النص هنا)",
+          en: "(paste the transcript here)",
+        },
       },
     ],
   },
@@ -608,7 +636,11 @@ Output: only the three prompt lines, no commentary.`,
         type: "select",
         required: true,
         label: { fa: "نسبت", ar: "النسبة", en: "Ratio" },
-        options: { fa: ["4:5", "16:9", "1:1"], ar: ["4:5", "16:9", "1:1"], en: ["4:5", "16:9", "1:1"] },
+        options: {
+          fa: ["4:5", "16:9", "1:1"],
+          ar: ["4:5", "16:9", "1:1"],
+          en: ["4:5", "16:9", "1:1"],
+        },
       },
     ],
   },
@@ -695,14 +727,22 @@ Lines:
         type: "text",
         required: false,
         label: { fa: "کلیدواژه‌ها", ar: "الكلمات المفتاحية", en: "Keywords" },
-        default: { fa: "رشد، داده‌محور، OKR", ar: "النمو، البيانات، OKR", en: "growth, data-driven, OKRs" },
+        default: {
+          fa: "رشد، داده‌محور، OKR",
+          ar: "النمو، البيانات، OKR",
+          en: "growth, data-driven, OKRs",
+        },
       },
       {
         name: "bullets",
         type: "text",
         required: true,
         label: { fa: "خط‌های رزومه", ar: "أسطر السيرة", en: "Résumé lines" },
-        default: { fa: "(خط‌ها را اینجا بچسبانید)", ar: "(الصق الأسطر هنا)", en: "(paste your lines here)" },
+        default: {
+          fa: "(خط‌ها را اینجا بچسبانید)",
+          ar: "(الصق الأسطر هنا)",
+          en: "(paste your lines here)",
+        },
       },
     ],
   },
@@ -796,14 +836,22 @@ Query:
         type: "text",
         required: false,
         label: { fa: "حجم داده", ar: "حجم البيانات", en: "Data volume" },
-        default: { fa: "orders حدود ۱۲ میلیون ردیف", ar: "orders نحو ١٢ مليون صف", en: "orders ~12M rows" },
+        default: {
+          fa: "orders حدود ۱۲ میلیون ردیف",
+          ar: "orders نحو ١٢ مليون صف",
+          en: "orders ~12M rows",
+        },
       },
       {
         name: "query",
         type: "text",
         required: true,
         label: { fa: "کوئری", ar: "الاستعلام", en: "Query" },
-        default: { fa: "(کوئری را اینجا بچسبانید)", ar: "(الصق الاستعلام هنا)", en: "(paste your query here)" },
+        default: {
+          fa: "(کوئری را اینجا بچسبانید)",
+          ar: "(الصق الاستعلام هنا)",
+          en: "(paste your query here)",
+        },
       },
     ],
   },
@@ -851,9 +899,24 @@ Query:
       en: "Role: identity designer specialising in Persian motifs.\nBrand: {{brand}} · field: {{industry}}\nPrinciples: the mark must stay legible at 16px…",
     },
     variables: [
-      { name: "brand", type: "text", required: true, label: { fa: "نام برند", ar: "اسم العلامة", en: "Brand name" } },
-      { name: "industry", type: "text", required: true, label: { fa: "حوزه", ar: "المجال", en: "Industry" } },
-      { name: "style", type: "select", required: true, label: { fa: "سبک", ar: "الأسلوب", en: "Style" } },
+      {
+        name: "brand",
+        type: "text",
+        required: true,
+        label: { fa: "نام برند", ar: "اسم العلامة", en: "Brand name" },
+      },
+      {
+        name: "industry",
+        type: "text",
+        required: true,
+        label: { fa: "حوزه", ar: "المجال", en: "Industry" },
+      },
+      {
+        name: "style",
+        type: "select",
+        required: true,
+        label: { fa: "سبک", ar: "الأسلوب", en: "Style" },
+      },
     ],
   },
   {
@@ -894,9 +957,24 @@ Query:
       en: "Role: senior SDR with a 12%+ reply rate.\nOur product: {{product}} · prospect: {{persona}}…",
     },
     variables: [
-      { name: "product", type: "text", required: true, label: { fa: "محصول", ar: "المنتج", en: "Product" } },
-      { name: "persona", type: "text", required: true, label: { fa: "مخاطب", ar: "المستلم", en: "Persona" } },
-      { name: "proof", type: "text", required: false, label: { fa: "شاهد موفقیت", ar: "دليل نجاح", en: "Proof point" } },
+      {
+        name: "product",
+        type: "text",
+        required: true,
+        label: { fa: "محصول", ar: "المنتج", en: "Product" },
+      },
+      {
+        name: "persona",
+        type: "text",
+        required: true,
+        label: { fa: "مخاطب", ar: "المستلم", en: "Persona" },
+      },
+      {
+        name: "proof",
+        type: "text",
+        required: false,
+        label: { fa: "شاهد موفقیت", ar: "دليل نجاح", en: "Proof point" },
+      },
     ],
   },
   {
@@ -915,7 +993,11 @@ Query:
     priceStars: 80,
     popularity: 86,
     tags: ["reels", "ریلز", "ريلز", "tiktok", "shorts"],
-    title: { fa: "سناریوی ریلز ۳۰ ثانیه‌ای", ar: "سيناريو ريلز ٣٠ ثانية", en: "30-second Reels script" },
+    title: {
+      fa: "سناریوی ریلز ۳۰ ثانیه‌ای",
+      ar: "سيناريو ريلز ٣٠ ثانية",
+      en: "30-second Reels script",
+    },
     summary: {
       fa: "قلاب ۳ ثانیه‌ی اول، شات‌لیست، متن روی تصویر و موزیک پیشنهادی.",
       ar: "خطّاف أول ٣ ثوانٍ، قائمة لقطات، نص على الشاشة وموسيقى مقترحة.",
@@ -937,7 +1019,12 @@ Query:
       en: "Role: short-form director with consumer-brand experience.\nProduct: {{product}} · goal: {{goal}}…",
     },
     variables: [
-      { name: "product", type: "text", required: true, label: { fa: "محصول", ar: "المنتج", en: "Product" } },
+      {
+        name: "product",
+        type: "text",
+        required: true,
+        label: { fa: "محصول", ar: "المنتج", en: "Product" },
+      },
       { name: "goal", type: "text", required: true, label: { fa: "هدف", ar: "الهدف", en: "Goal" } },
     ],
   },
@@ -983,9 +1070,24 @@ Query:
       en: "Role: campaign manager who knows the retail calendar.\nOccasion: {{occasion}} · shop: {{shop}}…",
     },
     variables: [
-      { name: "occasion", type: "select", required: true, label: { fa: "مناسبت", ar: "المناسبة", en: "Occasion" } },
-      { name: "shop", type: "text", required: true, label: { fa: "فروشگاه", ar: "المتجر", en: "Shop" } },
-      { name: "discount", type: "number", required: false, label: { fa: "سقف تخفیف", ar: "سقف الخصم", en: "Max discount" } },
+      {
+        name: "occasion",
+        type: "select",
+        required: true,
+        label: { fa: "مناسبت", ar: "المناسبة", en: "Occasion" },
+      },
+      {
+        name: "shop",
+        type: "text",
+        required: true,
+        label: { fa: "فروشگاه", ar: "المتجر", en: "Shop" },
+      },
+      {
+        name: "discount",
+        type: "number",
+        required: false,
+        label: { fa: "سقف تخفیف", ar: "سقف الخصم", en: "Max discount" },
+      },
     ],
   },
   {
@@ -1030,8 +1132,18 @@ Query:
       en: "Role: SEO editor with real market experience.\nPrimary keyword: {{keyword}} · intent: {{intent}}…",
     },
     variables: [
-      { name: "keyword", type: "text", required: true, label: { fa: "کلیدواژه", ar: "الكلمة المفتاحية", en: "Keyword" } },
-      { name: "intent", type: "select", required: true, label: { fa: "نیت جست‌وجو", ar: "نية البحث", en: "Search intent" } },
+      {
+        name: "keyword",
+        type: "text",
+        required: true,
+        label: { fa: "کلیدواژه", ar: "الكلمة المفتاحية", en: "Keyword" },
+      },
+      {
+        name: "intent",
+        type: "select",
+        required: true,
+        label: { fa: "نیت جست‌وجو", ar: "نية البحث", en: "Search intent" },
+      },
     ],
   },
   {
@@ -1076,8 +1188,18 @@ Query:
       en: "Role: YouTube content strategist.\nTopic: {{topic}} · audience: {{audience}}…",
     },
     variables: [
-      { name: "topic", type: "text", required: true, label: { fa: "موضوع", ar: "الموضوع", en: "Topic" } },
-      { name: "audience", type: "text", required: true, label: { fa: "مخاطب", ar: "الجمهور", en: "Audience" } },
+      {
+        name: "topic",
+        type: "text",
+        required: true,
+        label: { fa: "موضوع", ar: "الموضوع", en: "Topic" },
+      },
+      {
+        name: "audience",
+        type: "text",
+        required: true,
+        label: { fa: "مخاطب", ar: "الجمهور", en: "Audience" },
+      },
     ],
   },
   {
@@ -1122,8 +1244,18 @@ Query:
       en: "Role: e-commerce copywriter.\nProduct: {{product}} · specs: {{specs}}…",
     },
     variables: [
-      { name: "product", type: "text", required: true, label: { fa: "محصول", ar: "المنتج", en: "Product" } },
-      { name: "specs", type: "text", required: true, label: { fa: "مشخصات", ar: "المواصفات", en: "Specs" } },
+      {
+        name: "product",
+        type: "text",
+        required: true,
+        label: { fa: "محصول", ar: "المنتج", en: "Product" },
+      },
+      {
+        name: "specs",
+        type: "text",
+        required: true,
+        label: { fa: "مشخصات", ar: "المواصفات", en: "Specs" },
+      },
     ],
   },
   {
@@ -1158,8 +1290,8 @@ Query:
       en: "Builds components that work right-to-left from day one: logical properties only, ARIA roles, keyboard control, dark mode and a sample test.",
     },
     example: {
-      fa: "<Stepper dir=\"rtl\"> با aria-current، کلید‌های جهت‌دار معکوس در RTL و ۴ تست",
-      ar: "<Stepper dir=\"rtl\"> مع aria-current ومفاتيح أسهم معكوسة في RTL و٤ اختبارات",
+      fa: '<Stepper dir="rtl"> با aria-current، کلید‌های جهت‌دار معکوس در RTL و ۴ تست',
+      ar: '<Stepper dir="rtl"> مع aria-current ومفاتيح أسهم معكوسة في RTL و٤ اختبارات',
       en: '<Stepper dir="rtl"> with aria-current, mirrored arrow keys in RTL and 4 tests',
     },
     preview: {
@@ -1168,8 +1300,18 @@ Query:
       en: "Role: senior front-end engineer and accessibility specialist.\nComponent: {{component}} · stack: {{stack}}…",
     },
     variables: [
-      { name: "component", type: "text", required: true, label: { fa: "کامپوننت", ar: "المكوّن", en: "Component" } },
-      { name: "stack", type: "select", required: true, label: { fa: "پشته", ar: "التقنيات", en: "Stack" } },
+      {
+        name: "component",
+        type: "text",
+        required: true,
+        label: { fa: "کامپوننت", ar: "المكوّن", en: "Component" },
+      },
+      {
+        name: "stack",
+        type: "select",
+        required: true,
+        label: { fa: "پشته", ar: "التقنيات", en: "Stack" },
+      },
     ],
   },
   {
@@ -1210,8 +1352,18 @@ Query:
       en: "Role: brand strategist and senior editor.\nBrand: {{brand}} · samples below…",
     },
     variables: [
-      { name: "brand", type: "text", required: true, label: { fa: "برند", ar: "العلامة", en: "Brand" } },
-      { name: "samples", type: "text", required: true, label: { fa: "نمونه‌متن", ar: "نماذج", en: "Samples" } },
+      {
+        name: "brand",
+        type: "text",
+        required: true,
+        label: { fa: "برند", ar: "العلامة", en: "Brand" },
+      },
+      {
+        name: "samples",
+        type: "text",
+        required: true,
+        label: { fa: "نمونه‌متن", ar: "نماذج", en: "Samples" },
+      },
     ],
   },
   {
@@ -1256,8 +1408,18 @@ Query:
       en: "Role: executive ghostwriter.\nExperience: {{story}} · lesson: {{lesson}}…",
     },
     variables: [
-      { name: "story", type: "text", required: true, label: { fa: "تجربه", ar: "التجربة", en: "Story" } },
-      { name: "lesson", type: "text", required: true, label: { fa: "درس", ar: "الدرس", en: "Lesson" } },
+      {
+        name: "story",
+        type: "text",
+        required: true,
+        label: { fa: "تجربه", ar: "التجربة", en: "Story" },
+      },
+      {
+        name: "lesson",
+        type: "text",
+        required: true,
+        label: { fa: "درس", ar: "الدرس", en: "Lesson" },
+      },
     ],
   },
   {
@@ -1302,8 +1464,18 @@ Query:
       en: "Role: Python data engineer.\nFile: {{file}} · columns: {{columns}}…",
     },
     variables: [
-      { name: "file", type: "text", required: true, label: { fa: "فایل", ar: "الملف", en: "File" } },
-      { name: "columns", type: "text", required: true, label: { fa: "ستون‌ها", ar: "الأعمدة", en: "Columns" } },
+      {
+        name: "file",
+        type: "text",
+        required: true,
+        label: { fa: "فایل", ar: "الملف", en: "File" },
+      },
+      {
+        name: "columns",
+        type: "text",
+        required: true,
+        label: { fa: "ستون‌ها", ar: "الأعمدة", en: "Columns" },
+      },
     ],
   },
   {
@@ -1348,8 +1520,18 @@ Query:
       en: "Role: study coach grounded in learning science.\nDays left: {{days}}…",
     },
     variables: [
-      { name: "days", type: "number", required: true, label: { fa: "روزهای باقی‌مانده", ar: "الأيام المتبقية", en: "Days left" } },
-      { name: "weak", type: "text", required: true, label: { fa: "درس‌های ضعیف", ar: "المواد الضعيفة", en: "Weak subjects" } },
+      {
+        name: "days",
+        type: "number",
+        required: true,
+        label: { fa: "روزهای باقی‌مانده", ar: "الأيام المتبقية", en: "Days left" },
+      },
+      {
+        name: "weak",
+        type: "text",
+        required: true,
+        label: { fa: "درس‌های ضعیف", ar: "المواد الضعيفة", en: "Weak subjects" },
+      },
     ],
   },
 
@@ -1396,9 +1578,19 @@ Query:
       en: "Role: DM sales assistant for {{business}}.\nStep 1: classify intent as one of: purchase, price, support, partnership, spam…",
     },
     variables: [
-      { name: "business", type: "text", required: true, label: { fa: "کسب‌وکار", ar: "النشاط", en: "Business" } },
+      {
+        name: "business",
+        type: "text",
+        required: true,
+        label: { fa: "کسب‌وکار", ar: "النشاط", en: "Business" },
+      },
       { name: "crm", type: "select", required: true, label: { fa: "CRM", ar: "CRM", en: "CRM" } },
-      { name: "hours", type: "text", required: false, label: { fa: "ساعت کاری", ar: "ساعات العمل", en: "Working hours" } },
+      {
+        name: "hours",
+        type: "text",
+        required: false,
+        label: { fa: "ساعت کاری", ar: "ساعات العمل", en: "Working hours" },
+      },
     ],
   },
   {
@@ -1443,9 +1635,24 @@ Query:
       en: "Role: commercial product photographer and lighting director.\nProduct: {{product}} · material: {{material}}\nConsistency rule: every scene uses one 85mm lens…",
     },
     variables: [
-      { name: "product", type: "text", required: true, label: { fa: "محصول", ar: "المنتج", en: "Product" } },
-      { name: "material", type: "text", required: true, label: { fa: "جنس", ar: "الخامة", en: "Material" } },
-      { name: "scene", type: "select", required: true, label: { fa: "صحنه", ar: "المشهد", en: "Scene" } },
+      {
+        name: "product",
+        type: "text",
+        required: true,
+        label: { fa: "محصول", ar: "المنتج", en: "Product" },
+      },
+      {
+        name: "material",
+        type: "text",
+        required: true,
+        label: { fa: "جنس", ar: "الخامة", en: "Material" },
+      },
+      {
+        name: "scene",
+        type: "select",
+        required: true,
+        label: { fa: "صحنه", ar: "المشهد", en: "Scene" },
+      },
     ],
   },
   {
@@ -1490,8 +1697,18 @@ Query:
       en: "Role: commercial contracts advisor (not a lawyer).\nOur side: {{party}} · contract type: {{type}}…",
     },
     variables: [
-      { name: "party", type: "text", required: true, label: { fa: "طرف ما", ar: "طرفنا", en: "Our side" } },
-      { name: "type", type: "select", required: true, label: { fa: "نوع قرارداد", ar: "نوع العقد", en: "Contract type" } },
+      {
+        name: "party",
+        type: "text",
+        required: true,
+        label: { fa: "طرف ما", ar: "طرفنا", en: "Our side" },
+      },
+      {
+        name: "type",
+        type: "select",
+        required: true,
+        label: { fa: "نوع قرارداد", ar: "نوع العقد", en: "Contract type" },
+      },
     ],
   },
   {
@@ -1536,8 +1753,18 @@ Query:
       en: "Role: support specialist at {{company}}, courteous and precise.\nBoundaries: answer only from the knowledge base; say so when you don't know…",
     },
     variables: [
-      { name: "company", type: "text", required: true, label: { fa: "شرکت", ar: "الشركة", en: "Company" } },
-      { name: "policies", type: "text", required: true, label: { fa: "سیاست‌ها", ar: "السياسات", en: "Policies" } },
+      {
+        name: "company",
+        type: "text",
+        required: true,
+        label: { fa: "شرکت", ar: "الشركة", en: "Company" },
+      },
+      {
+        name: "policies",
+        type: "text",
+        required: true,
+        label: { fa: "سیاست‌ها", ar: "السياسات", en: "Policies" },
+      },
     ],
   },
   {
@@ -1582,9 +1809,24 @@ Query:
       en: "Role: commercial director and cinematographer.\nProduct: {{product}} · mood: {{mood}}\nContinuity rule: backdrop colour and light direction stay fixed across shots…",
     },
     variables: [
-      { name: "product", type: "text", required: true, label: { fa: "محصول", ar: "المنتج", en: "Product" } },
-      { name: "mood", type: "text", required: true, label: { fa: "حس", ar: "الإحساس", en: "Mood" } },
-      { name: "model", type: "select", required: true, label: { fa: "مدل", ar: "النموذج", en: "Model" } },
+      {
+        name: "product",
+        type: "text",
+        required: true,
+        label: { fa: "محصول", ar: "المنتج", en: "Product" },
+      },
+      {
+        name: "mood",
+        type: "text",
+        required: true,
+        label: { fa: "حس", ar: "الإحساس", en: "Mood" },
+      },
+      {
+        name: "model",
+        type: "select",
+        required: true,
+        label: { fa: "مدل", ar: "النموذج", en: "Model" },
+      },
     ],
   },
   {
@@ -1629,8 +1871,18 @@ Query:
       en: "Role: venture capital analyst.\nMethod: before writing, ask 12 questions one at a time…",
     },
     variables: [
-      { name: "startup", type: "text", required: true, label: { fa: "استارتاپ", ar: "الشركة الناشئة", en: "Startup" } },
-      { name: "stage", type: "select", required: true, label: { fa: "مرحله", ar: "المرحلة", en: "Stage" } },
+      {
+        name: "startup",
+        type: "text",
+        required: true,
+        label: { fa: "استارتاپ", ar: "الشركة الناشئة", en: "Startup" },
+      },
+      {
+        name: "stage",
+        type: "select",
+        required: true,
+        label: { fa: "مرحله", ar: "المرحلة", en: "Stage" },
+      },
     ],
   },
   {
@@ -1675,8 +1927,18 @@ Query:
       en: "Role: conversation designer for messenger bots.\nShop: {{shop}} · platform: {{platform}}…",
     },
     variables: [
-      { name: "shop", type: "text", required: true, label: { fa: "فروشگاه", ar: "المتجر", en: "Shop" } },
-      { name: "platform", type: "select", required: true, label: { fa: "پلتفرم", ar: "المنصة", en: "Platform" } },
+      {
+        name: "shop",
+        type: "text",
+        required: true,
+        label: { fa: "فروشگاه", ar: "المتجر", en: "Shop" },
+      },
+      {
+        name: "platform",
+        type: "select",
+        required: true,
+        label: { fa: "پلتفرم", ar: "المنصة", en: "Platform" },
+      },
     ],
   },
   {
@@ -1721,8 +1983,18 @@ Query:
       en: "Role: digital advertising art director.\nMessage: {{message}} · palette: {{palette}}…",
     },
     variables: [
-      { name: "message", type: "text", required: true, label: { fa: "پیام", ar: "الرسالة", en: "Message" } },
-      { name: "palette", type: "text", required: false, label: { fa: "پالت", ar: "الألوان", en: "Palette" } },
+      {
+        name: "message",
+        type: "text",
+        required: true,
+        label: { fa: "پیام", ar: "الرسالة", en: "Message" },
+      },
+      {
+        name: "palette",
+        type: "text",
+        required: false,
+        label: { fa: "پالت", ar: "الألوان", en: "Palette" },
+      },
     ],
   },
   {
@@ -1767,7 +2039,12 @@ Query:
       en: "Role: poster designer versed in Persian arts.\nEvent: {{event}}…",
     },
     variables: [
-      { name: "event", type: "text", required: true, label: { fa: "مناسبت", ar: "المناسبة", en: "Event" } },
+      {
+        name: "event",
+        type: "text",
+        required: true,
+        label: { fa: "مناسبت", ar: "المناسبة", en: "Event" },
+      },
     ],
   },
 ];

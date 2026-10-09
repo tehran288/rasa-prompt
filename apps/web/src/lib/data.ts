@@ -11,11 +11,7 @@
  */
 import type { CatalogService, IntelStore, PromptDetail, PromptSummary } from "@rasa/shared";
 import { cache } from "react";
-import {
-  FIXTURE_CATEGORIES,
-  FIXTURE_PROMPTS,
-  FIXTURE_TRENDS,
-} from "@/data/fixtures";
+import { FIXTURE_CATEGORIES, FIXTURE_PROMPTS, FIXTURE_TRENDS } from "@/data/fixtures";
 import type {
   CategoryView,
   FixturePrompt,
@@ -35,6 +31,8 @@ export interface Catalog {
   listCategories(locale: Loc): Promise<CategoryView[]>;
   listTrends(locale: Loc): Promise<TrendView[]>;
   listModels(locale: Loc): Promise<ModelView[]>;
+  /** Records a (zero-result) search so the trend agents can pick it up as demand. */
+  logSearch(query: string, locale: Loc): Promise<void>;
 }
 
 const pick = (t: L3, locale: Loc) => t[locale] || t.fa;
@@ -131,6 +129,9 @@ const fixtureCatalog: Catalog = {
   async listModels() {
     return modelsFrom(FIXTURE_PROMPTS);
   },
+  async logSearch(query, locale) {
+    console.info(`[search] zero-result locale=${locale} q=${JSON.stringify(query.slice(0, 120))}`);
+  },
 };
 
 // ───────────────────────────── Database adapter ─────────────────────────────
@@ -216,8 +217,8 @@ function createDbCatalog(mod: DbModule, url: string): Catalog {
         score: Math.round(t.trendScore),
         sources: [],
         regions: t.regions,
-        series: [t.scores.volume, t.scores.velocity, t.scores.commercialIntent, t.trendScore].map((n) =>
-          Math.max(1, Math.round(n)),
+        series: [t.scores.volume, t.scores.velocity, t.scores.commercialIntent, t.trendScore].map(
+          (n) => Math.max(1, Math.round(n)),
         ),
         type: t.outputType,
         promptSlugs: [],
@@ -225,6 +226,10 @@ function createDbCatalog(mod: DbModule, url: string): Catalog {
     },
     async listModels(locale) {
       return modelsFrom(await this.listPrompts(locale));
+    },
+    async logSearch(query, locale) {
+      // CatalogService.search writes a SearchLog row (the intel analyst reads zero-result queries).
+      await catalog.search(query, locale, { pageSize: 1 });
     },
   };
 }
@@ -248,6 +253,7 @@ function withFallback(primary: Catalog): Catalog {
     listCategories: guard(primary.listCategories.bind(primary), fixtureCatalog.listCategories),
     listTrends: guard(primary.listTrends.bind(primary), fixtureCatalog.listTrends),
     listModels: guard(primary.listModels.bind(primary), fixtureCatalog.listModels),
+    logSearch: guard(primary.logSearch.bind(primary), fixtureCatalog.logSearch),
   };
 }
 
@@ -257,7 +263,7 @@ async function resolveCatalog(): Promise<Catalog> {
   const url = process.env.DATABASE_URL;
   if (!url || process.env.RASA_WEB_FIXTURES === "1") return fixtureCatalog;
   try {
-    const mod = (await import("@rasa/db")) as unknown as Partial<DbModule>;
+    const mod = (await import("./db-entry")) as unknown as Partial<DbModule>;
     if (typeof mod.createDb !== "function" || typeof mod.createServices !== "function") {
       return fixtureCatalog;
     }
@@ -279,7 +285,9 @@ export const getPrompts = cache(async (locale: Loc) => (await getCatalog()).list
 export const getPrompt = cache(async (slug: string, locale: Loc) =>
   (await getCatalog()).getPrompt(slug, locale),
 );
-export const getCategories = cache(async (locale: Loc) => (await getCatalog()).listCategories(locale));
+export const getCategories = cache(async (locale: Loc) =>
+  (await getCatalog()).listCategories(locale),
+);
 export const getTrends = cache(async (locale: Loc) => (await getCatalog()).listTrends(locale));
 export const getModels = cache(async (locale: Loc) => (await getCatalog()).listModels(locale));
 

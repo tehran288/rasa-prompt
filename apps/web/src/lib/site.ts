@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import { type AppLocale, locales } from "@/i18n/routing";
 
-export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://rasa-prompt.ir").replace(/\/$/, "");
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://rasa-prompt.ir").replace(
+  /\/$/,
+  "",
+);
 export const BOT_USERNAME = process.env.NEXT_PUBLIC_BOT_USERNAME ?? "RasaPromptBot";
 export const TELEGRAM_URL = `https://t.me/${BOT_USERNAME}`;
 export const BALE_URL = `https://ble.ir/${BOT_USERNAME}`;

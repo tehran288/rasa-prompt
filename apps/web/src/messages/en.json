@@ -128,7 +128,10 @@
     "steps": [
       ["Find", "Use language-aware search or browse categories to find the prompt for your job."],
       ["Fill", "Type your variables into the form; the final prompt is built instantly."],
-      ["Get results", "Copy it or run it in the bot. Your version stays current with every new model."]
+      [
+        "Get results",
+        "Copy it or run it in the bot. Your version stays current with every new model."
+      ]
     ]
   },
   "featured": {
@@ -188,16 +191,76 @@
     "outputs": "Outputs",
     "gate": "Quality gate",
     "stages": [
-      { "name": "Scouts", "role": "Reddit, HN, GitHub, Google Trends, YouTube", "in": "Public, permitted APIs", "out": "Raw signals with source and metric", "gate": "Respect robots.txt and rate limits" },
-      { "name": "Analyst", "role": "Cluster & score trends", "in": "Signals from the last 72 hours", "out": "A trend topic scored on velocity, volume, intent and gap", "gate": "Trend score ≥ 60" },
-      { "name": "Researcher", "role": "Web research with citations", "in": "The trend topic", "out": "Cited research notes", "gate": "At least one source per claim" },
-      { "name": "Prompt engineer", "role": "Writes the original prompt", "in": "Research + official model guides", "out": "A draft with variables and sample inputs", "gate": "Role, task, constraints, output structure" },
-      { "name": "Critic", "role": "Attacks ambiguity", "in": "The draft", "out": "Issues list and a revised version", "gate": "No open critical issues" },
-      { "name": "Tester & judge", "role": "Runs on models, grades", "in": "Prompt + 3 real inputs", "out": "A 0–100 score per model", "gate": "Score ≥ 80 on target models" },
-      { "name": "Compliance", "role": "Originality, license, policy", "in": "Prompt + source snippets", "out": "n-gram overlap and policy report", "gate": "≥ 85% original, allowed license" },
-      { "name": "Localizer", "role": "fa ↔ ar ↔ en", "in": "The approved prompt", "out": "Three native versions with identical variables", "gate": "Variables and constraints match in all three" },
-      { "name": "Pricer", "role": "Tier & suggested price", "in": "Score, demand, complexity", "out": "Tier and price in Toman and Stars", "gate": "Within pricing policy" },
-      { "name": "Editor-in-chief", "role": "Publish or your review queue", "in": "The full package", "out": "Catalog publish or human review queue", "gate": "Auto-publish only with your permission" }
+      {
+        "name": "Scouts",
+        "role": "Reddit, HN, GitHub, Google Trends, YouTube",
+        "in": "Public, permitted APIs",
+        "out": "Raw signals with source and metric",
+        "gate": "Respect robots.txt and rate limits"
+      },
+      {
+        "name": "Analyst",
+        "role": "Cluster & score trends",
+        "in": "Signals from the last 72 hours",
+        "out": "A trend topic scored on velocity, volume, intent and gap",
+        "gate": "Trend score ≥ 60"
+      },
+      {
+        "name": "Researcher",
+        "role": "Web research with citations",
+        "in": "The trend topic",
+        "out": "Cited research notes",
+        "gate": "At least one source per claim"
+      },
+      {
+        "name": "Prompt engineer",
+        "role": "Writes the original prompt",
+        "in": "Research + official model guides",
+        "out": "A draft with variables and sample inputs",
+        "gate": "Role, task, constraints, output structure"
+      },
+      {
+        "name": "Critic",
+        "role": "Attacks ambiguity",
+        "in": "The draft",
+        "out": "Issues list and a revised version",
+        "gate": "No open critical issues"
+      },
+      {
+        "name": "Tester & judge",
+        "role": "Runs on models, grades",
+        "in": "Prompt + 3 real inputs",
+        "out": "A 0–100 score per model",
+        "gate": "Score ≥ 80 on target models"
+      },
+      {
+        "name": "Compliance",
+        "role": "Originality, license, policy",
+        "in": "Prompt + source snippets",
+        "out": "n-gram overlap and policy report",
+        "gate": "≥ 85% original, allowed license"
+      },
+      {
+        "name": "Localizer",
+        "role": "fa ↔ ar ↔ en",
+        "in": "The approved prompt",
+        "out": "Three native versions with identical variables",
+        "gate": "Variables and constraints match in all three"
+      },
+      {
+        "name": "Pricer",
+        "role": "Tier & suggested price",
+        "in": "Score, demand, complexity",
+        "out": "Tier and price in Toman and Stars",
+        "gate": "Within pricing policy"
+      },
+      {
+        "name": "Editor-in-chief",
+        "role": "Publish or your review queue",
+        "in": "The full package",
+        "out": "Catalog publish or human review queue",
+        "gate": "Auto-publish only with your permission"
+      }
     ],
     "log": [
       ["t", "03:00", " daily run started"],
@@ -218,7 +281,10 @@
     "sourcesDesc": "Public sources only, via official APIs or permitted fetching, with a clear User-Agent.",
     "sources": [
       ["Google Trends", "Search interest in Iran, Saudi Arabia, the UAE, Egypt and worldwide"],
-      ["Reddit", "ChatGPT, PromptEngineering, midjourney and ClaudeAI communities via the official API"],
+      [
+        "Reddit",
+        "ChatGPT, PromptEngineering, midjourney and ClaudeAI communities via the official API"
+      ],
       ["Hacker News", "Technical discussion and new tools"],
       ["GitHub & Hugging Face", "Repos and datasets, permissive licenses only"],
       ["Product Hunt & YouTube", "Rising products and tutorials"],
@@ -227,10 +293,22 @@
     ],
     "legalTitle": "Legal & ethical principles",
     "legal": [
-      ["Signals, not copying", "We collect topics, keywords and metrics, never the text of other people's paid prompts."],
-      ["Originality check", "Every prompt's n-gram overlap with its sources is measured; below 85% originality it doesn't ship."],
-      ["Clear licensing", "Text is only imported from CC0, MIT, Apache-2.0, CC-BY-4.0 and Unlicense sources, with attribution kept."],
-      ["Human review queue", "Auto-publish is off by default; every prompt waits for a human editor's approval."]
+      [
+        "Signals, not copying",
+        "We collect topics, keywords and metrics, never the text of other people's paid prompts."
+      ],
+      [
+        "Originality check",
+        "Every prompt's n-gram overlap with its sources is measured; below 85% originality it doesn't ship."
+      ],
+      [
+        "Clear licensing",
+        "Text is only imported from CC0, MIT, Apache-2.0, CC-BY-4.0 and Unlicense sources, with attribution kept."
+      ],
+      [
+        "Human review queue",
+        "Auto-publish is off by default; every prompt waits for a human editor's approval."
+      ]
     ]
   },
   "bots": {
@@ -253,23 +331,43 @@
       ["Invite friends", "Get 50 credits for every friend who buys."]
     ],
     "stepsTitle": "Start in three steps",
-    "steps": ["Open the bot in Telegram or Bale and tap /start.", "Pick your language and say what prompt you need.", "See the preview, then buy or fill the variables."],
+    "steps": [
+      "Open the bot in Telegram or Bale and tap /start.",
+      "Pick your language and say what prompt you need.",
+      "See the preview, then buy or fill the variables."
+    ],
     "chat": {
       "tg": [
         ["me", "/start"],
-        ["bot", "Welcome to Rasa Prompt 👋\nTested prompts for ChatGPT, Claude, Midjourney and more.", ["🔎 Search", "📚 Categories", "🔥 Trends", "✨ Builder", "🗂 My library|full"]],
+        [
+          "bot",
+          "Welcome to Rasa Prompt 👋\nTested prompts for ChatGPT, Claude, Midjourney and more.",
+          ["🔎 Search", "📚 Categories", "🔥 Trends", "✨ Builder", "🗂 My library|full"]
+        ],
         ["me", "I need a prompt for product photos"],
-        ["bot", "💎 Studio product photos without a photographer\n✓ Tested · Flux · Midjourney · score 91", ["⭐ Buy for 230 Stars|full", "👀 Preview", "⬅️ Back"]],
+        [
+          "bot",
+          "💎 Studio product photos without a photographer\n✓ Tested · Flux · Midjourney · score 91",
+          ["⭐ Buy for 230 Stars|full", "👀 Preview", "⬅️ Back"]
+        ],
         ["inv", "⭐ 230 Stars · Pay"],
         ["bot", "✅ Paid. The full prompt is in My library.\n🎁 Invite a friend, get 50 credits."]
       ],
       "bale": [
         ["me", "/start"],
-        ["bot", "Hi! I'm the Rasa Prompt assistant on Bale 🌿", ["🔎 Search", "✨ Builder", "💎 Plans", "🆘 Support"]],
+        [
+          "bot",
+          "Hi! I'm the Rasa Prompt assistant on Bale 🌿",
+          ["🔎 Search", "✨ Builder", "💎 Plans", "🆘 Support"]
+        ],
         ["me", "✨ Builder"],
         ["bot", "Describe your idea, e.g. \"café opening ad\"\n(3 free builds today)"],
         ["me", "café opening ad"],
-        ["bot", "Your prompt is ready ✅\nRole: local copywriter…\nVariables: cafe_name · area · discount", ["🧩 Fill variables|full", "💾 Save"]],
+        [
+          "bot",
+          "Your prompt is ready ✅\nRole: local copywriter…\nVariables: cafe_name · area · discount",
+          ["🧩 Fill variables|full", "💾 Save"]
+        ],
         ["inv", "1,990,000 IRR · Pay with Bale wallet"]
       ]
     }
@@ -281,9 +379,27 @@
     "currency": "Currency",
     "featured": "Our pick",
     "plans": [
-      { "code": "pro_monthly", "name": "Pro monthly", "per": "per month", "features": ["All Pro prompts", "200 run credits a month", "Automatic version updates"], "cta": "Start Pro" },
-      { "code": "pro_yearly", "name": "Pro yearly", "per": "per year · about 5 months free", "features": ["Pro + Premium", "250 credits a month", "Unlimited prompt builder"], "cta": "Best value" },
-      { "code": "lifetime", "name": "Lifetime", "per": "one payment · limited seats", "features": ["Everything, forever", "300 credits a month", "Early access to trends"], "cta": "Get lifetime" }
+      {
+        "code": "pro_monthly",
+        "name": "Pro monthly",
+        "per": "per month",
+        "features": ["All Pro prompts", "200 run credits a month", "Automatic version updates"],
+        "cta": "Start Pro"
+      },
+      {
+        "code": "pro_yearly",
+        "name": "Pro yearly",
+        "per": "per year · about 5 months free",
+        "features": ["Pro + Premium", "250 credits a month", "Unlimited prompt builder"],
+        "cta": "Best value"
+      },
+      {
+        "code": "lifetime",
+        "name": "Lifetime",
+        "per": "one payment · limited seats",
+        "features": ["Everything, forever", "300 credits a month", "Early access to trends"],
+        "cta": "Get lifetime"
+      }
     ],
     "payNote": "Checkout currently happens inside the Telegram bot (Stars) or the Bale bot (wallet). Website checkout is coming soon.",
     "compareTitle": "Full comparison",
@@ -302,21 +418,48 @@
     "guaranteeText": "Not happy within 7 days of purchase? Tap Support in the bot and you get a full refund. Telegram Stars are returned directly.",
     "faqTitle": "Billing questions",
     "faqs": [
-      ["Does it auto-renew?", "No. Your plan ends with its period and you get a reminder; nothing is charged automatically."],
-      ["Why do Stars and Toman prices differ?", "Stars are Telegram's currency for digital goods and are priced separately. Both give exactly the same access."],
-      ["What about prompts I bought individually?", "They stay in your library forever, even without a plan."],
-      ["Do you issue invoices?", "Yes, once website checkout launches. For now a receipt is sent inside the bot."]
+      [
+        "Does it auto-renew?",
+        "No. Your plan ends with its period and you get a reminder; nothing is charged automatically."
+      ],
+      [
+        "Why do Stars and Toman prices differ?",
+        "Stars are Telegram's currency for digital goods and are priced separately. Both give exactly the same access."
+      ],
+      [
+        "What about prompts I bought individually?",
+        "They stay in your library forever, even without a plan."
+      ],
+      [
+        "Do you issue invoices?",
+        "Yes, once website checkout launches. For now a receipt is sent inside the bot."
+      ]
     ]
   },
   "faq": {
     "kicker": "FAQ",
     "title": "Before you buy",
     "items": [
-      ["What does \"tested\" mean?", "Every version runs on its target models with three real inputs, and an automated judge grades it on a fixed rubric (relevance, completeness, format, language quality, safety). Below 80 it doesn't ship."],
-      ["What happens when a new model ships?", "The update agent re-tests every prompt in that model family. If the score drops, a new version is written, free for past buyers."],
-      ["How do I pay?", "Telegram Stars in Telegram, the Bale wallet in Bale, and soon by card on the website. 7-day money-back guarantee."],
-      ["Can I use prompts for my clients?", "Yes, commercial use is allowed. Only reselling the prompt itself is not."],
-      ["Are the prompts original?", "Yes. Agents collect trend signals only and write the text from scratch; every prompt passes an originality check before it ships."]
+      [
+        "What does \"tested\" mean?",
+        "Every version runs on its target models with three real inputs, and an automated judge grades it on a fixed rubric (relevance, completeness, format, language quality, safety). Below 80 it doesn't ship."
+      ],
+      [
+        "What happens when a new model ships?",
+        "The update agent re-tests every prompt in that model family. If the score drops, a new version is written, free for past buyers."
+      ],
+      [
+        "How do I pay?",
+        "Telegram Stars in Telegram, the Bale wallet in Bale, and soon by card on the website. 7-day money-back guarantee."
+      ],
+      [
+        "Can I use prompts for my clients?",
+        "Yes, commercial use is allowed. Only reselling the prompt itself is not."
+      ],
+      [
+        "Are the prompts original?",
+        "Yes. Agents collect trend signals only and write the text from scratch; every prompt passes an originality check before it ships."
+      ]
     ]
   },
   "testimonials": {
@@ -324,9 +467,21 @@
     "title": "What beta testers told us",
     "note": "Sample showcase. Quotes are paraphrased from our beta test and names are pseudonyms.",
     "items": [
-      ["My captions no longer read like translations. DM reply rates nearly doubled.", "Negar", "Handmade shop, Tehran"],
-      ["I set up the n8n workflow in one evening. It used to take a week.", "Khaled", "Digital agency, Dubai"],
-      ["Knowing it was tested on Claude and GPT gives me peace of mind.", "Sarah", "Content creator, Cairo"]
+      [
+        "My captions no longer read like translations. DM reply rates nearly doubled.",
+        "Negar",
+        "Handmade shop, Tehran"
+      ],
+      [
+        "I set up the n8n workflow in one evening. It used to take a week.",
+        "Khaled",
+        "Digital agency, Dubai"
+      ],
+      [
+        "Knowing it was tested on Claude and GPT gives me peace of mind.",
+        "Sarah",
+        "Content creator, Cairo"
+      ]
     ]
   },
   "newsletter": {
@@ -390,7 +545,11 @@
     "category": "Category",
     "type": "Output type",
     "howToUse": "How to use",
-    "howSteps": ["Fill the variables.", "Copy the final prompt.", "Paste it into any model from the tested list."],
+    "howSteps": [
+      "Fill the variables.",
+      "Copy the final prompt.",
+      "Paste it into any model from the tested list."
+    ],
     "stars": "{count, number} Stars",
     "price": "Price"
   },
@@ -409,33 +568,84 @@
   "pages": {
     "aboutKicker": "About",
     "about": [
-      ["Why Rasa?", "Most prompts you find online were never tested on a real model, and machine-translating them into Persian or Arabic ruins the result. We built Rasa Prompt so every prompt is run, scored and localized before it is sold."],
-      ["How we work", "A team of ten specialist agents finds trends in public sources, writes original prompts, tests them on target models and localizes them into three languages. A human editor reviews everything before it ships."],
-      ["What we commit to", "Transparent quality scores and test dates, respect for other authors' rights, minimal user data, and a 7-day money-back guarantee."]
+      [
+        "Why Rasa?",
+        "Most prompts you find online were never tested on a real model, and machine-translating them into Persian or Arabic ruins the result. We built Rasa Prompt so every prompt is run, scored and localized before it is sold."
+      ],
+      [
+        "How we work",
+        "A team of ten specialist agents finds trends in public sources, writes original prompts, tests them on target models and localizes them into three languages. A human editor reviews everything before it ships."
+      ],
+      [
+        "What we commit to",
+        "Transparent quality scores and test dates, respect for other authors' rights, minimal user data, and a 7-day money-back guarantee."
+      ]
     ],
     "termsKicker": "Last updated: October 2026",
     "terms": [
-      ["Acceptance", "By using the Rasa Prompt website or bots you accept these terms. If you don't agree, please don't use the services."],
-      ["License", "A purchase or plan gives you a perpetual, non-exclusive license to use the prompts for personal and commercial work, including client work. Reselling, publicly publishing or repackaging the prompt text is prohibited."],
-      ["Model outputs", "Ownership of outputs you create with AI models is governed by that provider's terms. We don't guarantee a specific result; the quality score reflects our testing, not a promise."],
-      ["Account & credits", "Monthly run credits are non-transferable, have no cash value and expire at the end of the period."],
-      ["Prohibited use", "Using prompts for illegal content, deception, harassment or infringing others' rights is prohibited and may lead to account suspension."],
+      [
+        "Acceptance",
+        "By using the Rasa Prompt website or bots you accept these terms. If you don't agree, please don't use the services."
+      ],
+      [
+        "License",
+        "A purchase or plan gives you a perpetual, non-exclusive license to use the prompts for personal and commercial work, including client work. Reselling, publicly publishing or repackaging the prompt text is prohibited."
+      ],
+      [
+        "Model outputs",
+        "Ownership of outputs you create with AI models is governed by that provider's terms. We don't guarantee a specific result; the quality score reflects our testing, not a promise."
+      ],
+      [
+        "Account & credits",
+        "Monthly run credits are non-transferable, have no cash value and expire at the end of the period."
+      ],
+      [
+        "Prohibited use",
+        "Using prompts for illegal content, deception, harassment or infringing others' rights is prohibited and may lead to account suspension."
+      ],
       ["Changes", "These terms may be updated; we announce material changes inside the bot."]
     ],
     "privacyKicker": "Minimal data, maximum transparency",
     "privacy": [
-      ["What we collect", "In the bots: your messenger numeric ID, display name, language and purchase history. On the website: anonymous technical logs only, and your language and theme preference stored in your own browser."],
-      ["Why", "To deliver purchases, provide support, prevent abuse and improve search (zero-result searches are analyzed without personal identifiers)."],
-      ["What we don't collect", "Your phone number, card details or contacts. Payments happen directly in Telegram or Bale."],
-      ["Retention & deletion", "We keep data only as long as needed. To delete your account entirely, tap Support in the bot."],
-      ["Third parties", "We never sell your data. When you run a prompt, your input is sent to the model provider only and never shared with advertisers."]
+      [
+        "What we collect",
+        "In the bots: your messenger numeric ID, display name, language and purchase history. On the website: anonymous technical logs only, and your language and theme preference stored in your own browser."
+      ],
+      [
+        "Why",
+        "To deliver purchases, provide support, prevent abuse and improve search (zero-result searches are analyzed without personal identifiers)."
+      ],
+      [
+        "What we don't collect",
+        "Your phone number, card details or contacts. Payments happen directly in Telegram or Bale."
+      ],
+      [
+        "Retention & deletion",
+        "We keep data only as long as needed. To delete your account entirely, tap Support in the bot."
+      ],
+      [
+        "Third parties",
+        "We never sell your data. When you run a prompt, your input is sent to the model provider only and never shared with advertisers."
+      ]
     ],
     "refundKicker": "7-day guarantee",
     "refund": [
-      ["The guarantee", "Within 7 days of any purchase (single prompt or plan), if you're not satisfied, we refund the full amount."],
-      ["How to ask", "Tap \"🆘 Support\" in the Telegram or Bale bot and send your order number. We usually reply within 24 hours."],
-      ["How you're refunded", "Telegram Stars go straight back to your Telegram account. Bale wallet payments are returned to the same wallet."],
-      ["After a refund", "Access to the related prompt or plan is revoked. Repeated abuse of the guarantee may lead to account limits."]
+      [
+        "The guarantee",
+        "Within 7 days of any purchase (single prompt or plan), if you're not satisfied, we refund the full amount."
+      ],
+      [
+        "How to ask",
+        "Tap \"🆘 Support\" in the Telegram or Bale bot and send your order number. We usually reply within 24 hours."
+      ],
+      [
+        "How you're refunded",
+        "Telegram Stars go straight back to your Telegram account. Bale wallet payments are returned to the same wallet."
+      ],
+      [
+        "After a refund",
+        "Access to the related prompt or plan is revoked. Repeated abuse of the guarantee may lead to account limits."
+      ]
     ]
   },
   "notFound": {

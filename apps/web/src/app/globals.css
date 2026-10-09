@@ -491,7 +491,7 @@ html[lang="en"] {
     }
   }
   @media (max-width: 400px) {
-    .brand b {
+    nav.pill .brand b {
       display: none;
     }
   }
@@ -2016,6 +2016,13 @@ html[lang="en"] {
   .msg.bot {
     align-self: flex-start;
   }
+  /* Own messages sit on the physical right in every locale, like the messengers do. */
+  [dir="rtl"] .msg.me {
+    align-self: flex-start;
+  }
+  [dir="rtl"] .msg.bot {
+    align-self: flex-end;
+  }
   .kb {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -2130,11 +2137,11 @@ html[lang="en"] {
     flex-direction: column;
     gap: 14px;
   }
-  .plan.feat {
+  .plan.featured {
     background: linear-gradient(170deg, color-mix(in srgb, var(--gold) 9%, var(--card)), var(--card) 55%);
     border-color: transparent;
   }
-  .plan.feat::before {
+  .plan.featured::before {
     content: "";
     position: absolute;
     inset: 0;
@@ -2508,10 +2515,20 @@ html[lang="en"] {
     backdrop-filter: blur(20px) saturate(1.4);
     -webkit-backdrop-filter: blur(20px) saturate(1.4);
     box-shadow: var(--sh);
-    transition: transform 0.6s var(--spring);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      transform 0.6s var(--spring),
+      opacity 0.3s,
+      visibility 0s linear 0.6s;
   }
   .dock.show {
     transform: none;
+    opacity: 1;
+    visibility: visible;
+    transition:
+      transform 0.6s var(--spring),
+      opacity 0.3s;
   }
   .dock .di {
     position: relative;
@@ -2797,6 +2814,18 @@ html[lang="en"] {
   }
   @media (max-width: 980px) {
     .pd {
+      grid-template-columns: 1fr;
+    }
+    .pd-aside {
+      position: static;
+      order: -1;
+    }
+  }
+  .wbody.fill {
+    grid-template-columns: minmax(0, 260px) minmax(0, 1fr);
+  }
+  @media (max-width: 640px) {
+    .wbody.fill {
       grid-template-columns: 1fr;
     }
   }
