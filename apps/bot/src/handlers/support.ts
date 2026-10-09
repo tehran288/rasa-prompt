@@ -83,7 +83,9 @@ async function escalate(
   ctx.session.step = { kind: "support", history, ticketId: ticket.id };
   track(app, "support_opened", ctx.user.id, { ticketId: ticket.id, escalated: true });
   await forwardToAdmins(ctx, app, ticket, message, true);
-  const text = [note, ctx.t("support.escalated", { ticket: ticket.id })].filter(Boolean).join("\n\n");
+  const text = [note, ctx.t("support.escalated", { ticket: ticket.id })]
+    .filter(Boolean)
+    .join("\n\n");
   await send(ctx, app, text, supportKeyboard(ctx));
 }
 
@@ -99,7 +101,12 @@ export async function supportMessage(ctx: BotContext, app: AppDeps, text: string
       await app.services.tickets.addMessage(step.ticketId, "user", text);
       await app.services.tickets.setStatus(step.ticketId, "waiting_admin");
       await forwardToAdmins(ctx, app, data.ticket, text, false);
-      await send(ctx, app, ctx.t("support.forwarded", { ticket: step.ticketId }), supportKeyboard(ctx));
+      await send(
+        ctx,
+        app,
+        ctx.t("support.forwarded", { ticket: step.ticketId }),
+        supportKeyboard(ctx),
+      );
       return;
     }
     step.ticketId = null; // closed meanwhile → start fresh
@@ -110,7 +117,12 @@ export async function supportMessage(ctx: BotContext, app: AppDeps, text: string
   let res: { answer: string; escalate: boolean; reason?: string };
   try {
     res = await withTimeout(
-      app.ai.support({ userId: ctx.user.id, locale: ctx.locale, history: step.history, message: text }),
+      app.ai.support({
+        userId: ctx.user.id,
+        locale: ctx.locale,
+        history: step.history,
+        message: text,
+      }),
       aiTimeout(app),
       "support",
     );
@@ -124,7 +136,8 @@ export async function supportMessage(ctx: BotContext, app: AppDeps, text: string
     { role: "assistant" as const, content: res.answer },
   ].slice(-MAX_HISTORY);
   ctx.session.step = { kind: "support", history, ticketId: null };
-  if (res.answer) await send(ctx, app, escapeHtml(res.answer), res.escalate ? undefined : supportKeyboard(ctx));
+  if (res.answer)
+    await send(ctx, app, escapeHtml(res.answer), res.escalate ? undefined : supportKeyboard(ctx));
   if (res.escalate) await escalate(ctx, app, text);
 }
 
@@ -172,7 +185,12 @@ export async function closeTicket(ctx: BotContext, app: AppDeps, ticketId: strin
   const user = await app.services.users.getById(data.ticket.userId);
   if (user) {
     try {
-      await sendTo(app, ctx.api, user.platformUserId, t(user.locale, "support.closedByAdmin", { ticket: ticketId }));
+      await sendTo(
+        app,
+        ctx.api,
+        user.platformUserId,
+        t(user.locale, "support.closedByAdmin", { ticket: ticketId }),
+      );
     } catch (err) {
       app.logger.warn({ err, ticketId }, "notify user of close failed");
     }
@@ -189,7 +207,9 @@ export function supportComposer(app: AppDeps): Composer<BotContext> {
   c.callbackQuery("sup:h", async (ctx) => {
     const step = ctx.session.step;
     const lastUser =
-      step.kind === "support" ? [...step.history].reverse().find((m) => m.role === "user") : undefined;
+      step.kind === "support"
+        ? [...step.history].reverse().find((m) => m.role === "user")
+        : undefined;
     if (step.kind === "support" && step.ticketId) {
       await send(ctx, app, ctx.t("support.replyAsk"));
       return;

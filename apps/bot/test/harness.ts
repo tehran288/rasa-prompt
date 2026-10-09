@@ -180,9 +180,7 @@ export function createHarness(
 
   /** Text of every outgoing message/edit, in order. */
   const texts = () =>
-    calls
-      .filter((c) => typeof c.payload.text === "string")
-      .map((c) => c.payload.text as string);
+    calls.filter((c) => typeof c.payload.text === "string").map((c) => c.payload.text as string);
   const lastText = () => texts().at(-1) ?? "";
   const byMethod = (m: string) => calls.filter((c) => c.method === m);
   /** Every outgoing payload serialized — for "never leaks" assertions. */

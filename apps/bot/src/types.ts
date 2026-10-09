@@ -122,7 +122,7 @@ export interface CreateBotOptions {
   /** Session storage (per user). Defaults to in-memory — use the db adapter in production. */
   storage?: StorageAdapter<SessionData>;
   /** Hands a broadcast to the worker queue; returns a job id. Absent → broadcasts are refused. */
-  enqueueBroadcast?: (payload: BroadcastPayload) => Promise<string | null | undefined | void>;
+  enqueueBroadcast?: (payload: BroadcastPayload) => Promise<string | null | undefined | undefined>;
   logger?: Logger;
   /** Pre-set bot info (skips getMe — used by tests and when already known). */
   botInfo?: UserFromGetMe;

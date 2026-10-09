@@ -3,7 +3,15 @@ import { GrammyError } from "grammy";
 import { describe, expect, it } from "vitest";
 import { cb } from "../src/callbacks";
 import { disableOnUnsupported, getCapabilities, isUnsupportedError } from "../src/capabilities";
-import { catalogs, formatNumber, formatStars, formatToman, placeholders, t, tPlain } from "../src/i18n";
+import {
+  catalogs,
+  formatNumber,
+  formatStars,
+  formatToman,
+  placeholders,
+  t,
+  tPlain,
+} from "../src/i18n";
 import { fa } from "../src/i18n/fa";
 import { createServer } from "../src/server";
 import { chunkText, htmlToPlain } from "../src/ui";
@@ -25,16 +33,33 @@ describe("i18n", () => {
       expect(Object.keys(cat).sort()).toEqual(keys);
       for (const k of keys) {
         expect(cat[k]?.trim(), `${l}:${k}`).toBeTruthy();
-        expect(placeholders(cat[k] ?? ""), `${l}:${k}`).toEqual(placeholders((fa as Record<string, string>)[k] ?? ""));
+        expect(placeholders(cat[k] ?? ""), `${l}:${k}`).toEqual(
+          placeholders((fa as Record<string, string>)[k] ?? ""),
+        );
       }
     }
   });
 
   it("Arabic copy is not a copy of Persian, and has no ZWNJ", () => {
     const ar = catalogs.ar as Record<string, string>;
-    const same = keys.filter((k) => ar[k] === (fa as Record<string, string>)[k] && /[آ-ی]/.test(ar[k] ?? ""));
+    const same = keys.filter(
+      (k) => ar[k] === (fa as Record<string, string>)[k] && /[آ-ی]/.test(ar[k] ?? ""),
+    );
     // only trilingual / emoji-only strings may be identical
-    expect(same.every((k) => ["lang.pick", "page.indicator", "list.item", "builder.result", "wizard.ask", "inline.message", "tier.pro", "tier.premium"].includes(k))).toBe(true);
+    expect(
+      same.every((k) =>
+        [
+          "lang.pick",
+          "page.indicator",
+          "list.item",
+          "builder.result",
+          "wizard.ask",
+          "inline.message",
+          "tier.pro",
+          "tier.premium",
+        ].includes(k),
+      ),
+    ).toBe(true);
     expect(Object.values(ar).some((v) => v.includes("‌"))).toBe(false);
   });
 
@@ -49,14 +74,17 @@ describe("i18n", () => {
   });
 
   it("escapes params in HTML mode and not in plain mode", () => {
-    expect(t("en", "search.results", { query: "<b>x</b>", total: 3 })).toContain("&lt;b&gt;x&lt;/b&gt;");
+    expect(t("en", "search.results", { query: "<b>x</b>", total: 3 })).toContain(
+      "&lt;b&gt;x&lt;/b&gt;",
+    );
     expect(tPlain("en", "btn.buy", { price: "A & B" })).toBe("💳 Buy · A & B");
   });
 });
 
 describe("watermark", () => {
   it("round-trips a user id and keeps visible text identical", () => {
-    const body = "خط اول پرامپت\nYou are an expert‌ نیم‌فاصله stays.\nخط سوم با متن طولانی‌تر برای وسط";
+    const body =
+      "خط اول پرامپت\nYou are an expert‌ نیم‌فاصله stays.\nخط سوم با متن طولانی‌تر برای وسط";
     const id = "0b6f6a1e-7d8c-4c1b-9a3e-2f1d4c5b6a7e";
     const marked = applyWatermark(body, id);
     expect(marked).not.toBe(body);
@@ -80,7 +108,12 @@ describe("watermark", () => {
 describe("callbacks, capabilities, rendering", () => {
   it("keeps callback data within 64 bytes for UUID ids", () => {
     const uuid = "0b6f6a1e-7d8c-4c1b-9a3e-2f1d4c5b6a7e";
-    for (const d of [cb.prompt(uuid), cb.category(uuid, 999), cb.buy("credit_pack", uuid), cb.adminApprove(uuid)]) {
+    for (const d of [
+      cb.prompt(uuid),
+      cb.category(uuid, 999),
+      cb.buy("credit_pack", uuid),
+      cb.adminApprove(uuid),
+    ]) {
       expect(Buffer.byteLength(d)).toBeLessThanOrEqual(64);
     }
     expect(() => cb.prompt("x".repeat(80))).toThrow();
@@ -90,8 +123,18 @@ describe("callbacks, capabilities, rendering", () => {
     const tg = getCapabilities("telegram");
     const bale = getCapabilities("bale");
     expect([tg.inlineMode, tg.starsPayments, tg.html]).toEqual([true, true, true]);
-    expect([bale.inlineMode, bale.starsPayments, bale.walletPayments, bale.html]).toEqual([false, false, true, false]);
-    const err = new GrammyError("x", { ok: false, error_code: 404, description: "Not Found: method not found" }, "setMyCommands", {});
+    expect([bale.inlineMode, bale.starsPayments, bale.walletPayments, bale.html]).toEqual([
+      false,
+      false,
+      true,
+      false,
+    ]);
+    const err = new GrammyError(
+      "x",
+      { ok: false, error_code: 404, description: "Not Found: method not found" },
+      "setMyCommands",
+      {},
+    );
     expect(isUnsupportedError(err)).toBe(true);
     expect(disableOnUnsupported(bale, "setMyCommands", err)).toBe(true);
     expect(bale.setMyCommands).toBe(false);
@@ -110,7 +153,12 @@ describe("callbacks, capabilities, rendering", () => {
 describe("server", () => {
   it("serves /healthz, /readyz and guards the webhook path secret", async () => {
     const h = createHarness("telegram");
-    const app = createServer({ platform: "telegram", secret: "s3cret", bot: h.bot, ready: async () => false });
+    const app = createServer({
+      platform: "telegram",
+      secret: "s3cret",
+      bot: h.bot,
+      ready: async () => false,
+    });
     expect((await app.request("/healthz")).status).toBe(200);
     expect((await app.request("/readyz")).status).toBe(503);
     const bad = await app.request("/webhook/telegram/wrong", { method: "POST", body: "{}" });

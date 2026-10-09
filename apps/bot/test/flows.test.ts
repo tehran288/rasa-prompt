@@ -17,7 +17,9 @@ describe("onboarding /start", () => {
     // trilingual picker, keyboard with three languages
     expect(h.lastText()).toContain("Choose your language");
     expect(h.lastButtons().map((b) => b.data)).toEqual(["l:fa", "l:ar", "l:en"]);
-    expect(h.state.events.some((e) => e.event === "referral_joined" && e.userId === newcomer?.id)).toBe(true);
+    expect(
+      h.state.events.some((e) => e.event === "referral_joined" && e.userId === newcomer?.id),
+    ).toBe(true);
     expect(h.state.events.some((e) => e.event === "start")).toBe(true);
 
     h.reset();
@@ -110,7 +112,9 @@ describe("search & browsing", () => {
     expect(h.lastButtons().map((b) => b.data)).toContain("c:cat-email:1");
     await h.tap("c:cat-email:1");
     expect(h.lastText()).toContain("ایمیل");
-    expect(h.lastButtons().map((b) => b.data)).toEqual(expect.arrayContaining(["c:cat-email:2", "cs:1", "m:home"]));
+    expect(h.lastButtons().map((b) => b.data)).toEqual(
+      expect.arrayContaining(["c:cat-email:2", "cs:1", "m:home"]),
+    );
     await h.tap("m:trend");
     expect(h.lastButtons().map((b) => b.data)).toEqual(expect.arrayContaining(["tr:2", "m:home"]));
   });
@@ -171,7 +175,9 @@ describe("variables wizard", () => {
     expect(h.lastText()).toContain("نام محصول");
     await h.message("کفش ورزشی");
     expect(h.lastText()).toContain("لحن");
-    expect(h.lastButtons().map((b) => b.data)).toEqual(expect.arrayContaining(["wo:0", "wo:1", "ws"]));
+    expect(h.lastButtons().map((b) => b.data)).toEqual(
+      expect.arrayContaining(["wo:0", "wo:1", "ws"]),
+    );
     await h.tap("wo:0");
     expect(h.lastText()).toContain("تعداد هشتگ");
     await h.message("پنج");
@@ -273,7 +279,15 @@ describe("admin", () => {
   it("rejects admin commands for normal users", async () => {
     const h = createHarness();
     await h.onboard(1);
-    for (const cmd of ["/admin", "/stats", "/broadcast", "/review", "/ban 2", "/tickets", "/reply x y"]) {
+    for (const cmd of [
+      "/admin",
+      "/stats",
+      "/broadcast",
+      "/review",
+      "/ban 2",
+      "/tickets",
+      "/reply x y",
+    ]) {
       h.reset();
       await h.message(cmd, 1);
       expect(h.lastText()).toContain("فقط برای مدیران");
@@ -300,7 +314,12 @@ describe("admin", () => {
     expect(h.lastText()).toContain("&lt;script&gt;");
     await h.tap("bc:ok", ADMIN_ID);
     expect(h.broadcasts).toEqual([
-      expect.objectContaining({ segment: "buyers", locale: "fa", platform: "telegram", html: true }),
+      expect.objectContaining({
+        segment: "buyers",
+        locale: "fa",
+        platform: "telegram",
+        html: true,
+      }),
     ]);
     expect(h.state.events.some((e) => e.event === "broadcast_sent")).toBe(true);
 

@@ -33,7 +33,9 @@ describe("users", () => {
     expect(b.user.username).toBe("renamed");
     expect(b.user.locale).toBe("ar"); // locale is a user choice once set
     expect(b.user.lastSeenAt.getTime()).toBeGreaterThanOrEqual(a.user.lastSeenAt.getTime());
-    expect((await t.services.users.getByPlatformId(p.platform, p.platformUserId))?.id).toBe(a.user.id);
+    expect((await t.services.users.getByPlatformId(p.platform, p.platformUserId))?.id).toBe(
+      a.user.id,
+    );
     expect((await t.services.users.getByReferralCode(a.user.referralCode))?.id).toBe(a.user.id);
     await t.services.users.setLocale(a.user.id, "en");
     expect((await t.services.users.getById(a.user.id))?.locale).toBe("en");
@@ -47,7 +49,10 @@ describe("users", () => {
   });
 
   it("isAdmin uses env ids per platform or the flag", async () => {
-    const { user } = await t.services.users.upsert({ ...profile("fa", "telegram"), platformUserId: "999" });
+    const { user } = await t.services.users.upsert({
+      ...profile("fa", "telegram"),
+      platformUserId: "999",
+    });
     expect(t.services.users.isAdmin(user)).toBe(true);
     expect(t.services.users.isAdmin({ ...user, platform: "bale" })).toBe(false);
     expect(t.services.users.isAdmin({ ...user, platform: "bale", isAdmin: true })).toBe(true);
@@ -90,7 +95,10 @@ describe("users", () => {
     }
     expect(buyers).toEqual([buyer.id]);
     const non: string[] = [];
-    for await (const b of t.services.users.iterateAudience({ platform, locale, segment: "non_buyers" }, 2)) {
+    for await (const b of t.services.users.iterateAudience(
+      { platform, locale, segment: "non_buyers" },
+      2,
+    )) {
       non.push(...b.map((u) => u.id));
     }
     expect(non).not.toContain(buyer.id);
@@ -130,7 +138,11 @@ describe("settings", () => {
 describe("tickets", () => {
   it("open → messages flip status → close", async () => {
     const { user } = await t.services.users.upsert(profile("fa"));
-    const tk = await t.services.tickets.open(user.id, "مشکل پرداخت", "پرداخت کردم ولی پرامپت نیامد");
+    const tk = await t.services.tickets.open(
+      user.id,
+      "مشکل پرداخت",
+      "پرداخت کردم ولی پرامپت نیامد",
+    );
     expect(tk.status).toBe("open");
     expect((await t.services.tickets.activeForUser(user.id))?.id).toBe(tk.id);
     await t.services.tickets.addMessage(tk.id, "admin", "بررسی شد، ارسال شد");

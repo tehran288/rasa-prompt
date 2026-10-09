@@ -68,7 +68,9 @@ describe("products.quote", () => {
 describe("entitlements", () => {
   it("free prompts are open to everyone; paid need entitlement", async () => {
     const u = await newUser();
-    expect(await t.services.entitlements.canAccess(u.id, id("instagram-caption-writer"))).toBe(true);
+    expect(await t.services.entitlements.canAccess(u.id, id("instagram-caption-writer"))).toBe(
+      true,
+    );
     expect(await t.services.entitlements.canAccess(u.id, id("brand-voice-guide"))).toBe(false);
   });
 
@@ -79,7 +81,9 @@ describe("entitlements", () => {
     await t.services.entitlements.grantForOrder(order);
     await t.services.entitlements.grantForOrder(order); // idempotent
     expect(await t.services.entitlements.canAccess(u.id, id("brand-voice-guide"))).toBe(true);
-    expect(await t.services.entitlements.canAccess(u.id, id("seo-content-brief-pillar"))).toBe(false);
+    expect(await t.services.entitlements.canAccess(u.id, id("seo-content-brief-pillar"))).toBe(
+      false,
+    );
     const lib = await t.services.entitlements.library(u.id, "en");
     expect(lib.items.map((i) => i.slug)).toEqual(["brand-voice-guide"]);
     expect(await t.services.entitlements.activeSubscription(u.id)).toBeNull();
@@ -154,7 +158,12 @@ describe("entitlements", () => {
 
   it("refuses to grant for unpaid orders and revokes on refund", async () => {
     const u = await newUser();
-    const item = await t.services.products.quote("prompt", id("cosmetics-luxury-macro"), "XTR", "fa");
+    const item = await t.services.products.quote(
+      "prompt",
+      id("cosmetics-luxury-macro"),
+      "XTR",
+      "fa",
+    );
     const pending = await t.services.orders.create({
       userId: u.id,
       platform: "telegram",

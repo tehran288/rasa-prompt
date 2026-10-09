@@ -120,7 +120,12 @@ function toDetail(p: FakePrompt): PromptDetail {
 }
 
 function paginate<T>(items: T[], page = 1, pageSize = 10): Page<T> {
-  return { items: items.slice((page - 1) * pageSize, page * pageSize), total: items.length, page, pageSize };
+  return {
+    items: items.slice((page - 1) * pageSize, page * pageSize),
+    total: items.length,
+    page,
+    pageSize,
+  };
 }
 
 export interface FakeState {
@@ -249,8 +254,9 @@ export function createFakeServices(opts: { adminPlatformIds?: string[] } = {}) {
       },
       async getByPlatformId(platform: Platform, pid: string) {
         return (
-          [...state.users.values()].find((u) => u.platform === platform && u.platformUserId === pid) ??
-          null
+          [...state.users.values()].find(
+            (u) => u.platform === platform && u.platformUserId === pid,
+          ) ?? null
         );
       },
       async getByReferralCode(code) {
@@ -338,7 +344,8 @@ export function createFakeServices(opts: { adminPlatformIds?: string[] } = {}) {
           if (!p) throw new DomainError("not_found");
           return { kind, refId, title: p.title, amount: pick(p.priceToman, p.priceStars) };
         }
-        if (refId === "marketing") return { kind, refId, title: "باندل مارکتینگ", amount: pick(390000, 900) };
+        if (refId === "marketing")
+          return { kind, refId, title: "باندل مارکتینگ", amount: pick(390000, 900) };
         throw new DomainError("not_found");
       },
     },
@@ -400,10 +407,19 @@ export function createFakeServices(opts: { adminPlatformIds?: string[] } = {}) {
     tickets: {
       async open(uid, subject, firstMessage) {
         const now = new Date();
-        const ticket: Ticket = { id: id("tk"), userId: uid, status: "open", subject, createdAt: now, updatedAt: now };
+        const ticket: Ticket = {
+          id: id("tk"),
+          userId: uid,
+          status: "open",
+          subject,
+          createdAt: now,
+          updatedAt: now,
+        };
         state.tickets.set(ticket.id, {
           ticket,
-          messages: [{ id: id("tm"), ticketId: ticket.id, from: "user", text: firstMessage, createdAt: now }],
+          messages: [
+            { id: id("tm"), ticketId: ticket.id, from: "user", text: firstMessage, createdAt: now },
+          ],
         });
         return ticket;
       },
@@ -423,8 +439,9 @@ export function createFakeServices(opts: { adminPlatformIds?: string[] } = {}) {
       },
       async activeForUser(uid) {
         return (
-          [...state.tickets.values()].find((t) => t.ticket.userId === uid && t.ticket.status !== "closed")
-            ?.ticket ?? null
+          [...state.tickets.values()].find(
+            (t) => t.ticket.userId === uid && t.ticket.status !== "closed",
+          )?.ticket ?? null
         );
       },
       async listOpen(limit) {
@@ -525,7 +542,14 @@ export function createFakeAi(): FakeAi {
     async runPrompt(prompt, locale) {
       ai.calls.push({ method: "runPrompt", args: [prompt, locale] });
       if (ai.runError) throw ai.runError;
-      return { text: "AI-RUN-OUTPUT", provider: "fake", model: "fake-1", inputTokens: 1, outputTokens: 1, costUsd: 0 };
+      return {
+        text: "AI-RUN-OUTPUT",
+        provider: "fake",
+        model: "fake-1",
+        inputTokens: 1,
+        outputTokens: 1,
+        costUsd: 0,
+      };
     },
     async support(input) {
       ai.calls.push({ method: "support", args: [input] });
@@ -578,8 +602,9 @@ export function createFakePayments(
     },
     async validatePreCheckout(payload, currency, total) {
       const order = await services.orders.get(payload);
-      if (!order || order.status !== "pending") return { ok: false, error: "order_not_found" };
-      if (order.currency !== currency || order.total !== total) return { ok: false, error: "amount_mismatch" };
+      if (order?.status !== "pending") return { ok: false, error: "order_not_found" };
+      if (order.currency !== currency || order.total !== total)
+        return { ok: false, error: "amount_mismatch" };
       return { ok: true };
     },
     async fulfill({ payload, chargeId, totalAmount }) {
@@ -588,7 +613,8 @@ export function createFakePayments(
         await services.entitlements.grantForOrder(res.order);
         for (const it of res.order.items) {
           const pack = PACKS.find((p) => p.id === it.refId);
-          if (it.kind === "credit_pack" && pack) await services.credits.grant(res.order.userId, pack.credits, "pack");
+          if (it.kind === "credit_pack" && pack)
+            await services.credits.grant(res.order.userId, pack.credits, "pack");
         }
       }
       return res;

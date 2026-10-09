@@ -21,7 +21,11 @@ export function isLocale(v: unknown): v is Locale {
 }
 
 export function escapeHtml(s: string): string {
-  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 const DIGITS: Record<Locale, string | null> = {
@@ -43,8 +47,11 @@ export function localizeDigits(locale: Locale, s: string): string {
 export function formatNumber(locale: Locale, n: number, opts: { group?: boolean } = {}): string {
   const negative = n < 0;
   const abs = Math.abs(n);
-  const [intPart = "0", frac] = (Number.isInteger(abs) ? String(abs) : abs.toFixed(2).replace(/0+$/, "").replace(/\.$/, "")).split(".");
-  const grouped = opts.group === false ? intPart : intPart.replace(/\B(?=(\d{3})+(?!\d))/g, GROUP_SEP[locale]);
+  const [intPart = "0", frac] = (
+    Number.isInteger(abs) ? String(abs) : abs.toFixed(2).replace(/0+$/, "").replace(/\.$/, "")
+  ).split(".");
+  const grouped =
+    opts.group === false ? intPart : intPart.replace(/\B(?=(\d{3})+(?!\d))/g, GROUP_SEP[locale]);
   const body = frac ? `${grouped}${DECIMAL_SEP[locale]}${frac}` : grouped;
   return localizeDigits(locale, `${negative ? "-" : ""}${body}`);
 }

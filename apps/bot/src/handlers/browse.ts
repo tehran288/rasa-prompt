@@ -2,8 +2,8 @@ import type { Page, PromptSummary } from "@rasa/shared";
 import { Composer, InlineKeyboard } from "grammy";
 import { cb } from "../callbacks";
 import { resetStep, track } from "../flow";
-import { listItems, listKeyboard, navRow, pagerRow, show, truncate } from "../ui";
 import type { AppDeps, BotContext } from "../types";
+import { listItems, listKeyboard, navRow, pagerRow, show, truncate } from "../ui";
 
 export const PAGE_SIZE = 5;
 const CATS_PER_PAGE = 8;
@@ -106,12 +106,7 @@ export async function showCategory(
   ]);
   const cat = cats.find((c) => c.id === categoryId);
   if (res.items.length === 0) {
-    await show(
-      ctx,
-      app,
-      ctx.t("cat.empty"),
-      navRow(new InlineKeyboard(), ctx.locale, cb.cats(1)),
-    );
+    await show(ctx, app, ctx.t("cat.empty"), navRow(new InlineKeyboard(), ctx.locale, cb.cats(1)));
     return;
   }
   ctx.session.lastList = cb.category(categoryId, res.page);
@@ -188,4 +183,3 @@ export function browseComposer(app: AppDeps): Composer<BotContext> {
   });
   return c;
 }
-

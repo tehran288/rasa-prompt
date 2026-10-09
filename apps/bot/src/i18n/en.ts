@@ -26,7 +26,8 @@ export const en: Messages = {
   "welcome.new":
     "Hi {name}! 👋\nWelcome to <b>Rasa Prompt</b>.\n\nHere you'll find professional prompts that <b>actually work</b>: tested on real AI models, kept up to date, and written in your language.",
   "welcome.back": "Welcome back, {name} 🌿",
-  "welcome.referred": "🎁 You joined through a friend's invite — your gift unlocks after your first purchase.",
+  "welcome.referred":
+    "🎁 You joined through a friend's invite — your gift unlocks after your first purchase.",
   "lang.pick": "🌐 زبان را انتخاب کنید\nاختر اللغة\nChoose your language",
   "lang.changed": "✅ The bot now speaks English.",
   "help.text":
@@ -79,7 +80,8 @@ export const en: Messages = {
   "prompt.notFound": "This prompt wasn't found or is no longer available.",
   "prompt.full": "📋 <b>{title}</b>\nTap the text below to copy it 👇",
   "prompt.part": "Part {part} of {parts}",
-  "prompt.watermarkNote": "🔐 This copy is licensed to your account — please don't share it publicly.",
+  "prompt.watermarkNote":
+    "🔐 This copy is licensed to your account — please don't share it publicly.",
   "prompt.forbidden": "🔒 Get this prompt first to see the full text.",
 
   "wizard.start": "🧩 Let's tailor this prompt to your work — {count} quick questions.",
@@ -99,8 +101,10 @@ export const en: Messages = {
   "run.failed": "Sorry, the run failed and your credits were refunded. Please try again shortly.",
   "run.notRunnable":
     "This prompt produces {type} and should be run in a tool made for that — copy the full text instead.",
-  "ai.refused": "🙏 I can't help with that request — no credits were charged. Please try a different topic.",
-  "ai.busy": "🤖 The AI assistant is very busy right now — no credits were charged. Please try again a little later.",
+  "ai.refused":
+    "🙏 I can't help with that request — no credits were charged. Please try a different topic.",
+  "ai.busy":
+    "🤖 The AI assistant is very busy right now — no credits were charged. Please try again a little later.",
   "run.nothing": "There's nothing to run — please start again from the prompt card.",
   "credits.insufficient":
     "🔋 Not enough credits (needed: {need} · balance: {balance}).\nTop up with a credit pack or go Pro to continue.",
@@ -116,7 +120,8 @@ export const en: Messages = {
   "builder.intro":
     "✨ <b>AI Prompt Builder</b>\nDescribe your idea in plain words and I'll turn it into a professional, well-structured prompt.\n\nExample: <i>a weekly meal plan for a vegetarian athlete</i>",
   "builder.quotaFree": "🎁 Free builds left today: {left} of {total}",
-  "builder.quotaPaid": "🔋 Today's free builds are used up — each build costs {cost} credits (balance: {balance})",
+  "builder.quotaPaid":
+    "🔋 Today's free builds are used up — each build costs {cost} credits (balance: {balance})",
   "builder.working": "⏳ Building your prompt…",
   "builder.result": "✨ <b>{title}</b>",
   "builder.variables": "🧩 Variables: {vars}",
@@ -124,8 +129,10 @@ export const en: Messages = {
   "builder.footer": "Send your next idea, or continue from the menu.",
   "builder.freeUsed": "🎁 Used one of today's free builds · left: {left}",
   "builder.paidUsed": "🔋 {cost} credits used · balance: {balance}",
-  "builder.blocked": "🙏 This request doesn't fit our content policy. Please try a different topic.",
-  "builder.failed": "Building the prompt failed; any credits taken were refunded. Please try again.",
+  "builder.blocked":
+    "🙏 This request doesn't fit our content policy. Please try a different topic.",
+  "builder.failed":
+    "Building the prompt failed; any credits taken were refunded. Please try again.",
   "builder.tooShort": "Tell me a little more (a few words) so I can build a sharper prompt.",
   "btn.buildAgain": "✨ Build another",
 
@@ -148,15 +155,19 @@ export const en: Messages = {
   "packs.empty": "No credit packs are on sale right now.",
   "btn.library": "🗂 My library",
 
-  "pay.web": "💳 Tap the button below to pay securely.\nYour purchase is added to your account automatically afterwards.",
+  "pay.web":
+    "💳 Tap the button below to pay securely.\nYour purchase is added to your account automatically afterwards.",
   "btn.payWeb": "💳 Pay online",
   "pay.unavailable": "This item can't be purchased in this messenger right now.",
-  "pay.precheckFailed": "This order has expired or is invalid — please buy again from inside the bot.",
-  "pay.thanks": "🎉 <b>Payment successful!</b> Thank you for your trust.\nOrder: <code>{order}</code>",
+  "pay.precheckFailed":
+    "This order has expired or is invalid — please buy again from inside the bot.",
+  "pay.thanks":
+    "🎉 <b>Payment successful!</b> Thank you for your trust.\nOrder: <code>{order}</code>",
   "pay.planActive": "💎 Your <b>{plan}</b> plan is active. All Pro prompts are now unlocked.",
   "pay.creditsAdded": "🔋 Credits added. Current balance: <b>{balance}</b>",
   "pay.bundleAdded": "📦 “{title}” has been added to your library.",
-  "pay.upsellPro": "💡 Did you know? Pro gives you every professional prompt plus monthly run credits.",
+  "pay.upsellPro":
+    "💡 Did you know? Pro gives you every professional prompt plus monthly run credits.",
   "pay.fulfillFailed":
     "✅ We received your payment, but automatic delivery hit a problem. Our support team has been notified and will follow up — no need to pay again.",
   "bundle.title": "📦 <b>{title}</b>\n💰 Price: {price}",
@@ -185,7 +196,8 @@ export const en: Messages = {
   "btn.endSupport": "✅ Problem solved",
   "btn.replySupport": "✍️ Reply to support",
   "support.replyAsk": "✍️ Type your message and we'll pass it to support:",
-  "support.humanAsk": "🙋 Of course! Type your message and it will go straight to our support team.",
+  "support.humanAsk":
+    "🙋 Of course! Type your message and it will go straight to our support team.",
 
   "admin.only": "⛔ This command is for admins only.",
   "admin.panel": "🛠 <b>Admin panel</b>\nTo ban: <code>/ban id</code> · <code>/unban id</code>",
@@ -241,7 +253,8 @@ export const en: Messages = {
   "concierge.unsafe":
     "🙏 I can't help with that. If you're looking for prompts for work or learning, I'd be glad to help.",
   "concierge.fallback": "Type the topic of the prompt you need, or use the menu below 👇",
-  "unknown.media": "For now I only understand text messages 🙂 Type the topic you're interested in.",
+  "unknown.media":
+    "For now I only understand text messages 🙂 Type the topic you're interested in.",
   "unknown.command": "I don't know that command. See /help.",
 
   "inline.open": "🔓 Open in the bot",

@@ -20,7 +20,9 @@ describe("support", () => {
     expect(ticket?.ticket.status).toBe("waiting_admin");
     // AI answer kept in the ticket for context
     expect(ticket?.messages.map((m) => m.from)).toEqual(["user", "ai"]);
-    const forwarded = h.calls.find((c) => c.method === "sendMessage" && c.payload.chat_id === String(ADMIN_CHAT));
+    const forwarded = h.calls.find(
+      (c) => c.method === "sendMessage" && c.payload.chat_id === String(ADMIN_CHAT),
+    );
     expect(String(forwarded?.payload.text)).toContain(`#T${ticket?.ticket.id}`);
     expect(JSON.stringify(forwarded?.payload.reply_markup)).toContain(`a:rp:${ticket?.ticket.id}`);
     expect(h.texts().join("\n")).toContain("برای همکاران پشتیبانی ارسال شد");
@@ -46,7 +48,9 @@ describe("support", () => {
     expect(ticket?.messages.at(-1)?.text).toBe("پیام دوم");
     await h.message(`/close ${ticket?.ticket.id}`, ADMIN_ID);
     expect(ticket?.ticket.status).toBe("closed");
-    expect(h.calls.some((c) => c.payload.chat_id === "1" && String(c.payload.text).includes("بسته شد"))).toBe(true);
+    expect(
+      h.calls.some((c) => c.payload.chat_id === "1" && String(c.payload.text).includes("بسته شد")),
+    ).toBe(true);
   });
 
   it("escalates automatically when the AI says so or is unavailable", async () => {
@@ -57,7 +61,9 @@ describe("support", () => {
     await h.message("مشکل دارم");
     expect(h.state.tickets.size).toBe(1);
     // no admin chat configured → sent to each admin id
-    expect(h.calls.some((c) => c.method === "sendMessage" && c.payload.chat_id === String(ADMIN_ID))).toBe(true);
+    expect(
+      h.calls.some((c) => c.method === "sendMessage" && c.payload.chat_id === String(ADMIN_ID)),
+    ).toBe(true);
     expect(h.texts().join("\n")).toContain("دستیار هوشمند فعلاً در دسترس نیست");
   });
 
@@ -72,7 +78,11 @@ describe("support", () => {
     await h.tap(`a:rp:${ticketId}`, ADMIN_ID);
     h.reset();
     await h.message("در حال بررسی است", ADMIN_ID);
-    expect(h.calls.some((c) => c.payload.chat_id === "1" && String(c.payload.text).includes("در حال بررسی است"))).toBe(true);
+    expect(
+      h.calls.some(
+        (c) => c.payload.chat_id === "1" && String(c.payload.text).includes("در حال بررسی است"),
+      ),
+    ).toBe(true);
     // the user can continue the conversation in that ticket from the relayed message
     await h.tap(`sup:c:${ticketId}`, 1);
     await h.message("ممنون", 1);

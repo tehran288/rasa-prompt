@@ -58,7 +58,11 @@ function cardText(ctx: BotContext, app: AppDeps, p: PromptDetail, entitled: bool
   const price = priceLabel(L, app.platform, app.caps, p);
   if (isPaidTier(p.tier) && !entitled && price) lines.push(ctx.t("card.price", { price }));
   if (p.preview) {
-    lines.push("", ctx.t("card.preview"), `<blockquote>${escapeHtml(truncate(p.preview, 900))}</blockquote>`);
+    lines.push(
+      "",
+      ctx.t("card.preview"),
+      `<blockquote>${escapeHtml(truncate(p.preview, 900))}</blockquote>`,
+    );
   }
   if (p.exampleOutput) {
     lines.push(
@@ -100,7 +104,12 @@ export async function openPromptCard(ctx: BotContext, app: AppDeps, id: string):
     !isPaidTier(p.tier) || (await app.services.entitlements.canAccess(ctx.user.id, p.id));
   track(app, "view_prompt", ctx.user.id, { promptId: p.id, tier: p.tier, entitled });
   const k = entitled ? actionKeyboard(ctx, p) : buyKeyboard(ctx, app, p);
-  await show(ctx, app, cardText(ctx, app, p, entitled), navRow(k, ctx.locale, ctx.session.lastList));
+  await show(
+    ctx,
+    app,
+    cardText(ctx, app, p, entitled),
+    navRow(k, ctx.locale, ctx.session.lastList),
+  );
 }
 
 /** Sends a (possibly long) prompt text as copyable code blocks. Last message gets `keyboard`. */
@@ -116,7 +125,8 @@ async function sendPromptText(
   for (let i = 0; i < chunks.length; i++) {
     const parts: string[] = [];
     if (i === 0) parts.push(header);
-    if (chunks.length > 1) parts.push(`<i>${ctx.t("prompt.part", { part: i + 1, parts: chunks.length })}</i>`);
+    if (chunks.length > 1)
+      parts.push(`<i>${ctx.t("prompt.part", { part: i + 1, parts: chunks.length })}</i>`);
     parts.push(codeBlock(chunks[i] ?? ""));
     const last = i === chunks.length - 1;
     if (last && footer) parts.push(footer);
@@ -215,7 +225,11 @@ export async function startWizard(
       ctx,
       app,
       ctx.t("wizard.noVars"),
-      navRow(new InlineKeyboard().text(ctx.t("btn.fullPrompt"), cb.full(p.id)).row(), ctx.locale, cb.prompt(p.id)),
+      navRow(
+        new InlineKeyboard().text(ctx.t("btn.fullPrompt"), cb.full(p.id)).row(),
+        ctx.locale,
+        cb.prompt(p.id),
+      ),
     );
     return;
   }
@@ -258,7 +272,9 @@ export async function wizardAnswer(
       return;
     }
   } else if (v.type === "number") {
-    answer = asciiDigits(answer).replace(/[٬,\s]/g, "").replace("٫", ".");
+    answer = asciiDigits(answer)
+      .replace(/[٬,\s]/g, "")
+      .replace("٫", ".");
     if (!/^-?\d+(\.\d+)?$/.test(answer)) {
       await send(ctx, app, ctx.t("wizard.invalidNumber"));
       return;
@@ -354,7 +370,12 @@ export async function executeRun(
   } catch (err) {
     app.logger.warn({ err, promptId }, "ai.runPrompt failed — refunding");
     await app.services.credits.grant(ctx.user.id, cost, "ai_run_refund", promptId ?? undefined);
-    await send(ctx, app, ctx.t(aiErrorKey(err) ?? "run.failed"), navRow(new InlineKeyboard(), ctx.locale));
+    await send(
+      ctx,
+      app,
+      ctx.t(aiErrorKey(err) ?? "run.failed"),
+      navRow(new InlineKeyboard(), ctx.locale),
+    );
     return;
   }
   track(app, "ai_run_prompt", ctx.user.id, { promptId, cost, model });
@@ -431,4 +452,3 @@ export function promptComposer(app: AppDeps): Composer<BotContext> {
   });
   return c;
 }
-

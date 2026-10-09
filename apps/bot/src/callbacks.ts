@@ -48,7 +48,12 @@ const KIND_CODE: Record<ProductKind, string> = {
   plan: "l",
   credit_pack: "k",
 };
-const CODE_KIND: Record<string, ProductKind> = { p: "prompt", b: "bundle", l: "plan", k: "credit_pack" };
+const CODE_KIND: Record<string, ProductKind> = {
+  p: "prompt",
+  b: "bundle",
+  l: "plan",
+  k: "credit_pack",
+};
 
 function check(data: string): string {
   const bytes = Buffer.byteLength(data, "utf8");

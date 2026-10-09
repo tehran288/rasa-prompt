@@ -50,7 +50,11 @@ describe("purchase flow — Telegram Stars", () => {
     await h.tap("m:packs");
     await h.tap("b:k:pack-100");
     const inv = h.byMethod("sendInvoice")[0]?.payload;
-    await h.successfulPayment(String(inv?.payload), "XTR", Number((inv?.prices as { amount: number }[])[0]?.amount));
+    await h.successfulPayment(
+      String(inv?.payload),
+      "XTR",
+      Number((inv?.prices as { amount: number }[] | undefined)?.[0]?.amount),
+    );
     expect(h.texts().join("\n")).toContain("۱۰۰");
   });
 
@@ -72,8 +76,12 @@ describe("purchase flow — Bale wallet", () => {
     await h.onboard(1);
     await h.tap("p:paid-agent");
     // toman price on Bale (no Stars), plain text (no HTML parse mode)
-    expect(h.lastButtons().find((b) => b.data === "b:p:paid-agent")?.text).toContain("۱۴۹٬۰۰۰ تومان");
-    expect(h.calls.at(-2)?.payload.parse_mode ?? h.calls.at(-1)?.payload.parse_mode).toBeUndefined();
+    expect(h.lastButtons().find((b) => b.data === "b:p:paid-agent")?.text).toContain(
+      "۱۴۹٬۰۰۰ تومان",
+    );
+    expect(
+      h.calls.at(-2)?.payload.parse_mode ?? h.calls.at(-1)?.payload.parse_mode,
+    ).toBeUndefined();
 
     await h.tap("b:p:paid-agent");
     const inv = h.byMethod("sendInvoice")[0]?.payload;
@@ -92,7 +100,9 @@ describe("purchase flow — Bale wallet", () => {
     await h.onboard(1);
     await h.tap("b:p:paid-agent");
     expect(h.byMethod("sendInvoice")).toHaveLength(0);
-    expect(h.lastButtons().some((b) => b.url?.startsWith("https://rasa-prompt.ir/checkout/"))).toBe(true);
+    expect(h.lastButtons().some((b) => b.url?.startsWith("https://rasa-prompt.ir/checkout/"))).toBe(
+      true,
+    );
   });
 
   it("opens a bundle from a b_ deep link", async () => {

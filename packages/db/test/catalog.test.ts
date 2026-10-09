@@ -126,7 +126,10 @@ describe("prompts", () => {
     expect(a?.id).toBe(b?.id);
     const seen = new Set<string>();
     for (let i = 0; i < 7; i++) {
-      const p = await t.services.catalog.promptOfTheDay("fa", new Date(d1.getTime() + i * 86_400_000));
+      const p = await t.services.catalog.promptOfTheDay(
+        "fa",
+        new Date(d1.getTime() + i * 86_400_000),
+      );
       if (p) seen.add(p.id);
       expect(p?.qualityScore).toBeGreaterThanOrEqual(80);
     }
@@ -169,6 +172,8 @@ describe("prompts", () => {
     expect(id2).not.toBe(id);
     const [row] = await t.db.select().from(schema.prompts).where(eq(schema.prompts.id, id2));
     expect(row?.status).toBe("review");
-    expect((await t.services.catalog.search("sora", "fa")).items.map((i) => i.id)).not.toContain(id2);
+    expect((await t.services.catalog.search("sora", "fa")).items.map((i) => i.id)).not.toContain(
+      id2,
+    );
   });
 });

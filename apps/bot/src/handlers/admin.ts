@@ -2,7 +2,15 @@ import { LOCALES, type Locale } from "@rasa/shared";
 import { Composer, InlineKeyboard } from "grammy";
 import { cb } from "../callbacks";
 import { resetStep, track } from "../flow";
-import { escapeHtml, formatDate, formatNumber, formatStars, formatToman, isLocale, raw } from "../i18n";
+import {
+  escapeHtml,
+  formatDate,
+  formatNumber,
+  formatStars,
+  formatToman,
+  isLocale,
+  raw,
+} from "../i18n";
 import type { AppDeps, BotContext, BroadcastPayload, BroadcastSegment } from "../types";
 import { joinList, navRow, send, show, truncate } from "../ui";
 import { closeTicket, relayAdminReply, TICKET_TAG_RE, ticketTag } from "./support";
@@ -26,7 +34,8 @@ function adminOnly<A extends unknown[]>(
   return async (ctx: BotContext, ...args: A): Promise<void> => {
     if (!ctx.isAdmin) {
       app.logger.info({ userId: ctx.user.id }, "admin command rejected");
-      if (ctx.callbackQuery) await ctx.answerCallbackQuery({ text: ctx.tp("admin.only"), show_alert: true });
+      if (ctx.callbackQuery)
+        await ctx.answerCallbackQuery({ text: ctx.tp("admin.only"), show_alert: true });
       else await send(ctx, app, ctx.t("admin.only"));
       return;
     }
@@ -72,8 +81,16 @@ async function showStats(ctx: BotContext, app: AppDeps): Promise<void> {
       .map((x) => `• ${escapeHtml(truncate(x.query, 40))} (${formatNumber(L, x.count)})`)
       .join("\n");
   if (s.topQueries.length) lines.push("", ctx.t("admin.topQueries"), fmtQ(s.topQueries));
-  if (s.zeroResultQueries.length) lines.push("", ctx.t("admin.zeroQueries"), fmtQ(s.zeroResultQueries));
-  await show(ctx, app, lines.join("\n"), new InlineKeyboard().text(ctx.tp("btn.back"), "a:panel").text(ctx.tp("btn.home"), cb.menu("home")));
+  if (s.zeroResultQueries.length)
+    lines.push("", ctx.t("admin.zeroQueries"), fmtQ(s.zeroResultQueries));
+  await show(
+    ctx,
+    app,
+    lines.join("\n"),
+    new InlineKeyboard()
+      .text(ctx.tp("btn.back"), "a:panel")
+      .text(ctx.tp("btn.home"), cb.menu("home")),
+  );
 }
 
 // ───────────────────────── review queue ─────────────────────────
@@ -150,7 +167,13 @@ async function showTickets(ctx: BotContext, app: AppDeps): Promise<void> {
   const lines = [ctx.t("admin.tickets.title", { count: open.length }), ""];
   const k = new InlineKeyboard();
   for (const tk of open) {
-    lines.push(ctx.t("admin.ticketItem", { tag: ticketTag(tk.id), subject: truncate(tk.subject, 50), status: tk.status }));
+    lines.push(
+      ctx.t("admin.ticketItem", {
+        tag: ticketTag(tk.id),
+        subject: truncate(tk.subject, 50),
+        status: tk.status,
+      }),
+    );
     k.text(`✍️ ${truncate(ticketTag(tk.id), 20)}`, cb.adminReply(tk.id))
       .text(ctx.tp("btn.admin.close"), cb.adminClose(tk.id))
       .row();
@@ -241,13 +264,34 @@ export function adminComposer(app: AppDeps): Composer<BotContext> {
   const guard = <A extends unknown[]>(fn: (ctx: BotContext, ...a: A) => Promise<unknown>) =>
     adminOnly(app, fn);
 
-  c.command("admin", guard((ctx) => showPanel(ctx, app)));
-  c.command("stats", guard((ctx) => showStats(ctx, app)));
-  c.command("broadcast", guard((ctx) => startBroadcast(ctx, app)));
-  c.command("review", guard((ctx) => showReview(ctx, app)));
-  c.command(["tickets", "ticket"], guard((ctx) => showTickets(ctx, app)));
-  c.command("ban", guard((ctx) => setBan(ctx, app, true)));
-  c.command("unban", guard((ctx) => setBan(ctx, app, false)));
+  c.command(
+    "admin",
+    guard((ctx) => showPanel(ctx, app)),
+  );
+  c.command(
+    "stats",
+    guard((ctx) => showStats(ctx, app)),
+  );
+  c.command(
+    "broadcast",
+    guard((ctx) => startBroadcast(ctx, app)),
+  );
+  c.command(
+    "review",
+    guard((ctx) => showReview(ctx, app)),
+  );
+  c.command(
+    ["tickets", "ticket"],
+    guard((ctx) => showTickets(ctx, app)),
+  );
+  c.command(
+    "ban",
+    guard((ctx) => setBan(ctx, app, true)),
+  );
+  c.command(
+    "unban",
+    guard((ctx) => setBan(ctx, app, false)),
+  );
   c.command(
     "reply",
     guard(async (ctx) => {
@@ -265,13 +309,34 @@ export function adminComposer(app: AppDeps): Composer<BotContext> {
     }),
   );
 
-  c.callbackQuery("a:panel", guard((ctx) => showPanel(ctx, app)));
-  c.callbackQuery("a:st", guard((ctx) => showStats(ctx, app)));
-  c.callbackQuery("a:bc", guard((ctx) => startBroadcast(ctx, app)));
-  c.callbackQuery("a:rv", guard((ctx) => showReview(ctx, app)));
-  c.callbackQuery("a:tk", guard((ctx) => showTickets(ctx, app)));
-  c.callbackQuery(/^a:ap:(.+)$/, guard((ctx) => resolveDraft(ctx, app, String(ctx.match?.[1]), "approve")));
-  c.callbackQuery(/^a:rj:(.+)$/, guard((ctx) => resolveDraft(ctx, app, String(ctx.match?.[1]), "reject")));
+  c.callbackQuery(
+    "a:panel",
+    guard((ctx) => showPanel(ctx, app)),
+  );
+  c.callbackQuery(
+    "a:st",
+    guard((ctx) => showStats(ctx, app)),
+  );
+  c.callbackQuery(
+    "a:bc",
+    guard((ctx) => startBroadcast(ctx, app)),
+  );
+  c.callbackQuery(
+    "a:rv",
+    guard((ctx) => showReview(ctx, app)),
+  );
+  c.callbackQuery(
+    "a:tk",
+    guard((ctx) => showTickets(ctx, app)),
+  );
+  c.callbackQuery(
+    /^a:ap:(.+)$/,
+    guard((ctx) => resolveDraft(ctx, app, String(ctx.match?.[1]), "approve")),
+  );
+  c.callbackQuery(
+    /^a:rj:(.+)$/,
+    guard((ctx) => resolveDraft(ctx, app, String(ctx.match?.[1]), "reject")),
+  );
   c.callbackQuery(
     /^a:rp:(.+)$/,
     guard(async (ctx) => {
@@ -280,7 +345,10 @@ export function adminComposer(app: AppDeps): Composer<BotContext> {
       await send(ctx, app, ctx.t("admin.replyAsk", { tag: ticketTag(ticketId) }));
     }),
   );
-  c.callbackQuery(/^a:cl:(.+)$/, guard((ctx) => closeTicket(ctx, app, String(ctx.match?.[1]))));
+  c.callbackQuery(
+    /^a:cl:(.+)$/,
+    guard((ctx) => closeTicket(ctx, app, String(ctx.match?.[1]))),
+  );
 
   c.callbackQuery(
     /^bc:s:(\w+)$/,
@@ -307,10 +375,18 @@ export function adminComposer(app: AppDeps): Composer<BotContext> {
         return send(ctx, app, ctx.t("error.invalidState"));
       }
       ctx.session.step = { ...step, stage: "text", locale: isLocale(v) ? v : null };
-      await show(ctx, app, ctx.t("admin.bc.text"), new InlineKeyboard().text(ctx.tp("btn.cancel"), cb.bcCancel()));
+      await show(
+        ctx,
+        app,
+        ctx.t("admin.bc.text"),
+        new InlineKeyboard().text(ctx.tp("btn.cancel"), cb.bcCancel()),
+      );
     }),
   );
-  c.callbackQuery("bc:ok", guard((ctx) => confirmBroadcast(ctx, app)));
+  c.callbackQuery(
+    "bc:ok",
+    guard((ctx) => confirmBroadcast(ctx, app)),
+  );
   c.callbackQuery(
     "bc:x",
     guard(async (ctx) => {
@@ -330,4 +406,3 @@ export function adminComposer(app: AppDeps): Composer<BotContext> {
   });
   return c;
 }
-

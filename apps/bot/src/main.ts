@@ -55,7 +55,9 @@ async function main(): Promise<void> {
     });
     logger.info({ platform }, "webhook registered");
   } else {
-    await bot.api.deleteWebhook().catch((err: unknown) => logger.warn({ err }, "deleteWebhook failed"));
+    await bot.api
+      .deleteWebhook()
+      .catch((err: unknown) => logger.warn({ err }, "deleteWebhook failed"));
     void bot.start({
       allowed_updates: [...ALLOWED_UPDATES],
       onStart: () => logger.info("long polling started"),

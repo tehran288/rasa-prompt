@@ -1,7 +1,7 @@
 import type { InvoiceSpec, Order, ProductKind } from "@rasa/shared";
 import { Composer, InlineKeyboard } from "grammy";
-import { disableOnUnsupported } from "../capabilities";
 import { cb, parseBuyKind } from "../callbacks";
+import { disableOnUnsupported } from "../capabilities";
 import { isDomainError, isPaidTier, loadAccessibleBody, withTimeout } from "../flow";
 import { escapeHtml, formatStars, formatToman, tPlain } from "../i18n";
 import type { AppDeps, BotContext } from "../types";
@@ -77,7 +77,10 @@ export async function startCheckout(
       },
     );
   } catch (err) {
-    app.logger.warn({ err, orderId: order.id }, "sendInvoice failed — falling back to web checkout");
+    app.logger.warn(
+      { err, orderId: order.id },
+      "sendInvoice failed — falling back to web checkout",
+    );
     disableOnUnsupported(
       app.caps,
       invoice.currency === "XTR" ? "starsPayments" : "walletPayments",
@@ -101,13 +104,10 @@ export async function showBundle(ctx: BotContext, app: AppDeps, bundleId: string
     currency === "XTR"
       ? formatStars(ctx.locale, item.amount)
       : formatToman(ctx.locale, Math.round(item.amount / 10));
-  const k = new InlineKeyboard().text(ctx.tp("btn.buy", { price }), cb.buy("bundle", bundleId)).row();
-  await show(
-    ctx,
-    app,
-    ctx.t("bundle.title", { title: item.title, price }),
-    navRow(k, ctx.locale),
-  );
+  const k = new InlineKeyboard()
+    .text(ctx.tp("btn.buy", { price }), cb.buy("bundle", bundleId))
+    .row();
+  await show(ctx, app, ctx.t("bundle.title", { title: item.title, price }), navRow(k, ctx.locale));
 }
 
 /** Delivers what an order bought, right after payment. */
@@ -179,7 +179,12 @@ export function paymentsComposer(app: AppDeps): Composer<BotContext> {
     let result: { ok: true } | { ok: false; error: string };
     try {
       result = await withTimeout(
-        app.payments.validatePreCheckout(q.invoice_payload, q.currency, q.total_amount, String(q.from.id)),
+        app.payments.validatePreCheckout(
+          q.invoice_payload,
+          q.currency,
+          q.total_amount,
+          String(q.from.id),
+        ),
         PRECHECKOUT_TIMEOUT_MS,
         "validatePreCheckout",
       );

@@ -31,7 +31,11 @@ export function createServer(opts: ServerOptions): Hono {
   const startedAt = Date.now();
 
   app.get("/healthz", (c) =>
-    c.json({ ok: true, platform: opts.platform, uptimeSec: Math.round((Date.now() - startedAt) / 1000) }),
+    c.json({
+      ok: true,
+      platform: opts.platform,
+      uptimeSec: Math.round((Date.now() - startedAt) / 1000),
+    }),
   );
 
   app.get("/readyz", async (c) => {
@@ -52,7 +56,10 @@ export function createServer(opts: ServerOptions): Hono {
       ...(opts.checkHeader ? { secretToken: opts.secret } : {}),
     });
     app.post("/webhook/:platform/:secret", async (c) => {
-      if (c.req.param("platform") !== opts.platform || !safeEqual(c.req.param("secret"), opts.secret)) {
+      if (
+        c.req.param("platform") !== opts.platform ||
+        !safeEqual(c.req.param("secret"), opts.secret)
+      ) {
         return c.json({ ok: false }, 404);
       }
       return handle(c);

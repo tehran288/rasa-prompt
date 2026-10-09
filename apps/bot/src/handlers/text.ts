@@ -24,7 +24,10 @@ async function concierge(ctx: BotContext, app: AppDeps, text: string): Promise<v
       "concierge",
     );
   } catch (err) {
-    app.logger.info({ err: aiErrorKey(err) ?? String(err) }, "concierge unavailable — plain search");
+    app.logger.info(
+      { err: aiErrorKey(err) ?? String(err) },
+      "concierge unavailable — plain search",
+    );
     return runSearch(ctx, app, text);
   }
   switch (r.intent) {
@@ -102,4 +105,3 @@ export function textComposer(app: AppDeps): Composer<BotContext> {
   });
   return c;
 }
-

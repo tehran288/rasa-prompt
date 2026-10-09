@@ -14,7 +14,10 @@ export async function showAccount(ctx: BotContext, app: AppDeps): Promise<void> 
   if (sub) {
     lines.push(
       sub.expiresAt
-        ? ctx.t("account.sub", { plan: sub.plan.title, date: formatDate(ctx.locale, sub.expiresAt) })
+        ? ctx.t("account.sub", {
+            plan: sub.plan.title,
+            date: formatDate(ctx.locale, sub.expiresAt),
+          })
         : ctx.t("account.subLifetime", { plan: sub.plan.title }),
     );
   } else {
@@ -40,7 +43,10 @@ export async function showPlans(ctx: BotContext, app: AppDeps): Promise<void> {
   }
   const items = plans.map((p) => {
     const price = priceLabel(ctx.locale, app.platform, app.caps, p) ?? "—";
-    k.text(truncate(ctx.tp("btn.buy", { price: `${p.title} · ${price}` }), 60), cb.buy("plan", p.id)).row();
+    k.text(
+      truncate(ctx.tp("btn.buy", { price: `${p.title} · ${price}` }), 60),
+      cb.buy("plan", p.id),
+    ).row();
     return ctx.t("plans.item", {
       title: p.title,
       price,
@@ -68,7 +74,10 @@ export async function showPacks(ctx: BotContext, app: AppDeps): Promise<void> {
   }
   const items = packs.map((p) => {
     const price = priceLabel(ctx.locale, app.platform, app.caps, p) ?? "—";
-    k.text(truncate(ctx.tp("btn.buy", { price: `${p.title} · ${price}` }), 60), cb.buy("credit_pack", p.id)).row();
+    k.text(
+      truncate(ctx.tp("btn.buy", { price: `${p.title} · ${price}` }), 60),
+      cb.buy("credit_pack", p.id),
+    ).row();
     return ctx.t("packs.item", { title: p.title, credits: p.credits, price });
   });
   await show(

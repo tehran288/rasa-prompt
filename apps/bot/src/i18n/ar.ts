@@ -20,8 +20,7 @@ export const ar: Messages = {
   "menu.invite": "🎁 ادعُ أصدقاءك",
   "menu.support": "🆘 الدعم",
   "menu.language": "🌐 اللغة",
-  "menu.title":
-    "من أين نبدأ؟ 👇\nاختر أحد الخيارات، أو اكتب لي هنا ما تحتاجه مباشرةً.",
+  "menu.title": "من أين نبدأ؟ 👇\nاختر أحد الخيارات، أو اكتب لي هنا ما تحتاجه مباشرةً.",
   "menu.placeholder": "مثال: منشور إنستغرام لمقهى",
 
   "welcome.new":
@@ -117,8 +116,7 @@ export const ar: Messages = {
   "builder.intro":
     "✨ <b>مولّد الأوامر الذكي</b>\nاكتب فكرتك ببساطة، وسأحوّلها إلى أمر احترافي ومنظَّم.\n\nمثال: <i>خطة غذائية أسبوعية لرياضي نباتي</i>",
   "builder.quotaFree": "🎁 الإنشاءات المجانية اليوم: {left} من {total}",
-  "builder.quotaPaid":
-    "🔋 انتهت حصتك المجانية لليوم؛ كل إنشاء بـ{cost} رصيد (رصيدك: {balance})",
+  "builder.quotaPaid": "🔋 انتهت حصتك المجانية لليوم؛ كل إنشاء بـ{cost} رصيد (رصيدك: {balance})",
   "builder.working": "⏳ أُعِدّ أمرك الآن…",
   "builder.result": "✨ <b>{title}</b>",
   "builder.variables": "🧩 المتغيرات: {vars}",
@@ -158,8 +156,7 @@ export const ar: Messages = {
   "pay.planActive": "💎 تم تفعيل اشتراك <b>{plan}</b>. جميع أوامر Pro متاحة لك الآن.",
   "pay.creditsAdded": "🔋 تم شحن رصيدك. رصيدك الحالي: <b>{balance}</b>",
   "pay.bundleAdded": "📦 أُضيفت «{title}» إلى مكتبتك.",
-  "pay.upsellPro":
-    "💡 هل تعلم؟ مع اشتراك Pro تحصل على جميع الأوامر الاحترافية ورصيد تشغيل شهري.",
+  "pay.upsellPro": "💡 هل تعلم؟ مع اشتراك Pro تحصل على جميع الأوامر الاحترافية ورصيد تشغيل شهري.",
   "pay.fulfillFailed":
     "✅ تم استلام دفعتك، لكن التسليم التلقائي واجه مشكلة. أُبلغ فريق الدعم الآن وسيتابع الأمر — لا حاجة إلى الدفع مرة أخرى.",
   "bundle.title": "📦 <b>{title}</b>\n💰 السعر: {price}",
@@ -174,15 +171,13 @@ export const ar: Messages = {
 
   "support.intro":
     "🆘 <b>دعم رسا</b>\nاكتب سؤالك أو مشكلتك. سيجيبك مساعدنا الذكي فورًا، ويحيل المحادثة إلى فريق الدعم عند الحاجة.",
-  "support.escalated":
-    "🙋 أُرسل طلبك برقم <code>{ticket}</code> إلى فريق الدعم. ستصلك الإجابة هنا.",
+  "support.escalated": "🙋 أُرسل طلبك برقم <code>{ticket}</code> إلى فريق الدعم. ستصلك الإجابة هنا.",
   "support.forwarded": "📨 أُضيفت رسالتك إلى الطلب <code>{ticket}</code>.",
   "support.closedByUser": "✅ أُغلقت محادثة الدعم. نحن في خدمتك متى احتجت.",
   "support.closedByAdmin":
     "✅ أغلق فريق الدعم الطلب <code>{ticket}</code>. إن كان لديك سؤال آخر فاستخدم 🆘 الدعم.",
   "support.adminReply": "💬 <b>ردّ فريق الدعم</b> (الطلب <code>{ticket}</code>):\n\n{text}",
-  "support.aiUnavailable":
-    "المساعد الذكي غير متاح حاليًا؛ أُرسلت رسالتك مباشرة إلى فريق الدعم.",
+  "support.aiUnavailable": "المساعد الذكي غير متاح حاليًا؛ أُرسلت رسالتك مباشرة إلى فريق الدعم.",
   "support.subject": "طلب دعم من البوت",
   "btn.human": "🙋 التحدث مع موظف الدعم",
   "btn.endSupport": "✅ تم حل مشكلتي",
@@ -252,8 +247,7 @@ export const ar: Messages = {
   "inline.startButton": "✨ افتح رسا برومبت",
   "inline.message": "{badge} <b>{title}</b>\n{summary}\n\n🤖 {models} · 🏅 {score}",
 
-  "error.generic":
-    "😔 حدث خطأ ما. يُرجى المحاولة بعد لحظات؛ وإن تكرّر ذلك فتواصل مع 🆘 الدعم.",
+  "error.generic": "😔 حدث خطأ ما. يُرجى المحاولة بعد لحظات؛ وإن تكرّر ذلك فتواصل مع 🆘 الدعم.",
   "error.rateLimited": "⏳ تمهّل قليلًا من فضلك! انتظر بضع ثوانٍ ثم حاول مجددًا.",
   "error.notFound": "لم يُعثر على ما تبحث عنه.",
   "error.invalidState": "لم تعد هذه الخطوة صالحة؛ ابدأ من جديد من القائمة.",

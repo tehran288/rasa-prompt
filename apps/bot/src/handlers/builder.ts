@@ -39,7 +39,12 @@ export async function startBuilder(ctx: BotContext, app: AppDeps): Promise<void>
           cost: AI_BUILD_COST,
           balance: await app.services.credits.balance(ctx.user.id),
         });
-  await show(ctx, app, `${ctx.t("builder.intro")}\n\n${quota}`, navRow(new InlineKeyboard(), ctx.locale));
+  await show(
+    ctx,
+    app,
+    `${ctx.t("builder.intro")}\n\n${quota}`,
+    navRow(new InlineKeyboard(), ctx.locale),
+  );
 }
 
 export async function buildFromIdea(ctx: BotContext, app: AppDeps, rawIdea: string): Promise<void> {
@@ -60,7 +65,12 @@ export async function buildFromIdea(ctx: BotContext, app: AppDeps, rawIdea: stri
     }
   } catch (err) {
     app.logger.warn({ err }, "ai.moderate failed");
-    await send(ctx, app, ctx.t(aiErrorKey(err) ?? "builder.failed"), navRow(new InlineKeyboard(), ctx.locale));
+    await send(
+      ctx,
+      app,
+      ctx.t(aiErrorKey(err) ?? "builder.failed"),
+      navRow(new InlineKeyboard(), ctx.locale),
+    );
     return;
   }
 
@@ -87,7 +97,12 @@ export async function buildFromIdea(ctx: BotContext, app: AppDeps, rawIdea: stri
   } catch (err) {
     app.logger.warn({ err }, "ai.buildPrompt failed");
     if (!isFree) await app.services.credits.grant(ctx.user.id, AI_BUILD_COST, "ai_build_refund");
-    await send(ctx, app, ctx.t(aiErrorKey(err) ?? "builder.failed"), navRow(new InlineKeyboard(), ctx.locale));
+    await send(
+      ctx,
+      app,
+      ctx.t(aiErrorKey(err) ?? "builder.failed"),
+      navRow(new InlineKeyboard(), ctx.locale),
+    );
     return;
   }
   if (isFree) {
@@ -101,10 +116,14 @@ export async function buildFromIdea(ctx: BotContext, app: AppDeps, rawIdea: stri
     : ctx.t("builder.paidUsed", { cost: AI_BUILD_COST, balance: balance ?? 0 });
   const extras: string[] = [];
   if (built.variables.length > 0) {
-    extras.push(ctx.t("builder.variables", { vars: built.variables.map((v) => `{{${v}}}`).join(" ") }));
+    extras.push(
+      ctx.t("builder.variables", { vars: built.variables.map((v) => `{{${v}}}`).join(" ") }),
+    );
   }
   if (built.tips.length > 0) {
-    extras.push(`${ctx.t("builder.tips")}\n${built.tips.map((tip) => `• ${escapeHtml(tip)}`).join("\n")}`);
+    extras.push(
+      `${ctx.t("builder.tips")}\n${built.tips.map((tip) => `• ${escapeHtml(tip)}`).join("\n")}`,
+    );
   }
   extras.push(usage, `<i>${ctx.t("builder.footer")}</i>`);
 

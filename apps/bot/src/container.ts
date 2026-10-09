@@ -71,7 +71,9 @@ export async function createContainer(
     supervise: false,
     schedule: false,
   });
-  boss.on("error", (err: Error) => logger.error({ err: { message: err.message } }, "pg-boss error"));
+  boss.on("error", (err: Error) =>
+    logger.error({ err: { message: err.message } }, "pg-boss error"),
+  );
   let bossStarted = false;
   try {
     await boss.start();

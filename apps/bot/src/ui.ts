@@ -1,8 +1,8 @@
 import type { Locale, Platform, PromptSummary, PromptTier } from "@rasa/shared";
 import { GrammyError, InlineKeyboard, Keyboard } from "grammy";
 import type { InlineKeyboardMarkup, ReplyKeyboardMarkup } from "grammy/types";
-import { type Capabilities, disableOnUnsupported } from "./capabilities";
 import { cb, type Screen } from "./callbacks";
+import { type Capabilities, disableOnUnsupported } from "./capabilities";
 import { escapeHtml, formatNumber, formatStars, formatToman, type MessageKey, t } from "./i18n";
 import type { AppDeps, BotContext } from "./types";
 
@@ -39,7 +39,9 @@ export interface Rendered {
 }
 
 export function render(caps: Capabilities, html: string): Rendered {
-  const out: Rendered = caps.html ? { text: html, parse_mode: "HTML" } : { text: htmlToPlain(html) };
+  const out: Rendered = caps.html
+    ? { text: html, parse_mode: "HTML" }
+    : { text: htmlToPlain(html) };
   if (caps.linkPreviewOptions) out.link_preview_options = { is_disabled: true };
   return out;
 }
@@ -155,7 +157,10 @@ export function mainReplyKeyboard(locale: Locale): Keyboard {
   k.text(label("menu.trending")).text(label("menu.library")).row();
   k.text(label("menu.account")).text(label("menu.invite")).row();
   k.text(label("menu.support")).text(label("menu.language"));
-  return k.resized().persistent().placeholder(truncate(t(locale, "menu.placeholder"), 64));
+  return k
+    .resized()
+    .persistent()
+    .placeholder(truncate(t(locale, "menu.placeholder"), 64));
 }
 
 export function mainInlineMenu(locale: Locale): InlineKeyboard {
@@ -247,7 +252,10 @@ export function listKeyboard(
 ): InlineKeyboard {
   const k = new InlineKeyboard();
   items.forEach((p, i) => {
-    k.text(`${formatNumber(locale, offset + i + 1)}. ${truncate(p.title, 40)}`, cb.prompt(p.id)).row();
+    k.text(
+      `${formatNumber(locale, offset + i + 1)}. ${truncate(p.title, 40)}`,
+      cb.prompt(p.id),
+    ).row();
   });
   pagerRow(k, locale, page, pages, pageData);
   return navRow(k, locale, back);

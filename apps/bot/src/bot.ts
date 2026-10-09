@@ -5,8 +5,8 @@ import {
   type AssistantAgents,
   type Config,
   createLogger,
-  type Locale,
   LOCALES,
+  type Locale,
   type PaymentService,
   type Platform,
   type PlatformProfile,
@@ -65,7 +65,9 @@ async function replyError(ctx: BotContext, app: AppDeps, err: unknown): Promise<
   const key = errorKey(err);
   try {
     if (ctx.callbackQuery) {
-      await ctx.answerCallbackQuery({ text: tPlain(locale, key), show_alert: true }).catch(() => {});
+      await ctx
+        .answerCallbackQuery({ text: tPlain(locale, key), show_alert: true })
+        .catch(() => {});
     } else if (ctx.chat?.type === "private") {
       const r = render(app.caps, t(locale, key));
       await ctx.reply(r.text, r.parse_mode ? { parse_mode: r.parse_mode } : {});
@@ -135,8 +137,12 @@ export function createBot(
     };
     const text = ctx.message?.text ?? "";
     const isStart = /^\/start(?:@\w+)?(?:\s|$)/.test(text);
-    const ref = isStart ? (/^\/start(?:@\w+)?\s+ref_([A-Za-z0-9_-]{1,32})/.exec(text)?.[1] ?? null) : null;
-    let user = isStart ? null : await services.users.getByPlatformId(platform, profile.platformUserId);
+    const ref = isStart
+      ? (/^\/start(?:@\w+)?\s+ref_([A-Za-z0-9_-]{1,32})/.exec(text)?.[1] ?? null)
+      : null;
+    let user = isStart
+      ? null
+      : await services.users.getByPlatformId(platform, profile.platformUserId);
     let created = false;
     if (!user || isStart || app.now().getTime() - user.lastSeenAt.getTime() > SEEN_REFRESH_MS) {
       const res = await services.users.upsert(profile, ref);
