@@ -11,7 +11,14 @@ import type {
 } from "@rasa/shared";
 import { and, asc, desc, eq, inArray, ne, type SQL, sql } from "drizzle-orm";
 import type { Db } from "../db";
-import { categories, intelTopics, promptCategories, prompts, promptVersions, searchLogs } from "../schema";
+import {
+  categories,
+  intelTopics,
+  promptCategories,
+  prompts,
+  promptVersions,
+  searchLogs,
+} from "../schema";
 import { localeSearchColumn, matchSql, prepareQuery, rankSql } from "../search";
 import {
   buildSearchColumns,
@@ -62,10 +69,7 @@ export function createCatalogService(db: Db): CatalogService {
   ): Promise<Page<PromptSummary>> {
     const { page, pageSize } = clampPage(opts?.page, opts?.pageSize);
     const cond = and(...where);
-    const [countRow] = await db
-      .select({ n: sql<number>`count(*)::int` })
-      .from(prompts)
-      .where(cond);
+    const [countRow] = await db.select({ n: sql<number>`count(*)::int` }).from(prompts).where(cond);
     const rows = await db
       .select()
       .from(prompts)
@@ -73,7 +77,12 @@ export function createCatalogService(db: Db): CatalogService {
       .orderBy(...order, asc(prompts.id))
       .limit(pageSize)
       .offset((page - 1) * pageSize);
-    return { items: rows.map((r) => toSummary(r, locale)), total: countRow?.n ?? 0, page, pageSize };
+    return {
+      items: rows.map((r) => toSummary(r, locale)),
+      total: countRow?.n ?? 0,
+      page,
+      pageSize,
+    };
   }
 
   async function detail(row: typeof prompts.$inferSelect, locale: Locale): Promise<PromptDetail> {
@@ -105,10 +114,11 @@ export function createCatalogService(db: Db): CatalogService {
           slug: categories.slug,
           name: categories.name,
           emoji: categories.emoji,
+          // explicit qualification: drizzle renders bare column names in single-table selects
           promptCount: sql<number>`(
-            select count(*)::int from ${promptCategories}
-            join ${prompts} on ${prompts.id} = ${promptCategories.promptId}
-            where ${promptCategories.categoryId} = ${categories.id} and ${prompts.status} = 'published'
+            select count(*)::int from prompt_categories pc
+            join prompts p on p.id = pc.prompt_id
+            where pc.category_id = "categories"."id" and p.status = 'published'
           )`,
         })
         .from(categories)

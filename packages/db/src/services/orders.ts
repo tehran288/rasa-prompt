@@ -83,7 +83,8 @@ export function createOrderService(db: Db): OrderService {
           const [o] = await tx.select().from(orders).where(eq(orders.id, orderId)).for("update");
           if (!o) throw new DomainError("not_found", "order");
           if (o.status === "paid" || o.status === "fulfilled" || o.status === "refunded") {
-            if (o.providerChargeId === providerChargeId) return { order: toOrder(o), firstTime: false };
+            if (o.providerChargeId === providerChargeId)
+              return { order: toOrder(o), firstTime: false };
             throw new DomainError("invalid_state", `order already ${o.status} with another charge`);
           }
           // pending, or expired/cancelled but the provider still charged the user → accept.
@@ -127,7 +128,9 @@ export function createOrderService(db: Db): OrderService {
       const rows = await db
         .update(orders)
         .set({ status: "expired" })
-        .where(and(eq(orders.status, "pending"), lt(orders.createdAt, minutesAgo(olderThanMinutes))))
+        .where(
+          and(eq(orders.status, "pending"), lt(orders.createdAt, minutesAgo(olderThanMinutes))),
+        )
         .returning({ id: orders.id });
       return rows.length;
     },

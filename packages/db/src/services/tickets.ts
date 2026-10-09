@@ -32,7 +32,9 @@ export function createTicketService(db: Db): TicketService {
           .values({ userId, subject: subject.slice(0, 200), status: "open" })
           .returning();
         if (!t) throw new Error("ticket insert failed");
-        await tx.insert(ticketMessages).values({ ticketId: t.id, from: "user", text: firstMessage });
+        await tx
+          .insert(ticketMessages)
+          .values({ ticketId: t.id, from: "user", text: firstMessage });
         return toTicket(t);
       });
     },

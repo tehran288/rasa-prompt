@@ -126,10 +126,9 @@ export function menuComposer(app: AppDeps): Composer<BotContext> {
     await sendWelcome(ctx, app, firstTime);
     const pending = ctx.session.pendingStart;
     ctx.session.pendingStart = null;
-    // fresh message for the next screen (the picker message now shows the confirmation)
-    const fresh = Object.create(ctx) as BotContext;
-    Object.defineProperty(fresh, "callbackQuery", { value: undefined });
-    await openStartPayload(fresh, app, pending ?? "");
+    // the picker message now shows the confirmation → next screen goes in a fresh message
+    ctx.forceNewMessage = true;
+    await openStartPayload(ctx, app, pending ?? "");
   });
 
   c.callbackQuery(/^m:(\w+)$/, (ctx) => {

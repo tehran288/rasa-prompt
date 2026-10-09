@@ -61,10 +61,7 @@ export function createEntitlementService(db: Db): EntitlementService {
     async library(userId, locale, page) {
       const { page: p, pageSize } = clampPage(page, 10);
       const where = sql`${prompts.id} in ${ownedPromptIds(userId)}`;
-      const [c] = await db
-        .select({ n: sql<number>`count(*)::int` })
-        .from(prompts)
-        .where(where);
+      const [c] = await db.select({ n: sql<number>`count(*)::int` }).from(prompts).where(where);
       const rows = await db
         .select()
         .from(prompts)

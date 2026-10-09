@@ -156,8 +156,8 @@ export function createUserService(db: Db, opts: UserServiceOptions = {}): UserSe
       const base = audienceWhere(filter);
       let cursor: string | null = null;
       while (true) {
-        const where = cursor ? [...base, gt(users.id, cursor)] : base;
-        const rows = await db
+        const where: SQL[] = cursor ? [...base, gt(users.id, cursor)] : base;
+        const rows: UserRow[] = await db
           .select()
           .from(users)
           .where(and(...where))

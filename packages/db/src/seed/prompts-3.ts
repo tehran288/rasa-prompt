@@ -53,7 +53,11 @@ Reminder: if you sell a real product, the generated image must match the actual 
     variables: [
       v("product", { fa: "محصول", ar: "المنتج", en: "Product" }),
       v("material", { fa: "جنس و رنگ", ar: "المادة واللون", en: "Material and color" }),
-      v("highlight", { fa: "ویژگی برجسته", ar: "الميزة البارزة", en: "Highlight" }, { required: false }),
+      v(
+        "highlight",
+        { fa: "ویژگی برجسته", ar: "الميزة البارزة", en: "Highlight" },
+        { required: false },
+      ),
     ],
   },
   {
@@ -263,7 +267,7 @@ Reminder: images should be close to the dish actually served.`,
     description: {
       fa: "به‌جای «کد خوبی است»، یافته‌های مشخص با شدت (بحرانی/مهم/جزئی)، شماره‌ی خط و کد اصلاح‌شده می‌گیرید. مناسب برای Pull Request و آماده‌سازی برای مصاحبه.",
       ar: "بدلًا من «الشيفرة جيدة»، تحصل على ملاحظات محددة مع درجة الخطورة (حرجة/مهمة/طفيفة) ورقم السطر والشيفرة المصحّحة. مناسب لطلبات الدمج والتحضير للمقابلات.",
-      en: "Instead of \"looks good\", you get specific findings with severity (critical/major/minor), line numbers and corrected code. Great for pull requests and interview prep.",
+      en: 'Instead of "looks good", you get specific findings with severity (critical/major/minor), line numbers and corrected code. Great for pull requests and interview prep.',
     },
     body: {
       fa: `تو یک مهندس نرم‌افزار ارشد با ۱۵ سال تجربه هستی که بازبینی کد دقیق و محترمانه انجام می‌دهد.
@@ -495,8 +499,16 @@ Environment: {{environment}}
     },
     variables: [
       v("problem", { fa: "شرح مشکل", ar: "وصف المشكلة", en: "Problem description" }),
-      v("error_log", { fa: "پیام خطا", ar: "رسالة الخطأ", en: "Error message" }, { required: false }),
-      v("code", { fa: "کد مرتبط", ar: "الشيفرة ذات الصلة", en: "Relevant code" }, { required: false }),
+      v(
+        "error_log",
+        { fa: "پیام خطا", ar: "رسالة الخطأ", en: "Error message" },
+        { required: false },
+      ),
+      v(
+        "code",
+        { fa: "کد مرتبط", ar: "الشيفرة ذات الصلة", en: "Relevant code" },
+        { required: false },
+      ),
       v("environment", { fa: "محیط اجرا", ar: "البيئة", en: "Environment" }, { required: false }),
     ],
   },
@@ -567,7 +579,11 @@ Write read-only queries (SELECT) unless data changes are explicitly requested.`,
       v(
         "dialect",
         { fa: "پایگاه داده", ar: "قاعدة البيانات", en: "Database" },
-        { type: "select", options: ["PostgreSQL", "MySQL", "SQLite", "SQL Server"], default: "PostgreSQL" },
+        {
+          type: "select",
+          options: ["PostgreSQL", "MySQL", "SQLite", "SQL Server"],
+          default: "PostgreSQL",
+        },
       ),
       v("schema", { fa: "ساختار جدول‌ها", ar: "بنية الجداول", en: "Table structure" }),
       v("question", { fa: "سؤال", ar: "السؤال", en: "Question" }),

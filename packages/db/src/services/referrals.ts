@@ -39,7 +39,11 @@ export function createReferralService(db: Db, rewardCredits = 50): ReferralServi
         })
         .from(referrals)
         .where(eq(referrals.referrerUserId, userId));
-      return { invited: r?.invited ?? 0, converted: r?.converted ?? 0, creditsEarned: r?.earned ?? 0 };
+      return {
+        invited: r?.invited ?? 0,
+        converted: r?.converted ?? 0,
+        creditsEarned: r?.earned ?? 0,
+      };
     },
   };
 }

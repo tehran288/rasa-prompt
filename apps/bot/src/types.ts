@@ -108,6 +108,8 @@ export interface BotFlavor {
   isAdmin: boolean;
   /** True when the user row was created by this update. */
   isNewUser: boolean;
+  /** When true, show() sends a new message instead of editing the tapped one. */
+  forceNewMessage?: boolean;
   /** HTML-safe translation (params escaped) — for message bodies. */
   t(key: MessageKey, params?: Params): string;
   /** Plain translation (params not escaped) — for button labels and other non-HTML fields. */

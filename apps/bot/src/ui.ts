@@ -114,7 +114,7 @@ export async function show(
   keyboard?: InlineKeyboard,
 ): Promise<void> {
   const msg = ctx.callbackQuery?.message;
-  if (msg && app.caps.editMessages && "text" in msg) {
+  if (msg && !ctx.forceNewMessage && app.caps.editMessages && "text" in msg) {
     const r = render(app.caps, html);
     try {
       await ctx.editMessageText(r.text, {

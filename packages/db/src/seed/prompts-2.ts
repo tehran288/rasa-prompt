@@ -118,7 +118,11 @@ Write:
     variables: [
       v("video_topic", { fa: "موضوع ویدیو", ar: "موضوع الفيديو", en: "Video topic" }),
       v("key_points", { fa: "نکات اصلی", ar: "النقاط الرئيسية", en: "Key points" }),
-      v("length", { fa: "مدت (دقیقه)", ar: "المدة (دقيقة)", en: "Length (minutes)" }, { type: "number" }),
+      v(
+        "length",
+        { fa: "مدت (دقیقه)", ar: "المدة (دقيقة)", en: "Length (minutes)" },
+        { type: "number" },
+      ),
     ],
   },
   {
@@ -272,7 +276,7 @@ Finish with one sentence on what NOT to say in this situation.`,
     title: {
       fa: "پاسخ به اعتراض‌های خریدار (گران است، فکر می‌کنم…)",
       ar: "الرد على اعتراضات المشتري (غالٍ، سأفكر…)",
-      en: "Handling Buyer Objections (\"Too expensive\", \"I'll think about it\"…)",
+      en: 'Handling Buyer Objections ("Too expensive", "I\'ll think about it"…)',
     },
     summary: {
       fa: "اسکریپت پاسخ به ۱۰ اعتراض رایج فروش برای چت، تلفن و دایرکت.",
@@ -307,7 +311,11 @@ Respectful, no-pressure tone — the goal is helping the buyer decide well, not 
     variables: [
       v("product", { fa: "محصول", ar: "المنتج", en: "Product" }),
       v("price", { fa: "قیمت", ar: "السعر", en: "Price" }),
-      v("alternative", { fa: "رقیب یا جایگزین", ar: "المنافس أو البديل", en: "Competitor or alternative" }),
+      v("alternative", {
+        fa: "رقیب یا جایگزین",
+        ar: "المنافس أو البديل",
+        en: "Competitor or alternative",
+      }),
     ],
   },
   {
@@ -423,7 +431,11 @@ Remind the user that AI output is only a concept and must be redrawn by a design
       v("brand_name", { fa: "نام برند", ar: "اسم العلامة", en: "Brand name" }),
       v("industry", { fa: "حوزه", ar: "القطاع", en: "Industry" }),
       v("brand_feeling", { fa: "حس برند", ar: "إحساس العلامة", en: "Brand feeling" }),
-      v("color", { fa: "رنگ اصلی", ar: "اللون الرئيسي", en: "Main color" }, { default: "deep teal" }),
+      v(
+        "color",
+        { fa: "رنگ اصلی", ar: "اللون الرئيسي", en: "Main color" },
+        { default: "deep teal" },
+      ),
     ],
   },
   {
@@ -496,9 +508,9 @@ Occasion or theme: {{occasion}} | Core message: {{message}} | Format: {{format}}
 5. Cultural caution: list symbols that are inappropriate for this occasion.`,
     },
     example: {
-      fa: "پرامپت ج: \"Nowruz haft-sin table, goldfish bowl, hyacinths and painted eggs, framed by Isfahan mosque tilework pattern, lapis lazuli and turquoise, soft morning light, clean empty space in top third, 4:5, no text, no letters\"",
-      ar: "الموجّه ج: \"Nowruz haft-sin table, goldfish bowl, hyacinths and painted eggs, framed by Isfahan mosque tilework pattern, lapis lazuli and turquoise, soft morning light, clean empty space in top third, 4:5, no text, no letters\"",
-      en: "Prompt c: \"Nowruz haft-sin table, goldfish bowl, hyacinths and painted eggs, framed by Isfahan mosque tilework pattern, lapis lazuli and turquoise, soft morning light, clean empty space in top third, 4:5, no text, no letters\"",
+      fa: 'پرامپت ج: "Nowruz haft-sin table, goldfish bowl, hyacinths and painted eggs, framed by Isfahan mosque tilework pattern, lapis lazuli and turquoise, soft morning light, clean empty space in top third, 4:5, no text, no letters"',
+      ar: 'الموجّه ج: "Nowruz haft-sin table, goldfish bowl, hyacinths and painted eggs, framed by Isfahan mosque tilework pattern, lapis lazuli and turquoise, soft morning light, clean empty space in top third, 4:5, no text, no letters"',
+      en: 'Prompt c: "Nowruz haft-sin table, goldfish bowl, hyacinths and painted eggs, framed by Isfahan mosque tilework pattern, lapis lazuli and turquoise, soft morning light, clean empty space in top third, 4:5, no text, no letters"',
     },
     variables: [
       v("occasion", { fa: "مناسبت یا موضوع", ar: "المناسبة أو الموضوع", en: "Occasion or theme" }),
@@ -632,9 +644,16 @@ Then:
       v(
         "visual_style",
         { fa: "سبک بصری", ar: "الأسلوب البصري", en: "Visual style" },
-        { type: "select", options: ["3D render", "editorial photo", "flat illustration", "isometric"] },
+        {
+          type: "select",
+          options: ["3D render", "editorial photo", "flat illustration", "isometric"],
+        },
       ),
-      v("brand_colors", { fa: "رنگ‌های برند", ar: "ألوان العلامة", en: "Brand colors" }, { required: false }),
+      v(
+        "brand_colors",
+        { fa: "رنگ‌های برند", ar: "ألوان العلامة", en: "Brand colors" },
+        { required: false },
+      ),
     ],
   },
 ];

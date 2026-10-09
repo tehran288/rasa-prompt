@@ -14,7 +14,10 @@ export function createSessionStorage<T>(db: Db, prefix = ""): SessionStorageAdap
   const k = (key: string) => `${prefix}${key}`;
   return {
     async read(key) {
-      const [r] = await db.select().from(botSessions).where(eq(botSessions.key, k(key)));
+      const [r] = await db
+        .select()
+        .from(botSessions)
+        .where(eq(botSessions.key, k(key)));
       return r ? (r.value as T) : undefined;
     },
     async write(key, value) {

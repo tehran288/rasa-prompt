@@ -101,7 +101,10 @@ export function createProductService(db: Db): ProductService {
             .select()
             .from(bundles)
             .where(
-              and(isUuid(refId) ? eq(bundles.id, refId) : eq(bundles.slug, refId), eq(bundles.active, true)),
+              and(
+                isUuid(refId) ? eq(bundles.id, refId) : eq(bundles.slug, refId),
+                eq(bundles.active, true),
+              ),
             );
           if (!b) throw new DomainError("not_found", "bundle");
           return {
@@ -113,7 +116,7 @@ export function createProductService(db: Db): ProductService {
         }
         case "plan": {
           const p = await findPlan(db, refId);
-          if (!p || !p.active) throw new DomainError("not_found", "plan");
+          if (!p?.active) throw new DomainError("not_found", "plan");
           return {
             kind,
             refId: p.id,
@@ -123,7 +126,7 @@ export function createProductService(db: Db): ProductService {
         }
         case "credit_pack": {
           const c = await findPack(db, refId);
-          if (!c || !c.active) throw new DomainError("not_found", "credit_pack");
+          if (!c?.active) throw new DomainError("not_found", "credit_pack");
           return {
             kind,
             refId: c.id,

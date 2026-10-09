@@ -1,5 +1,6 @@
 import type { AnalyticsService, DailyStats } from "@rasa/shared";
 import { and, desc, eq, gte, inArray, lt, ne, sql } from "drizzle-orm";
+import type { PgColumn } from "drizzle-orm/pg-core";
 import type { Db } from "../db";
 import { analyticsEvents, orders, searchLogs, tickets, users } from "../schema";
 import { isUuid } from "../util";
@@ -25,8 +26,7 @@ export function createAnalyticsService(db: Db): AnalyticsService {
 
     async dailyStats(date): Promise<DailyStats> {
       const { start, end, key } = utcDay(date);
-      const inDay = <T extends Parameters<typeof gte>[0]>(col: T) =>
-        and(gte(col, start), lt(col, end));
+      const inDay = (col: PgColumn) => and(gte(col, start), lt(col, end));
 
       const [newUsers] = await db
         .select({ n: sql<number>`count(*)::int` })

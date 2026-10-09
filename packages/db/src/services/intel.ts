@@ -76,7 +76,10 @@ export function createIntelStore(db: Db): IntelStore {
         .select()
         .from(intelSignals)
         .where(
-          gte(intelSignals.createdAt, sql`now() - make_interval(hours => ${Math.max(0, Math.floor(sinceHours))})`),
+          gte(
+            intelSignals.createdAt,
+            sql`now() - make_interval(hours => ${Math.max(0, Math.floor(sinceHours))})`,
+          ),
         )
         .orderBy(desc(intelSignals.createdAt), desc(intelSignals.metric))
         .limit(Math.max(1, limit));

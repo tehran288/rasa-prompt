@@ -103,7 +103,7 @@ Label the output "Version 1 — Question hook", "Version 2 — Story", "Version 
     description: {
       fa: "به‌جای اینکه هر روز به این فکر کنید «امروز چه بگذارم؟»، یک تقویم ۳۰ روزه‌ی جدول‌بندی‌شده می‌گیرید که تعادل بین آموزش، اعتمادسازی، سرگرمی و فروش را رعایت می‌کند و برای هر روز فرمت، ایده، قلاب و دعوت به اقدام دارد.",
       ar: "بدلًا من التفكير يوميًا «ماذا أنشر اليوم؟»، تحصل على تقويم منظّم لثلاثين يومًا يوازن بين التعليم وبناء الثقة والترفيه والبيع، مع صيغة وفكرة وخطاف ودعوة لاتخاذ إجراء لكل يوم.",
-      en: "Instead of asking \"what do I post today?\" every morning, get a 30-day table that balances education, trust, entertainment and sales — with a format, idea, hook and CTA for each day.",
+      en: 'Instead of asking "what do I post today?" every morning, get a 30-day table that balances education, trust, entertainment and sales — with a format, idea, hook and CTA for each day.',
     },
     body: {
       fa: `نقش: استراتژیست محتوای اینستاگرام با ۸ سال تجربه در رشد پیج‌های کسب‌وکار.
@@ -140,7 +140,7 @@ Ideas must be specific and actionable — never generic like "post an educationa
     example: {
       fa: "| روز | ستون | فرمت | ایده | قلاب |\n|۱|آموزشی|کاروسل|۵ اشتباه رایج در نگهداری گیاه آپارتمانی|«گیاهت را با محبت زیاد می‌کشی!»|",
       ar: "| اليوم | الركيزة | الصيغة | الفكرة | الخطاف |\n|1|تعليمي|كاروسيل|5 أخطاء شائعة في العناية بالنباتات المنزلية|«قد تقتل نبتتك من فرط الاهتمام!»|",
-      en: "| Day | Pillar | Format | Idea | Hook |\n|1|Educational|Carousel|5 common houseplant care mistakes|\"You might be killing your plant with too much love!\"|",
+      en: '| Day | Pillar | Format | Idea | Hook |\n|1|Educational|Carousel|5 common houseplant care mistakes|"You might be killing your plant with too much love!"|',
     },
     variables: [
       v("business", { fa: "کسب‌وکار", ar: "النشاط التجاري", en: "Business" }),
@@ -285,7 +285,11 @@ Total length: 1,200–1,800 characters. Max 3 hashtags. Tone: humble but confide
 Then suggest two alternative first-line hooks.`,
     },
     variables: [
-      v("experience", { fa: "تجربه یا اتفاق کاری", ar: "التجربة أو الموقف المهني", en: "Work experience or event" }),
+      v("experience", {
+        fa: "تجربه یا اتفاق کاری",
+        ar: "التجربة أو الموقف المهني",
+        en: "Work experience or event",
+      }),
       v("field", { fa: "حوزه‌ی کاری", ar: "المجال", en: "Field" }),
     ],
   },

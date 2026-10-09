@@ -112,11 +112,7 @@ export function makePreview(body: string): string {
   return `${body.slice(0, cut).trimEnd()} …`;
 }
 
-export function toDetail(
-  r: PromptRow,
-  locale: Locale,
-  categoryIds: string[],
-): PromptDetail {
+export function toDetail(r: PromptRow, locale: Locale, categoryIds: string[]): PromptDetail {
   return {
     ...toSummary(r, locale),
     description: loc(r.description, locale),
